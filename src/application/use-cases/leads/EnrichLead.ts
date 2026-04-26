@@ -6,6 +6,7 @@ import type { LeadEnricher, EnrichmentCache } from "../../ports/LeadEnricher";
 import type { WebsiteScraper } from "../../ports/WebsiteScraper";
 import type { WebsiteSnapshotCache } from "../../ports/WebsiteSnapshotCache";
 import type { LeadEnrichmentRepository } from "../../ports/LeadEnrichmentRepository";
+import type { WebsiteDiscoverer } from "../../ports/WebsiteDiscoverer";
 import type { EnrichInput, EnrichmentResult, WebsiteSnapshot } from "../../ports/types";
 
 export interface EnrichLeadCommand {
@@ -13,12 +14,15 @@ export interface EnrichLeadCommand {
   leadId: LeadId;
   forceRescrape?: boolean;
   forceReenrich?: boolean;
+  // When true, re-run website discovery even if lead.website is set.
+  forceRediscover?: boolean;
 }
 
 export interface EnrichLeadResult {
   leadId: LeadId;
   enrichmentFromCache: boolean;
   scrapeFromCache: boolean;
+  websiteDiscovered: { url: string; source: string; rationale: string } | null;
   enrichment: EnrichmentResult;
   websiteSnapshot: WebsiteSnapshot | null;
 }
@@ -30,13 +34,41 @@ export interface EnrichLeadDeps {
   enrichmentRepo: LeadEnrichmentRepository;
   scraper: WebsiteScraper;
   snapshotCache: WebsiteSnapshotCache;
+  // Optional: when present, called if the lead has no website yet.
+  websiteDiscoverer?: WebsiteDiscoverer;
   clock: Clock;
 }
 
 export function makeEnrichLead(deps: EnrichLeadDeps) {
   return async (cmd: EnrichLeadCommand): Promise<EnrichLeadResult> => {
-    const lead = await deps.leadRepo.findById(cmd.leadId);
+    let lead = await deps.leadRepo.findById(cmd.leadId);
     if (!lead) throw new Error(`Lead ${cmd.leadId} not found`);
+
+    let websiteDiscovered: EnrichLeadResult["websiteDiscovered"] = null;
+
+    // Step 0 — discover website if missing.
+    // Sirene-sourced leads never come with a website. We try DuckDuckGo before
+    // falling back to a website-less enrichment.
+    const shouldDiscover = !!deps.websiteDiscoverer && (!lead.website || cmd.forceRediscover);
+    if (shouldDiscover) {
+      try {
+        const found = await deps.websiteDiscoverer!.discover({
+          companyName: lead.companyName,
+          country: lead.country,
+          sector: lead.sector,
+        });
+        if (found) {
+          websiteDiscovered = found;
+          lead = lead.withWebsite(found.url, deps.clock.now(), { source: found.source });
+          await deps.leadRepo.save(lead);
+        }
+      } catch (err) {
+        console.warn(
+          `[EnrichLead] website discovery failed for ${lead.companyName}:`,
+          (err as Error).message,
+        );
+      }
+    }
 
     let snapshot: WebsiteSnapshot | null = null;
     let scrapeFromCache = false;
@@ -95,6 +127,7 @@ export function makeEnrichLead(deps: EnrichLeadDeps) {
       leadId: lead.id,
       enrichmentFromCache,
       scrapeFromCache,
+      websiteDiscovered,
       enrichment,
       websiteSnapshot: snapshot,
     };

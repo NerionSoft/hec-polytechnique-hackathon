@@ -8,6 +8,10 @@ export interface LeadEvidence {
   source: string;
   sourceRef: string | null;
   website: string | null;
+  websiteDiscovery: {
+    source: string; // e.g. "duckduckgo"
+    rationale: string;
+  } | null;
   websiteSnapshot: {
     fetchedAt: string;
     title: string | null;
@@ -194,6 +198,12 @@ function EvidenceBlock({ evidence }: { evidence: LeadEvidence }) {
         value={evidence.sourceRef ? `${evidence.source} · ${evidence.sourceRef}` : evidence.source}
       />
       {evidence.website && <Field label="Website" value={evidence.website} />}
+      {evidence.websiteDiscovery && (
+        <Field
+          label="Discovered via"
+          value={`${evidence.websiteDiscovery.source} — ${evidence.websiteDiscovery.rationale}`}
+        />
+      )}
       {evidence.websiteSnapshot && (
         <Field
           label="Snapshot"

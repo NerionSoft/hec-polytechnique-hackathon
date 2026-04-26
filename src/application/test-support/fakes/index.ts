@@ -15,3 +15,4 @@ export { InMemoryPrismaForFindings } from "./InMemoryPrismaForFindings";
 export { InMemoryPrismaForMemo } from "./InMemoryPrismaForMemo";
 export { FakeOutreachDrafter } from "./FakeOutreachDrafter";
 export { InMemoryOutreachDraftRepository } from "./InMemoryOutreachDraftRepository";
+export { FakeWebsiteDiscoverer } from "./FakeWebsiteDiscoverer";

@@ -12,6 +12,7 @@ import { PrismaWebsiteSnapshotCache } from "./persistence/prisma/PrismaWebsiteSn
 import { SireneCompanyDataSource } from "./sources/sirene/SireneCompanyDataSource";
 import { VercelBlobStorage } from "./blob/VercelBlobStorage";
 import { CheerioWebsiteScraper } from "./scraping/cheerio/CheerioWebsiteScraper";
+import { DuckDuckGoWebsiteDiscoverer } from "./discovery/duckduckgo/DuckDuckGoWebsiteDiscoverer";
 import { AiGatewayLeadEnricher } from "./llm/ai-gateway/AiGatewayLeadEnricher";
 import { AiGatewayOutreachDrafter } from "./llm/ai-gateway/AiGatewayOutreachDrafter";
 import { PrismaEnrichmentCache } from "./llm/cache/PrismaEnrichmentCache";
@@ -82,6 +83,7 @@ export function getUseCases(): UseCases {
   const sirene = new SireneCompanyDataSource();
   const blobStorage = new VercelBlobStorage();
   const scraper = new CheerioWebsiteScraper({ clock });
+  const websiteDiscoverer = new DuckDuckGoWebsiteDiscoverer();
   const env = loadEnv();
   const enricher = new AiGatewayLeadEnricher({ model: env.LLM_MODEL });
   const enrichmentCache = new PrismaEnrichmentCache(prisma);
@@ -98,6 +100,7 @@ export function getUseCases(): UseCases {
       enrichmentRepo,
       scraper,
       snapshotCache,
+      websiteDiscoverer,
       clock,
     }),
     scoreLead: makeScoreLead({ leadRepo, thesisRepo, enrichmentRepo, scoreRepo, clock }),
