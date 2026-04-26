@@ -2,7 +2,7 @@ import { z } from "zod";
 import { EvidenceSchema, GapSchema } from "../shared/evidence";
 import { SharedFindingSchema } from "../shared/findingShape";
 
-export const A6_SCHEMA_VERSION = "v1";
+export const A6_SCHEMA_VERSION = "v2";
 
 const facilitySchema = z.object({
   external_id: z.string(),
@@ -23,8 +23,8 @@ const facilitySchema = z.object({
   maturity_date: z.string().nullable(),
   amortization: z.string().nullable(),
   security: z.string().nullable(),
-  guarantors: z.array(z.string()).default([]),
-  evidence: z.array(EvidenceSchema).min(1),
+  guarantors: z.array(z.string()),
+  evidence: z.array(EvidenceSchema),
 });
 
 const covenantSchema = z.object({
@@ -36,11 +36,10 @@ const covenantSchema = z.object({
   current_value: z.number().nullable(),
   headroom_pct: z.number().nullable(),
   next_test_date: z.string().nullable(),
-  evidence: z.array(EvidenceSchema).min(1),
+  evidence: z.array(EvidenceSchema),
 });
 
 const A6FindingSchema = SharedFindingSchema.extend({
-  category: z.literal("FINANCIAL"),
   trigger: z.enum([
     "tight_covenant_headroom",
     "imminent_covenant_breach",
@@ -54,34 +53,30 @@ const A6FindingSchema = SharedFindingSchema.extend({
 
 export const A6OutputSchema = z.object({
   currency: z.enum(["EUR", "USD", "GBP"]),
-  facilities: z.array(facilitySchema).default([]),
-  covenants: z.array(covenantSchema).default([]),
-  change_of_control_provisions: z
-    .array(
-      z.object({
-        facility_external_id: z.string(),
-        mechanic: z.enum(["mandatory_prepayment", "consent", "step_up_rate", "none"]),
-        evidence: z.array(EvidenceSchema).min(1),
-      }),
-    )
-    .default([]),
-  off_balance_sheet: z
-    .array(
-      z.object({
-        type: z.enum(["operating_lease", "guarantee", "factoring", "contingent"]),
-        amount_eur: z.number().nullable(),
-        counterparty: z.string(),
-        evidence: z.array(EvidenceSchema).min(1),
-      }),
-    )
-    .default([]),
+  facilities: z.array(facilitySchema),
+  covenants: z.array(covenantSchema),
+  change_of_control_provisions: z.array(
+    z.object({
+      facility_external_id: z.string(),
+      mechanic: z.enum(["mandatory_prepayment", "consent", "step_up_rate", "none"]),
+      evidence: z.array(EvidenceSchema),
+    }),
+  ),
+  off_balance_sheet: z.array(
+    z.object({
+      type: z.enum(["operating_lease", "guarantee", "factoring", "contingent"]),
+      amount_eur: z.number().nullable(),
+      counterparty: z.string(),
+      evidence: z.array(EvidenceSchema),
+    }),
+  ),
   computed_ratios: z.object({
     net_debt_eur: z.number().nullable(),
     net_debt_ebitda: z.number().nullable(),
-    evidence: z.array(EvidenceSchema).max(4),
+    evidence: z.array(EvidenceSchema),
   }),
-  redflag_findings: z.array(A6FindingSchema).default([]),
-  gaps: z.array(GapSchema).default([]),
+  redflag_findings: z.array(A6FindingSchema),
+  gaps: z.array(GapSchema),
 });
 
 export type A6Output = z.infer<typeof A6OutputSchema>;

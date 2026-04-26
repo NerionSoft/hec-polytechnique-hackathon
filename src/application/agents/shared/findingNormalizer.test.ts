@@ -34,6 +34,7 @@ function makeFinding(overrides: Partial<SharedFinding> = {}): SharedFinding {
     management_question:
       "Can management substantiate the recurring nature of the €0.7M consulting fee add-back?",
     deal_impact: "price_chip",
+    exposure_eur: null,
     ...overrides,
   };
 }

@@ -1,16 +1,15 @@
 import { notFound } from "next/navigation";
 import { cn } from "@/src/presentation/lib/cn";
-import { questionsForDeal } from "@/src/lib/mock/questions";
-import { getDeal } from "@/src/lib/mock/deals";
+import { findPipelineDeal, listPipelineQuestions } from "@/src/lib/data/pipeline";
 import { PageHeader } from "../../../_components/PageHeader";
 import { ReviewBadge } from "../_components/ReviewBadge";
 import { formatRelativeDate } from "@/src/lib/utils";
 
 export default async function QuestionsPage({ params }: { params: Promise<{ dealId: string }> }) {
   const { dealId } = await params;
-  const deal = getDeal(dealId);
+  const deal = await findPipelineDeal(dealId);
   if (!deal) notFound();
-  const qs = questionsForDeal(dealId);
+  const qs = await listPipelineQuestions(dealId);
 
   const grouped = qs.reduce<Record<string, typeof qs>>((acc, q) => {
     (acc[q.topic] ??= []).push(q);

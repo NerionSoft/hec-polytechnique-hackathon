@@ -1,9 +1,8 @@
 import { notFound } from "next/navigation";
 import { Download, RefreshCw, Sparkles } from "lucide-react";
 import { cn } from "@/src/presentation/lib/cn";
-import { memoHelios } from "@/src/lib/mock/memo";
-import { getDeal } from "@/src/lib/mock/deals";
 import { team } from "@/src/lib/mock/fund";
+import { findPipelineDeal, findPipelineMemo } from "@/src/lib/data/pipeline";
 import { PageHeader } from "../../../_components/PageHeader";
 import { CitationLink } from "../_components/CitationLink";
 import { formatRelativeDate } from "@/src/lib/utils";
@@ -17,9 +16,32 @@ const RF_REFS: Record<string, { citation: string; title: string }> = {
 
 export default async function MemoPage({ params }: { params: Promise<{ dealId: string }> }) {
   const { dealId } = await params;
-  const deal = getDeal(dealId);
+  const deal = await findPipelineDeal(dealId);
   if (!deal) notFound();
-  const memo = memoHelios;
+  const memo = await findPipelineMemo(dealId);
+  if (!memo) {
+    return (
+      <>
+        <PageHeader
+          title="IC Memo"
+          description="Memo not yet drafted — kick off a pipeline run to generate one."
+        />
+        <div className="px-8 pb-12">
+          <div
+            className={cn(
+              "border-foreground/[0.10] mx-auto max-w-[760px] rounded-[24px]",
+              "bg-foreground/[0.02] border border-dashed p-10 text-center",
+            )}
+          >
+            <p className="font-serif text-[20px]">No memo for this deal yet</p>
+            <p className="text-foreground/55 mt-1 text-[12.5px]">
+              The memo is produced by the synthesis agent at the end of a successful run.
+            </p>
+          </div>
+        </div>
+      </>
+    );
+  }
   const editor = team.find((t) => t.id === memo.lastEditedBy);
 
   return (

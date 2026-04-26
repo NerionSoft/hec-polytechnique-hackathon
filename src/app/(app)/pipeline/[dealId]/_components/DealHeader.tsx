@@ -4,9 +4,20 @@ import { cn } from "@/src/presentation/lib/cn";
 import { GlassButton } from "@/src/presentation/components/landing/GlassButton";
 import type { Deal } from "@/src/lib/mock/deals";
 import { stages, stageLabels } from "@/src/lib/mock/deals";
+import type { PipelineEntityKind } from "@/src/lib/data/pipeline";
+import { WorkspaceActions } from "./WorkspaceActions";
 
-export function DealHeader({ deal }: { deal: Deal }) {
+export function DealHeader({
+  deal,
+  entityKind = "mock",
+  sourceId,
+}: {
+  deal: Deal;
+  entityKind?: PipelineEntityKind;
+  sourceId?: string;
+}) {
   const stageIndex = stages.indexOf(deal.stage);
+  const showWorkspaceActions = (entityKind === "lead" || entityKind === "deal") && sourceId;
 
   return (
     <div className="border-foreground/[0.08] border-b">
@@ -39,13 +50,24 @@ export function DealHeader({ deal }: { deal: Deal }) {
           </div>
 
           <div className="flex shrink-0 items-center gap-2">
-            <GlassButton size="sm" variant="glass">
-              <Sparkles strokeWidth={1.6} className="size-3.5" />
-              Generate memo
-            </GlassButton>
-            <GlassButton size="sm" variant="solid">
-              Schedule IC
-            </GlassButton>
+            {showWorkspaceActions ? (
+              <WorkspaceActions
+                entityKind={entityKind}
+                sourceId={sourceId}
+                stage={deal.stage}
+                decision={deal.decision}
+              />
+            ) : (
+              <>
+                <GlassButton size="sm" variant="glass">
+                  <Sparkles strokeWidth={1.6} className="size-3.5" />
+                  Generate memo
+                </GlassButton>
+                <GlassButton size="sm" variant="solid">
+                  Schedule IC
+                </GlassButton>
+              </>
+            )}
             <button
               type="button"
               aria-label="More"

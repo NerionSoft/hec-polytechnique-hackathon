@@ -7,6 +7,7 @@ import { prisma } from "@/src/infrastructure/persistence/prisma/client";
 import { PageHeader } from "../../../_components/PageHeader";
 import { formatRelativeDate } from "@/src/lib/utils";
 import { UploadDropzone } from "./_components/UploadDropzone";
+import { RunPipelineButton } from "./_components/RunPipelineButton";
 
 const CATEGORY_LABEL: Record<string, string> = {
   COMMERCIAL: "Commercial",
@@ -134,7 +135,18 @@ export default async function DataRoomPage({ params }: { params: Promise<{ dealI
         </div>
       )}
 
-      <div className="px-8">{isReal && <UploadDropzone dealId={dealId} />}</div>
+      {isReal && (
+        <div className="flex flex-col gap-3 px-8">
+          <UploadDropzone dealId={dealId} />
+          <div className="flex justify-end">
+            <RunPipelineButton
+              dealId={dealId}
+              indexedCount={docs.filter((d) => d.status === "INDEXED").length}
+              totalCount={docs.length}
+            />
+          </div>
+        </div>
+      )}
 
       <div className="grid grid-cols-1 gap-4 px-8 py-6 lg:grid-cols-[240px_1fr]">
         <aside
