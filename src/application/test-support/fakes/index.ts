@@ -10,5 +10,8 @@ export { InMemoryBlobStorage } from "./InMemoryBlobStorage";
 export { FakeCompanyDataSource } from "./FakeCompanyDataSource";
 export { FakeWebsiteScraper } from "./FakeWebsiteScraper";
 export { FakeLeadEnricher } from "./FakeLeadEnricher";
+export { FakeAgentRunner } from "./FakeAgentRunner";
+export { InMemoryPrismaForFindings } from "./InMemoryPrismaForFindings";
+export { InMemoryPrismaForMemo } from "./InMemoryPrismaForMemo";
 export { FakeOutreachDrafter } from "./FakeOutreachDrafter";
 export { InMemoryOutreachDraftRepository } from "./InMemoryOutreachDraftRepository";

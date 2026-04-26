@@ -16,7 +16,7 @@ export const landingContent = {
     subtitle:
       "AI Due Diligence Copilot for lower-mid-market private " +
       "equity. Upload a data room, get sourced red flags, " +
-      "management questions and a draft IC memo — not in days.",
+      "management questions and a draft IC memo, not in days.",
     cta: "Try Athena",
     secondaryCta: "Watch a demo",
   },
@@ -98,7 +98,7 @@ export const landingContent = {
     },
   },
   icMemo: {
-    title: "IC Memo — Helios AgriTech",
+    title: "IC Memo · Helios AgriTech",
     subtitle: "Draft v2 · Updated 2 minutes ago",
     badge: "Decision-ready",
     sections: [
@@ -148,7 +148,7 @@ export const landingContent = {
         title: "AI Due Diligence",
         description:
           "Upload a data room. Get sourced red flags, management " +
-          "questions and a draft IC memo with citations — in 30 minutes.",
+          "questions and a draft IC memo with citations in 30 minutes.",
         cta: "See it run",
         image: "/images/card1.jpg",
         visual: {
@@ -161,7 +161,7 @@ export const landingContent = {
         title: "Lead Sourcing & Outreach",
         description:
           "Score targets against your investment thesis, enrich " +
-          "with financials, and trigger outreach — wired to your CRM.",
+          "with financials, and trigger outreach wired to your CRM.",
         cta: "Join waitlist",
         image: "/images/card2.jpg",
         visual: {
@@ -218,7 +218,7 @@ export const landingContent = {
       {
         id: "04",
         title: "Outreach",
-        body: "Personalized intros, replies and meeting scheduling — " + "your tone, your CRM.",
+        body: "Personalized intros, replies and meeting scheduling. " + "Your tone, your CRM.",
         coverage: "85%",
       },
       {
@@ -261,7 +261,7 @@ export const landingContent = {
       sectionTitle: "Deal workspace",
       body:
         "A shared cockpit for the deal team. Every analyst, " +
-        "every memo, every red flag — sourced, versioned and " +
+        "every memo, every red flag. Sourced, versioned and " +
         "exportable.",
       features: [
         "Upload data room",
@@ -349,7 +349,7 @@ export const landingContent = {
         "Audit logs",
         "Custom investment thesis",
       ],
-      footer: "Everything for single funds — across your whole platform.",
+      footer: "Everything for single funds, across your whole platform.",
     },
   },
   regulated: {
