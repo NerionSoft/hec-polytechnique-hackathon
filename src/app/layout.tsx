@@ -23,7 +23,7 @@ const urbanist = Urbanist({
 });
 
 export const metadata: Metadata = {
-  title: "Athena — The platform for financial advisers",
+  title: "Athena · The platform for financial advisers",
   description:
     "Practice management, execution and custody for the next " +
     "generation of financial advisers.",

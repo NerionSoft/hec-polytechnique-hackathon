@@ -16,18 +16,19 @@ datasource db {
 // ─────────────────────────────────────────────────────────────────────────────
 
 model User {
-  id            String    @id @default(cuid())
+  id            String   @id @default(cuid())
   name          String?
-  email         String    @unique
-  emailVerified Boolean   @default(false)
+  email         String   @unique
+  emailVerified Boolean  @default(false)
   image         String?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
   sessions      Session[]
   accounts      Account[]
   theses        FundThesis[]
   importBatches ImportBatch[]
+  ownedDeals    Deal[]
 
   @@map("user")
 }
@@ -101,6 +102,7 @@ model FundThesis {
   updatedAt     DateTime @updatedAt
 
   leads Lead[]
+  deals Deal[]
 
   @@index([ownerId])
   @@map("fund_thesis")
@@ -141,7 +143,7 @@ enum ScoreDecision {
 }
 
 model Lead {
-  id               String     @id @default(cuid())
+  id               String       @id @default(cuid())
   // Source / dedupe
   source           LeadSource
   sourceRef        String? // e.g. SIREN
@@ -151,27 +153,28 @@ model Lead {
   companyName      String
   legalName        String?
   website          String?
-  country          String     @default("FR")
+  country          String       @default("FR")
   // Sector
   sector           String?
   napCode          String?
   // Size
   employeeCount    Int?
-  estimatedRevenue Decimal?   @db.Decimal(14, 2)
+  estimatedRevenue Decimal?     @db.Decimal(14, 2)
   // Contact
   founderName      String?
   // Workflow
-  status           LeadStatus @default(NEW)
+  status           LeadStatus   @default(NEW)
   // Thesis link
   thesisId         String?
-  thesis           FundThesis? @relation(fields: [thesisId], references: [id], onDelete: SetNull)
+  thesis           FundThesis?  @relation(fields: [thesisId], references: [id], onDelete: SetNull)
   // Audit
-  createdAt        DateTime   @default(now())
-  updatedAt        DateTime   @updatedAt
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
 
   contacts   Contact[]
   enrichment LeadEnrichment?
   score      LeadScore?
+  deal       Deal?
 
   @@unique([source, sourceRef], name: "source_dedupe")
   @@index([status])
@@ -267,7 +270,429 @@ model EnrichmentCache {
   @@map("enrichment_cache")
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+// Domain — Deal (bridge Lead → DD case)
+// All DD pipeline outputs hang off a Deal. Lead is the "entreprise"; Deal is
+// opened when Lead.status reaches DATA_ROOM_OPENED. 1 Deal per Lead.
+// ─────────────────────────────────────────────────────────────────────────────
+
+enum DealStage {
+  IN_DD
+  IC_READY
+  DECIDED
+
+  @@map("deal_stage")
+}
+
+enum DealDecision {
+  PASSED
+  REJECTED
+
+  @@map("deal_decision")
+}
+
+model Deal {
+  id       String      @id @default(cuid())
+  leadId   String      @unique
+  lead     Lead        @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  ownerId  String
+  owner    User        @relation(fields: [ownerId], references: [id], onDelete: Restrict)
+  thesisId String?
+  thesis   FundThesis? @relation(fields: [thesisId], references: [id], onDelete: SetNull)
+
+  stage    DealStage     @default(IN_DD)
+  decision DealDecision?
+
+  // KPIs cache — synced from A2 normalizer for fast kanban queries
+  revenueEur    Decimal? @db.Decimal(14, 2)
+  ebitdaEur     Decimal? @db.Decimal(14, 2)
+  ebitdaMargin  Decimal? @db.Decimal(5, 4)
+  growthYoy     Decimal? @db.Decimal(5, 4)
+  netDebtEbitda Decimal? @db.Decimal(5, 2)
+  employees     Int?
+  founded       Int?
+
+  // Synthesis cache — synced from S1 + run telemetry
+  thesisFit     Int?
+  redFlagsCount Int      @default(0)
+  timeSavedDays Decimal? @db.Decimal(4, 1)
+  coverage      Decimal? @db.Decimal(3, 2)
+  nextAction    String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  documents         Document[]
+  runs              DDRun[]
+  findings          Finding[]
+  citations         Citation[]
+  questions         ManagementQuestion[]
+  memo              Memo?
+  financialSnapshot FinancialSnapshot?
+  audit             DealAuditEvent[]
+
+  @@index([ownerId])
+  @@index([stage])
+  @@map("deal")
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Domain — Documents & chunks (Phase 0 + A1)
+// ─────────────────────────────────────────────────────────────────────────────
+
+enum DocCategory {
+  COMMERCIAL
+  FINANCIAL
+  LEGAL
+  HR
+  TAX
+
+  @@map("doc_category")
+}
+
+enum DocStatus {
+  UPLOADED
+  EXTRACTING
+  INDEXED
+  FAILED
+
+  @@map("doc_status")
+}
+
+model Document {
+  id              String       @id @default(cuid())
+  dealId          String
+  deal            Deal         @relation(fields: [dealId], references: [id], onDelete: Cascade)
+  blobUrl         String
+  filename        String
+  byteSize        Int?
+  pageCount       Int?
+  status          DocStatus    @default(UPLOADED)
+  category        DocCategory?
+  peTaxonomy      String[]
+  dealRelevance   Int?
+  riskSignal      Int?
+  routedTo        String[]
+  redflagKeywords String[]
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+
+  chunks    Chunk[]
+  citations Citation[]
+
+  @@index([dealId])
+  @@map("document")
+}
+
+model Chunk {
+  id         String                       @id @default(cuid())
+  documentId String
+  document   Document                     @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  sectionRef String?
+  page       Int?
+  text       String                       @db.Text
+  tokenCount Int?
+  embedding  Unsupported("vector(1536)")?
+
+  citations Citation[]
+
+  @@index([documentId])
+  @@map("chunk")
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Domain — Runs & raw agent outputs (audit + replay)
+// ─────────────────────────────────────────────────────────────────────────────
+
+enum RunStatus {
+  QUEUED
+  RUNNING
+  COMPLETED
+  FAILED
+  NEEDS_REVIEW
+
+  @@map("run_status")
+}
+
+model DDRun {
+  id               String    @id @default(cuid())
+  dealId           String
+  deal             Deal      @relation(fields: [dealId], references: [id], onDelete: Cascade)
+  triggeredById    String?
+  status           RunStatus @default(QUEUED)
+  phase            String?
+  startedAt        DateTime?
+  completedAt      DateTime?
+  totalTokens      Int?
+  totalCostCents   Int?
+  citationPassRate Decimal?  @db.Decimal(5, 4)
+  errorJson        Json?
+  createdAt        DateTime  @default(now())
+
+  agentOutputs AgentOutput[]
+  findings     Finding[]
+  questions    ManagementQuestion[]
+  memo         Memo?
+
+  @@index([dealId])
+  @@index([status])
+  @@map("dd_run")
+}
+
+model AgentOutput {
+  id          String    @id @default(cuid())
+  runId       String
+  run         DDRun     @relation(fields: [runId], references: [id], onDelete: Cascade)
+  agentId     String
+  status      String
+  output      Json?
+  promptHash  String?
+  model       String?
+  tokensIn    Int?
+  tokensOut   Int?
+  costCents   Int?
+  durationMs  Int?
+  errorJson   Json?
+  startedAt   DateTime?
+  completedAt DateTime?
+
+  @@unique([runId, agentId])
+  @@index([agentId])
+  @@map("agent_output")
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Domain — Findings (red flags) normalized from A3/A6/A7/A9
+// ─────────────────────────────────────────────────────────────────────────────
+
+enum Severity {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+
+  @@map("severity")
+}
+
+enum FindingCategory {
+  FINANCIAL
+  LEGAL
+  COMMERCIAL
+  OPERATIONAL
+  ESG
+
+  @@map("finding_category")
+}
+
+enum Confidence {
+  HIGH
+  MEDIUM
+  LOW
+
+  @@map("confidence")
+}
+
+enum ReviewStatus {
+  PENDING_REVIEW
+  APPROVED
+  DISMISSED
+
+  @@map("review_status")
+}
+
+model Finding {
+  id                String          @id @default(cuid())
+  displayId         String
+  dealId            String
+  deal              Deal            @relation(fields: [dealId], references: [id], onDelete: Cascade)
+  runId             String
+  run               DDRun           @relation(fields: [runId], references: [id], onDelete: Cascade)
+  agentId           String
+  externalId        String
+  severity          Severity
+  category          FindingCategory
+  title             String
+  summary           String?
+  detail            String?         @db.Text
+  confidence        Confidence
+  impact            String?         @db.Text
+  status            ReviewStatus    @default(PENDING_REVIEW)
+  approvedById      String?
+  approvedAt        DateTime?
+  primaryCitationId String?
+  primaryCitation   Citation?       @relation("FindingPrimaryCitation", fields: [primaryCitationId], references: [id], onDelete: SetNull)
+  suggestedQuestion String?         @db.Text
+  exposureEur       Decimal?        @db.Decimal(14, 2)
+  raisedBy          String
+  createdAt         DateTime        @default(now())
+
+  citations Citation[]           @relation("FindingCitations")
+  questions ManagementQuestion[]
+
+  @@unique([dealId, displayId])
+  @@index([dealId, severity])
+  @@index([dealId, category])
+  @@map("finding")
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Domain — Citations (verbatim quote, used by S3 + PDF.js viewer)
+// ─────────────────────────────────────────────────────────────────────────────
+
+model Citation {
+  id         String     @id @default(cuid())
+  displayId  String
+  dealId     String
+  deal       Deal       @relation(fields: [dealId], references: [id], onDelete: Cascade)
+  documentId String?
+  document   Document?  @relation(fields: [documentId], references: [id], onDelete: SetNull)
+  chunkId    String?
+  chunk      Chunk?     @relation(fields: [chunkId], references: [id], onDelete: SetNull)
+  sectionRef String?
+  page       Int?
+  excerpt    String     @db.Text
+  confidence Confidence
+  verified   Boolean    @default(false)
+  usedIn     String[]
+  createdAt  DateTime   @default(now())
+
+  findings        Finding[]     @relation("FindingCitations")
+  primaryFindings Finding[]     @relation("FindingPrimaryCitation")
+  memoSections    MemoSection[] @relation("MemoSectionCitations")
+
+  @@unique([dealId, displayId])
+  @@index([dealId])
+  @@index([documentId])
+  @@map("citation")
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Domain — Management questions (consolidated by S2)
+// ─────────────────────────────────────────────────────────────────────────────
+
+enum QuestionStatus {
+  PENDING_REVIEW
+  APPROVED
+  SENT
+  ANSWERED
+  DISMISSED
+
+  @@map("question_status")
+}
+
+model ManagementQuestion {
+  id                   String          @id @default(cuid())
+  displayId            String
+  dealId               String
+  deal                 Deal            @relation(fields: [dealId], references: [id], onDelete: Cascade)
+  runId                String
+  run                  DDRun           @relation(fields: [runId], references: [id], onDelete: Cascade)
+  topic                FindingCategory
+  body                 String          @db.Text
+  derivedFromFindingId String?
+  derivedFrom          Finding?        @relation(fields: [derivedFromFindingId], references: [id], onDelete: SetNull)
+  status               QuestionStatus  @default(PENDING_REVIEW)
+  raisedBy             String
+  answer               String?         @db.Text
+  answeredAt           DateTime?
+  createdAt            DateTime        @default(now())
+
+  @@unique([dealId, displayId])
+  @@index([dealId, status])
+  @@map("management_question")
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Domain — IC Memo (S2 normalized into 5 sections + inline tags)
+// ─────────────────────────────────────────────────────────────────────────────
+
+enum MemoStatus {
+  DRAFT
+  REVIEW
+  FINAL
+  NEEDS_REVIEW
+
+  @@map("memo_status")
+}
+
+model Memo {
+  id             String     @id @default(cuid())
+  dealId         String     @unique
+  deal           Deal       @relation(fields: [dealId], references: [id], onDelete: Cascade)
+  runId          String     @unique
+  run            DDRun      @relation(fields: [runId], references: [id], onDelete: Cascade)
+  status         MemoStatus @default(DRAFT)
+  reviewProgress Decimal?   @db.Decimal(3, 2)
+  pendingItems   Int?
+  pdfBlobUrl     String?
+  lastEditedById String?
+  lastEditedAt   DateTime?
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+
+  sections MemoSection[]
+
+  @@map("memo")
+}
+
+model MemoSection {
+  id         String  @id @default(cuid())
+  sectionKey String
+  memoId     String
+  memo       Memo    @relation(fields: [memoId], references: [id], onDelete: Cascade)
+  title      String
+  body       String  @db.Text
+  reviewed   Boolean @default(false)
+  orderIdx   Int
+
+  citations Citation[] @relation("MemoSectionCitations")
+
+  @@unique([memoId, sectionKey])
+  @@map("memo_section")
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Domain — Pre-rendered financial views for /financials page
+// ─────────────────────────────────────────────────────────────────────────────
+
+model FinancialSnapshot {
+  id                 String   @id @default(cuid())
+  dealId             String   @unique
+  deal               Deal     @relation(fields: [dealId], references: [id], onDelete: Cascade)
+  runId              String
+  trendJson          Json
+  bridgeJson         Json
+  concentrationJson  Json
+  retentionJson      Json
+  workingCapitalJson Json
+  kpiJson            Json
+  updatedAt          DateTime @updatedAt
+
+  @@map("financial_snapshot")
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Domain — Deal audit timeline
+// ─────────────────────────────────────────────────────────────────────────────
+
+model DealAuditEvent {
+  id        String   @id @default(cuid())
+  dealId    String
+  deal      Deal     @relation(fields: [dealId], references: [id], onDelete: Cascade)
+  actorId   String?
+  kind      String
+  entity    String?
+  payload   Json?
+  createdAt DateTime @default(now())
+
+  @@index([dealId, createdAt])
+  @@map("dd_audit_event")
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 // Audit trail for CSV imports — original file URL on Vercel Blob.
+// ─────────────────────────────────────────────────────────────────────────────
+
 model ImportBatch {
   id            String     @id @default(cuid())
   uploaderId    String
