@@ -13,7 +13,9 @@ import { SireneCompanyDataSource } from "./sources/sirene/SireneCompanyDataSourc
 import { VercelBlobStorage } from "./blob/VercelBlobStorage";
 import { CheerioWebsiteScraper } from "./scraping/cheerio/CheerioWebsiteScraper";
 import { AiGatewayLeadEnricher } from "./llm/ai-gateway/AiGatewayLeadEnricher";
+import { AiGatewayOutreachDrafter } from "./llm/ai-gateway/AiGatewayOutreachDrafter";
 import { PrismaEnrichmentCache } from "./llm/cache/PrismaEnrichmentCache";
+import { PrismaOutreachDraftRepository } from "./persistence/prisma/PrismaOutreachDraftRepository";
 import { loadEnv } from "./env";
 
 import { makeFetchLeadsFromSirene } from "@/src/application/use-cases/leads/FetchLeadsFromSirene";
@@ -29,9 +31,17 @@ import {
   makeUpdateThesis,
   makeDeleteThesis,
 } from "@/src/application/use-cases/theses/ThesisUseCases";
+import {
+  makeGenerateOutreachDraft,
+  makeUpdateOutreachDraft,
+  makeApproveOutreachDraft,
+  makeMarkOutreachSent,
+  makeListOutreachDrafts,
+} from "@/src/application/use-cases/outreach/OutreachUseCases";
 import type { BlobStorage } from "@/src/application/ports/BlobStorage";
 import type { LeadEnrichmentRepository } from "@/src/application/ports/LeadEnrichmentRepository";
 import type { LeadScoreRepository } from "@/src/application/ports/LeadScoreRepository";
+import type { WebsiteSnapshotCache } from "@/src/application/ports/WebsiteSnapshotCache";
 
 export interface UseCases {
   fetchLeadsFromSirene: ReturnType<typeof makeFetchLeadsFromSirene>;
@@ -45,8 +55,14 @@ export interface UseCases {
   getThesisById: ReturnType<typeof makeGetThesisById>;
   updateThesis: ReturnType<typeof makeUpdateThesis>;
   deleteThesis: ReturnType<typeof makeDeleteThesis>;
+  generateOutreachDraft: ReturnType<typeof makeGenerateOutreachDraft>;
+  updateOutreachDraft: ReturnType<typeof makeUpdateOutreachDraft>;
+  approveOutreachDraft: ReturnType<typeof makeApproveOutreachDraft>;
+  markOutreachSent: ReturnType<typeof makeMarkOutreachSent>;
+  listOutreachDrafts: ReturnType<typeof makeListOutreachDrafts>;
   enrichmentRepo: LeadEnrichmentRepository;
   scoreRepo: LeadScoreRepository;
+  snapshotCache: WebsiteSnapshotCache;
   blobStorage: BlobStorage;
   prisma: typeof prisma;
 }
@@ -69,6 +85,8 @@ export function getUseCases(): UseCases {
   const env = loadEnv();
   const enricher = new AiGatewayLeadEnricher({ model: env.LLM_MODEL });
   const enrichmentCache = new PrismaEnrichmentCache(prisma);
+  const outreachDrafter = new AiGatewayOutreachDrafter({ model: env.LLM_MODEL });
+  const outreachRepo = new PrismaOutreachDraftRepository(prisma);
 
   cached = {
     fetchLeadsFromSirene: makeFetchLeadsFromSirene({ sirene, leadRepo, thesisRepo, clock, idGen }),
@@ -90,8 +108,41 @@ export function getUseCases(): UseCases {
     getThesisById: makeGetThesisById({ thesisRepo }),
     updateThesis: makeUpdateThesis({ thesisRepo, clock }),
     deleteThesis: makeDeleteThesis({ thesisRepo }),
+    generateOutreachDraft: makeGenerateOutreachDraft({
+      leadRepo,
+      thesisRepo,
+      enrichmentRepo,
+      outreachRepo,
+      drafter: outreachDrafter,
+      clock,
+      idGen,
+    }),
+    updateOutreachDraft: makeUpdateOutreachDraft({
+      outreachRepo,
+      leadRepo,
+      thesisRepo,
+      clock,
+    }),
+    approveOutreachDraft: makeApproveOutreachDraft({
+      outreachRepo,
+      leadRepo,
+      thesisRepo,
+      clock,
+    }),
+    markOutreachSent: makeMarkOutreachSent({
+      outreachRepo,
+      leadRepo,
+      thesisRepo,
+      clock,
+    }),
+    listOutreachDrafts: makeListOutreachDrafts({
+      outreachRepo,
+      leadRepo,
+      thesisRepo,
+    }),
     enrichmentRepo,
     scoreRepo,
+    snapshotCache,
     blobStorage,
     prisma,
   };

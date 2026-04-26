@@ -8,9 +8,12 @@ export const runtime = "nodejs";
 
 const BodySchema = z.object({
   thesisId: z.string().optional(),
+  pages: z.number().int().min(1).max(10).optional(),
   query: z.object({
     sectors: z.array(z.string()).optional(),
+    sections: z.array(z.string()).optional(),
     postalCodes: z.array(z.string()).optional(),
+    departements: z.array(z.string()).optional(),
     employeeBracketCodes: z.array(z.string()).optional(),
     legalFormCodes: z.array(z.string()).optional(),
     page: z.number().int().min(1).max(100).optional(),
@@ -30,6 +33,7 @@ export async function POST(request: NextRequest) {
       ownerId: session.user.id,
       thesisId: parsed.data.thesisId,
       query: parsed.data.query,
+      pages: parsed.data.pages,
     });
     return ok(result);
   } catch (error) {

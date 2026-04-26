@@ -21,9 +21,7 @@ const RF_CITATION_MAP: Record<string, string> = {
 
 export function RedFlagCard({ flag }: { flag: RedFlag }) {
   const doc = getDocument(flag.source.docId);
-  const approver = flag.approvedBy
-    ? team.find((t) => t.id === flag.approvedBy)
-    : null;
+  const approver = flag.approvedBy ? team.find((t) => t.id === flag.approvedBy) : null;
   const open = useDrawerStore((s) => s.open);
   const citationId = RF_CITATION_MAP[flag.id] ?? "c1";
 
@@ -31,7 +29,7 @@ export function RedFlagCard({ flag }: { flag: RedFlag }) {
     <article
       id={flag.id}
       className={cn(
-        "flex flex-col gap-4 rounded-[18px] border border-foreground/[0.08]",
+        "border-foreground/[0.08] flex flex-col gap-4 rounded-[18px] border",
         "bg-surface/60 p-5",
       )}
     >
@@ -39,8 +37,8 @@ export function RedFlagCard({ flag }: { flag: RedFlag }) {
         <SeverityBadge severity={flag.severity} />
         <span
           className={cn(
-            "rounded-full border border-foreground/[0.10] bg-foreground/[0.03] px-2 py-0.5",
-            "text-[10.5px] font-medium uppercase tracking-[0.1em] text-foreground/65",
+            "border-foreground/[0.10] bg-foreground/[0.03] rounded-full border px-2 py-0.5",
+            "text-foreground/65 text-[10.5px] font-medium tracking-[0.1em] uppercase",
           )}
         >
           {flag.category}
@@ -51,20 +49,14 @@ export function RedFlagCard({ flag }: { flag: RedFlag }) {
       </div>
 
       <div>
-        <h3 className="font-serif text-[19px] tracking-tight text-foreground">
-          {flag.title}
-        </h3>
-        <p className="mt-1 text-[13px] leading-relaxed text-foreground/75">
-          {flag.summary}
-        </p>
-        <p className="mt-2 text-[12.5px] leading-relaxed text-foreground/55">
-          {flag.detail}
-        </p>
+        <h3 className="text-foreground font-serif text-[19px] tracking-tight">{flag.title}</h3>
+        <p className="text-foreground/75 mt-1 text-[13px] leading-relaxed">{flag.summary}</p>
+        <p className="text-foreground/55 mt-2 text-[12.5px] leading-relaxed">{flag.detail}</p>
       </div>
 
       <div
         className={cn(
-          "flex flex-col gap-2 rounded-[12px] border border-foreground/[0.06]",
+          "border-foreground/[0.06] flex flex-col gap-2 rounded-[12px] border",
           "bg-foreground/[0.015] p-3",
         )}
       >
@@ -74,8 +66,8 @@ export function RedFlagCard({ flag }: { flag: RedFlag }) {
             onClick={() => open(citationId)}
             className={cn(
               "inline-flex items-center gap-1.5 rounded-full",
-              "bg-accent/10 px-2 py-0.5 text-[11.5px] font-medium text-accent",
-              "transition-colors hover:bg-accent/20",
+              "bg-accent/10 text-accent px-2 py-0.5 text-[11.5px] font-medium",
+              "hover:bg-accent/20 transition-colors",
             )}
           >
             {doc?.name ?? flag.source.docId}
@@ -84,28 +76,24 @@ export function RedFlagCard({ flag }: { flag: RedFlag }) {
           </button>
         </Row>
         <Row label="Confidence">
-          <span className="text-[12px] capitalize text-foreground/75">
-            {flag.confidence}
-          </span>
+          <span className="text-foreground/75 text-[12px] capitalize">{flag.confidence}</span>
         </Row>
         <Row label="Suggested question">
-          <span className="text-[12px] italic text-foreground/75">
-            “{flag.suggestedQuestion}”
-          </span>
+          <span className="text-foreground/75 text-[12px] italic">“{flag.suggestedQuestion}”</span>
         </Row>
         <Row label="Impact">
-          <span className="text-[12px] text-foreground/75">{flag.impact}</span>
+          <span className="text-foreground/75 text-[12px]">{flag.impact}</span>
         </Row>
       </div>
 
       {flag.status === "approved" && approver && (
-        <p className="text-[11.5px] text-foreground/45">
+        <p className="text-foreground/45 text-[11.5px]">
           Approved by {approver.name}
           {flag.approvedAt && ` · ${formatShort(flag.approvedAt)}`}
         </p>
       )}
 
-      <div className="flex flex-wrap items-center gap-2 border-t border-foreground/[0.06] pt-4">
+      <div className="border-foreground/[0.06] flex flex-wrap items-center gap-2 border-t pt-4">
         {flag.status !== "approved" && (
           <ActionButton tone="primary">
             <Check strokeWidth={1.8} className="size-3.5" />
@@ -120,7 +108,7 @@ export function RedFlagCard({ flag }: { flag: RedFlag }) {
           <X strokeWidth={1.8} className="size-3.5" />
           Dismiss
         </ActionButton>
-        <span className="mx-1 hidden h-4 w-px bg-foreground/[0.08] sm:block" />
+        <span className="bg-foreground/[0.08] mx-1 hidden h-4 w-px sm:block" />
         <ActionButton>
           <Plus strokeWidth={1.8} className="size-3.5" />
           Add to memo
@@ -137,7 +125,7 @@ export function RedFlagCard({ flag }: { flag: RedFlag }) {
 function Row({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="flex flex-wrap items-baseline gap-x-3 gap-y-0.5">
-      <span className="w-[110px] shrink-0 text-[10.5px] uppercase tracking-[0.12em] text-foreground/45">
+      <span className="text-foreground/45 w-[110px] shrink-0 text-[10.5px] tracking-[0.12em] uppercase">
         {label}
       </span>
       <span className="min-w-0 flex-1">{children}</span>
@@ -160,7 +148,7 @@ function ActionButton({
         "text-[12px] font-medium transition-colors",
         tone === "primary"
           ? "bg-foreground text-background hover:opacity-90"
-          : "border border-foreground/[0.10] text-foreground/70 hover:bg-foreground/[0.06] hover:text-foreground",
+          : "border-foreground/[0.10] text-foreground/70 hover:bg-foreground/[0.06] hover:text-foreground border",
       )}
     >
       {children}

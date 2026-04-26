@@ -14,11 +14,7 @@ const CATEGORY_LABEL: Record<string, string> = {
   tax: "Tax",
 };
 
-export default async function DataRoomPage({
-  params,
-}: {
-  params: Promise<{ dealId: string }>;
-}) {
+export default async function DataRoomPage({ params }: { params: Promise<{ dealId: string }> }) {
   const { dealId } = await params;
   const deal = getDeal(dealId);
   if (!deal) notFound();
@@ -39,13 +35,13 @@ export default async function DataRoomPage({
       <div className="grid grid-cols-1 gap-4 px-8 py-6 lg:grid-cols-[240px_1fr]">
         <aside
           className={cn(
-            "rounded-[16px] border border-foreground/[0.08] bg-surface/40 p-3",
+            "border-foreground/[0.08] bg-surface/40 rounded-[16px] border p-3",
             "h-max",
           )}
         >
           {Object.entries(grouped).map(([cat, items]) => (
             <div key={cat} className="mb-3 last:mb-0">
-              <p className="px-2 pb-1 text-[10.5px] uppercase tracking-[0.14em] text-foreground/45">
+              <p className="text-foreground/45 px-2 pb-1 text-[10.5px] tracking-[0.14em] uppercase">
                 {CATEGORY_LABEL[cat] ?? cat} · {items.length}
               </p>
               <ul className="flex flex-col">
@@ -55,7 +51,7 @@ export default async function DataRoomPage({
                       type="button"
                       className={cn(
                         "block w-full truncate rounded-[8px] px-2 py-1.5 text-left",
-                        "text-[12px] text-foreground/65",
+                        "text-foreground/65 text-[12px]",
                         "hover:bg-foreground/[0.04] hover:text-foreground",
                       )}
                     >
@@ -68,10 +64,10 @@ export default async function DataRoomPage({
           ))}
         </aside>
 
-        <div className={cn("rounded-[16px] border border-foreground/[0.08] bg-surface/40")}>
+        <div className={cn("border-foreground/[0.08] bg-surface/40 rounded-[16px] border")}>
           <table className="w-full text-[12.5px]">
             <thead>
-              <tr className="border-b border-foreground/[0.08] text-left text-[10.5px] uppercase tracking-[0.14em] text-foreground/45">
+              <tr className="border-foreground/[0.08] text-foreground/45 border-b text-left text-[10.5px] tracking-[0.14em] uppercase">
                 <th className="px-4 py-2.5 font-medium">Name</th>
                 <th className="px-4 py-2.5 font-medium">Category</th>
                 <th className="px-4 py-2.5 font-medium">Status</th>
@@ -83,44 +79,44 @@ export default async function DataRoomPage({
               {docs.map((doc) => (
                 <tr
                   key={doc.id}
-                  className="border-b border-foreground/[0.04] last:border-0 hover:bg-foreground/[0.02]"
+                  className="border-foreground/[0.04] hover:bg-foreground/[0.02] border-b last:border-0"
                 >
-                  <td className="px-4 py-2.5 text-foreground/85">{doc.name}</td>
-                  <td className="px-4 py-2.5 text-foreground/55 capitalize">
+                  <td className="text-foreground/85 px-4 py-2.5">{doc.name}</td>
+                  <td className="text-foreground/55 px-4 py-2.5 capitalize">
                     {CATEGORY_LABEL[doc.category]?.toLowerCase() ?? doc.category}
                   </td>
                   <td className="px-4 py-2.5">
                     <span
                       className={cn(
                         "inline-flex items-center gap-1.5 rounded-full",
-                        "border border-sev-low/25 bg-sev-low/10 px-2 py-0.5",
-                        "text-[10.5px] font-medium text-sev-low",
+                        "border-sev-low/25 bg-sev-low/10 border px-2 py-0.5",
+                        "text-sev-low text-[10.5px] font-medium",
                       )}
                     >
-                      <span className="size-1.5 rounded-full bg-sev-low" />
+                      <span className="bg-sev-low size-1.5 rounded-full" />
                       indexed
                     </span>
                   </td>
-                  <td className="px-4 py-2.5 text-right tabular text-foreground/75">
+                  <td className="tabular text-foreground/75 px-4 py-2.5 text-right">
                     {doc.citations}
                   </td>
-                  <td className="px-4 py-2.5 text-right tabular text-foreground/45">
+                  <td className="tabular text-foreground/45 px-4 py-2.5 text-right">
                     {formatRelativeDate(doc.updatedAt)}
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
-          <div className="flex items-center justify-between border-t border-foreground/[0.08] px-4 py-3">
-            <p className="text-[11.5px] text-foreground/55">
+          <div className="border-foreground/[0.08] flex items-center justify-between border-t px-4 py-3">
+            <p className="text-foreground/55 text-[11.5px]">
               <FolderLock strokeWidth={1.6} className="mr-1 inline size-3" />
               All documents encrypted at rest · access logged
             </p>
             <button
               type="button"
               className={cn(
-                "rounded-full bg-foreground px-3.5 py-1.5",
-                "text-[12px] font-medium text-background hover:opacity-90",
+                "bg-foreground rounded-full px-3.5 py-1.5",
+                "text-background text-[12px] font-medium hover:opacity-90",
               )}
             >
               + Upload

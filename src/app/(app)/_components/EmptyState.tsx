@@ -9,18 +9,12 @@ interface EmptyStateProps {
   className?: string;
 }
 
-export function EmptyState({
-  icon: Icon,
-  title,
-  description,
-  badge,
-  className,
-}: EmptyStateProps) {
+export function EmptyState({ icon: Icon, title, description, badge, className }: EmptyStateProps) {
   return (
     <div
       className={cn(
         "mx-8 my-6 flex flex-col items-center justify-center gap-3",
-        "rounded-[20px] border border-dashed border-foreground/[0.10]",
+        "border-foreground/[0.10] rounded-[20px] border border-dashed",
         "bg-foreground/[0.02] px-8 py-20 text-center",
         className,
       )}
@@ -28,8 +22,8 @@ export function EmptyState({
       {badge && (
         <span
           className={cn(
-            "rounded-full border border-foreground/10 bg-foreground/[0.04]",
-            "px-2.5 py-0.5 text-[10.5px] uppercase tracking-[0.14em]",
+            "border-foreground/10 bg-foreground/[0.04] rounded-full border",
+            "px-2.5 py-0.5 text-[10.5px] tracking-[0.14em] uppercase",
             "text-foreground/55",
           )}
         >
@@ -47,11 +41,7 @@ export function EmptyState({
         </span>
       )}
       <p className="font-serif text-[20px] tracking-tight">{title}</p>
-      {description && (
-        <p className="max-w-[420px] text-[13px] text-foreground/55">
-          {description}
-        </p>
-      )}
+      {description && <p className="text-foreground/55 max-w-[420px] text-[13px]">{description}</p>}
     </div>
   );
 }

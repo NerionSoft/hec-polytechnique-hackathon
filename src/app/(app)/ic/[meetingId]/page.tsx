@@ -22,8 +22,8 @@ export default async function MeetingDetailPage({
         <Link
           href="/ic"
           className={cn(
-            "inline-flex items-center gap-1 text-[12px] text-foreground/55",
-            "transition-colors hover:text-foreground",
+            "text-foreground/55 inline-flex items-center gap-1 text-[12px]",
+            "hover:text-foreground transition-colors",
           )}
         >
           <ChevronLeft strokeWidth={1.6} className="size-3.5" />
@@ -32,11 +32,11 @@ export default async function MeetingDetailPage({
       </div>
 
       <div className="mt-3 pb-6">
-        <p className="text-[10.5px] uppercase tracking-[0.14em] text-foreground/45">
+        <p className="text-foreground/45 text-[10.5px] tracking-[0.14em] uppercase">
           IC #{meeting.number}
         </p>
         <h1 className="mt-1 flex items-center gap-2.5 font-serif text-[28px] tracking-tight">
-          <Calendar strokeWidth={1.4} className="size-5 text-foreground/55" />
+          <Calendar strokeWidth={1.4} className="text-foreground/55 size-5" />
           {date.toLocaleDateString("en-GB", {
             weekday: "long",
             day: "numeric",
@@ -50,13 +50,11 @@ export default async function MeetingDetailPage({
       {meeting.minutes && (
         <div
           className={cn(
-            "mb-6 rounded-[16px] border border-foreground/[0.08] bg-foreground/[0.02] p-4",
+            "border-foreground/[0.08] bg-foreground/[0.02] mb-6 rounded-[16px] border p-4",
           )}
         >
-          <p className="text-[10.5px] uppercase tracking-[0.14em] text-foreground/45">
-            Minutes
-          </p>
-          <p className="mt-2 font-serif text-[14px] leading-relaxed text-foreground/85">
+          <p className="text-foreground/45 text-[10.5px] tracking-[0.14em] uppercase">Minutes</p>
+          <p className="text-foreground/85 mt-2 font-serif text-[14px] leading-relaxed">
             {meeting.minutes}
           </p>
         </div>
@@ -69,14 +67,14 @@ export default async function MeetingDetailPage({
           return (
             <article
               key={item.dealId}
-              className="rounded-[18px] border border-foreground/[0.08] bg-surface/60 p-5"
+              className="border-foreground/[0.08] bg-surface/60 rounded-[18px] border p-5"
             >
               <div className="flex items-start justify-between gap-4">
                 <div className="min-w-0">
                   <h2 className="font-serif text-[22px] tracking-tight">
                     {deal.flag} {deal.name}
                   </h2>
-                  <p className="mt-0.5 text-[12.5px] text-foreground/55">
+                  <p className="text-foreground/55 mt-0.5 text-[12.5px]">
                     {deal.sector} · €{deal.revenue.toFixed(1)}M revenue · ⏱{" "}
                     {deal.timeSavedDays.toFixed(1)} analyst-days saved
                   </p>
@@ -85,8 +83,8 @@ export default async function MeetingDetailPage({
                   href={`/pipeline/${deal.id}/memo`}
                   className={cn(
                     "inline-flex items-center gap-1.5 rounded-full",
-                    "border border-foreground/[0.10] px-3 py-1.5",
-                    "text-[12px] text-foreground/70 hover:bg-foreground/[0.06] hover:text-foreground",
+                    "border-foreground/[0.10] border px-3 py-1.5",
+                    "text-foreground/70 hover:bg-foreground/[0.06] hover:text-foreground text-[12px]",
                   )}
                 >
                   <FileText strokeWidth={1.6} className="size-3.5" />
@@ -106,7 +104,7 @@ export default async function MeetingDetailPage({
                   tone={item.memoStatus === "ready" ? "good" : "warm"}
                 />
                 <div>
-                  <p className="text-[10.5px] uppercase tracking-[0.14em] text-foreground/45">
+                  <p className="text-foreground/45 text-[10.5px] tracking-[0.14em] uppercase">
                     IC votes
                   </p>
                   <ul className="mt-2 flex flex-col gap-1.5">
@@ -114,10 +112,7 @@ export default async function MeetingDetailPage({
                       const member = team.find((t) => t.id === v.memberId);
                       if (!member) return null;
                       return (
-                        <li
-                          key={v.memberId}
-                          className="flex items-center gap-2 text-[12px]"
-                        >
+                        <li key={v.memberId} className="flex items-center gap-2 text-[12px]">
                           <span
                             className="flex size-5 shrink-0 items-center justify-center rounded-full text-[9.5px] font-medium text-white"
                             style={{
@@ -126,9 +121,7 @@ export default async function MeetingDetailPage({
                           >
                             {member.initials}
                           </span>
-                          <span className="flex-1 truncate text-foreground/75">
-                            {member.name}
-                          </span>
+                          <span className="text-foreground/75 flex-1 truncate">{member.name}</span>
                           <VotePill vote={v.vote} />
                         </li>
                       );
@@ -138,12 +131,12 @@ export default async function MeetingDetailPage({
               </div>
 
               {meeting.status === "upcoming" && (
-                <div className="mt-5 flex items-center gap-2 border-t border-foreground/[0.06] pt-4">
+                <div className="border-foreground/[0.06] mt-5 flex items-center gap-2 border-t pt-4">
                   <button
                     type="button"
                     className={cn(
-                      "inline-flex items-center gap-1.5 rounded-full bg-foreground px-3.5 py-1.5",
-                      "text-[12px] font-medium text-background hover:opacity-90",
+                      "bg-foreground inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5",
+                      "text-background text-[12px] font-medium hover:opacity-90",
                     )}
                   >
                     <Check strokeWidth={1.8} className="size-3.5" />
@@ -153,8 +146,8 @@ export default async function MeetingDetailPage({
                     type="button"
                     className={cn(
                       "inline-flex items-center gap-1.5 rounded-full",
-                      "border border-foreground/[0.10] px-3.5 py-1.5",
-                      "text-[12px] text-foreground/70 hover:bg-foreground/[0.06] hover:text-foreground",
+                      "border-foreground/[0.10] border px-3.5 py-1.5",
+                      "text-foreground/70 hover:bg-foreground/[0.06] hover:text-foreground text-[12px]",
                     )}
                   >
                     <X strokeWidth={1.8} className="size-3.5" />
@@ -163,7 +156,7 @@ export default async function MeetingDetailPage({
                   <button
                     type="button"
                     className={cn(
-                      "ml-auto rounded-full px-3 py-1.5 text-[12px] text-foreground/55",
+                      "text-foreground/55 ml-auto rounded-full px-3 py-1.5 text-[12px]",
                       "hover:text-foreground",
                     )}
                   >
@@ -190,9 +183,7 @@ function Block({
 }) {
   return (
     <div>
-      <p className="text-[10.5px] uppercase tracking-[0.14em] text-foreground/45">
-        {label}
-      </p>
+      <p className="text-foreground/45 text-[10.5px] tracking-[0.14em] uppercase">{label}</p>
       <p
         className={cn(
           "mt-1.5 text-[13.5px] font-medium",
@@ -209,7 +200,7 @@ function Block({
 function VotePill({ vote }: { vote: IcVote }) {
   if (vote === "yes") {
     return (
-      <span className="inline-flex items-center gap-1 rounded-full border border-sev-low/25 bg-sev-low/10 px-2 py-0.5 text-[10.5px] font-medium text-sev-low">
+      <span className="border-sev-low/25 bg-sev-low/10 text-sev-low inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[10.5px] font-medium">
         <Check strokeWidth={2} className="size-2.5" />
         Yes
       </span>
@@ -217,7 +208,7 @@ function VotePill({ vote }: { vote: IcVote }) {
   }
   if (vote === "no") {
     return (
-      <span className="inline-flex items-center gap-1 rounded-full border border-sev-crit/25 bg-sev-crit/10 px-2 py-0.5 text-[10.5px] font-medium text-sev-crit">
+      <span className="border-sev-crit/25 bg-sev-crit/10 text-sev-crit inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[10.5px] font-medium">
         <X strokeWidth={2} className="size-2.5" />
         No
       </span>
@@ -225,13 +216,13 @@ function VotePill({ vote }: { vote: IcVote }) {
   }
   if (vote === "abstain") {
     return (
-      <span className="rounded-full border border-foreground/15 bg-foreground/[0.04] px-2 py-0.5 text-[10.5px] text-foreground/55">
+      <span className="border-foreground/15 bg-foreground/[0.04] text-foreground/55 rounded-full border px-2 py-0.5 text-[10.5px]">
         Abstain
       </span>
     );
   }
   return (
-    <span className="rounded-full border border-state-pending/25 bg-state-pending/10 px-2 py-0.5 text-[10.5px] font-medium text-state-pending">
+    <span className="border-state-pending/25 bg-state-pending/10 text-state-pending rounded-full border px-2 py-0.5 text-[10.5px] font-medium">
       Pending
     </span>
   );

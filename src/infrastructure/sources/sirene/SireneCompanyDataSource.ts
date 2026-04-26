@@ -56,10 +56,20 @@ export class SireneCompanyDataSource implements CompanyDataSource {
   async search(query: SireneSearchQuery): Promise<RawCompanyRecord[]> {
     const params = new URLSearchParams();
     if (query.sectors?.length) {
+      // API expects full NAF rev2 class codes in format "XX.XXY" (e.g. "62.01Z").
       params.set("activite_principale", query.sectors.join(","));
     }
+    if (query.sections?.length) {
+      // API expects single letters A–U.
+      params.set("section_activite_principale", query.sections.join(","));
+    }
     if (query.postalCodes?.length) {
+      // Must be full 5-digit codes; the API rejects 2-digit prefixes.
       params.set("code_postal", query.postalCodes.join(","));
+    }
+    if (query.departements?.length) {
+      // INSEE département codes (2-3 chars, incl. "2A"/"2B" and DOM "971"–"976").
+      params.set("departement", query.departements.join(","));
     }
     if (query.employeeBracketCodes?.length) {
       params.set("tranche_effectif_salarie", query.employeeBracketCodes.join(","));

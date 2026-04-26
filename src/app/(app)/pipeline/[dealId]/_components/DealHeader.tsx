@@ -9,13 +9,13 @@ export function DealHeader({ deal }: { deal: Deal }) {
   const stageIndex = stages.indexOf(deal.stage);
 
   return (
-    <div className="border-b border-foreground/[0.08]">
+    <div className="border-foreground/[0.08] border-b">
       <div className="px-8 pt-6">
         <Link
           href="/pipeline"
           className={cn(
-            "inline-flex items-center gap-1 text-[12px] text-foreground/55",
-            "transition-colors hover:text-foreground",
+            "text-foreground/55 inline-flex items-center gap-1 text-[12px]",
+            "hover:text-foreground transition-colors",
           )}
         >
           <ChevronLeft strokeWidth={1.6} className="size-3.5" />
@@ -32,9 +32,9 @@ export function DealHeader({ deal }: { deal: Deal }) {
             >
               {deal.flag} {deal.name}
             </h1>
-            <p className="mt-1 text-[13px] text-foreground/55">
-              {countryName(deal.geo)} · {deal.sector} · Founded {deal.founded} ·{" "}
-              {deal.employees} employees
+            <p className="text-foreground/55 mt-1 text-[13px]">
+              {countryName(deal.geo)} · {deal.sector} · Founded {deal.founded} · {deal.employees}{" "}
+              employees
             </p>
           </div>
 
@@ -51,7 +51,7 @@ export function DealHeader({ deal }: { deal: Deal }) {
               aria-label="More"
               className={cn(
                 "flex size-8 items-center justify-center rounded-full",
-                "border border-foreground/[0.08] text-foreground/55",
+                "border-foreground/[0.08] text-foreground/55 border",
                 "hover:bg-foreground/[0.06] hover:text-foreground",
               )}
             >
@@ -80,11 +80,7 @@ export function DealHeader({ deal }: { deal: Deal }) {
             tone="default"
             icon={Clock}
           />
-          <Stat
-            label="Coverage"
-            value={`${Math.round(deal.coverage * 100)}%`}
-            tone="default"
-          />
+          <Stat label="Coverage" value={`${Math.round(deal.coverage * 100)}%`} tone="default" />
         </div>
       </div>
     </div>
@@ -94,9 +90,7 @@ export function DealHeader({ deal }: { deal: Deal }) {
 function StageBar({ currentIndex }: { currentIndex: number }) {
   return (
     <div className="flex flex-col gap-1.5">
-      <p className="text-[10.5px] uppercase tracking-[0.14em] text-foreground/45">
-        Stage
-      </p>
+      <p className="text-foreground/45 text-[10.5px] tracking-[0.14em] uppercase">Stage</p>
       <div className="flex items-center gap-1.5">
         {stages.map((s, i) => {
           const passed = i < currentIndex;
@@ -114,7 +108,7 @@ function StageBar({ currentIndex }: { currentIndex: number }) {
             />
           );
         })}
-        <span className="ml-2 text-[12px] font-medium text-foreground">
+        <span className="text-foreground ml-2 text-[12px] font-medium">
           {stageLabels[stages[currentIndex]]}
         </span>
       </div>
@@ -147,10 +141,8 @@ function Stat({
 
   return (
     <div className="flex flex-col gap-1.5">
-      <p className="text-[10.5px] uppercase tracking-[0.14em] text-foreground/45">
-        {label}
-      </p>
-      <p className={cn("flex items-center gap-1 tabular text-[14.5px] font-medium", toneClass)}>
+      <p className="text-foreground/45 text-[10.5px] tracking-[0.14em] uppercase">{label}</p>
+      <p className={cn("tabular flex items-center gap-1 text-[14.5px] font-medium", toneClass)}>
         {Icon && <Icon strokeWidth={1.8} className="size-3.5" />}
         {value}
       </p>

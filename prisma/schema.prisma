@@ -140,6 +140,14 @@ enum ScoreDecision {
   @@map("score_decision")
 }
 
+enum OutreachStatus {
+  DRAFT
+  APPROVED
+  SENT
+
+  @@map("outreach_status")
+}
+
 model Lead {
   id               String     @id @default(cuid())
   // Source / dedupe
@@ -169,9 +177,10 @@ model Lead {
   createdAt        DateTime   @default(now())
   updatedAt        DateTime   @updatedAt
 
-  contacts   Contact[]
-  enrichment LeadEnrichment?
-  score      LeadScore?
+  contacts        Contact[]
+  enrichment      LeadEnrichment?
+  score           LeadScore?
+  outreachDrafts  OutreachDraft[]
 
   @@unique([source, sourceRef], name: "source_dedupe")
   @@index([status])
@@ -265,6 +274,32 @@ model EnrichmentCache {
   createdAt        DateTime @default(now())
 
   @@map("enrichment_cache")
+}
+
+// Outreach draft — LLM-generated email body for a qualified lead.
+// No SMTP integration: the "send" action only flips status to SENT and
+// stamps sentAt for audit. The user copies / pastes / mails by hand.
+model OutreachDraft {
+  id               String         @id @default(cuid())
+  leadId           String
+  lead             Lead           @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  thesisId         String?
+  recipient        String?
+  subject          String
+  body             String
+  status           OutreachStatus @default(DRAFT)
+  model            String
+  promptHash       String
+  promptTokens     Int?
+  completionTokens Int?
+  generatedAt      DateTime       @default(now())
+  approvedAt       DateTime?
+  sentAt           DateTime?
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+
+  @@index([leadId])
+  @@map("outreach_draft")
 }
 
 // Audit trail for CSV imports — original file URL on Vercel Blob.

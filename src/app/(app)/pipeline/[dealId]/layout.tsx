@@ -21,11 +21,7 @@ export default async function DealLayout({
   return (
     <>
       <DealHeader deal={deal} />
-      <DealTabs
-        dealId={deal.id}
-        currentStage={deal.stage}
-        redFlagCount={redFlagCount}
-      />
+      <DealTabs dealId={deal.id} currentStage={deal.stage} redFlagCount={redFlagCount} />
       {children}
       <CitationDrawer />
     </>

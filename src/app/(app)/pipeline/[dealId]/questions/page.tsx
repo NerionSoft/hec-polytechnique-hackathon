@@ -6,11 +6,7 @@ import { PageHeader } from "../../../_components/PageHeader";
 import { ReviewBadge } from "../_components/ReviewBadge";
 import { formatRelativeDate } from "@/src/lib/utils";
 
-export default async function QuestionsPage({
-  params,
-}: {
-  params: Promise<{ dealId: string }>;
-}) {
+export default async function QuestionsPage({ params }: { params: Promise<{ dealId: string }> }) {
   const { dealId } = await params;
   const deal = getDeal(dealId);
   if (!deal) notFound();
@@ -33,7 +29,7 @@ export default async function QuestionsPage({
           <button
             type="button"
             className={cn(
-              "rounded-full bg-foreground px-4 py-2 text-[12px] font-medium text-background",
+              "bg-foreground text-background rounded-full px-4 py-2 text-[12px] font-medium",
               "hover:opacity-90",
             )}
           >
@@ -44,11 +40,7 @@ export default async function QuestionsPage({
       <div className="flex flex-col gap-6 px-8 pb-12">
         {Object.entries(grouped).map(([topic, items]) => (
           <section key={topic}>
-            <h2
-              className={cn(
-                "mb-3 text-[10.5px] uppercase tracking-[0.14em] text-foreground/45",
-              )}
-            >
+            <h2 className={cn("text-foreground/45 mb-3 text-[10.5px] tracking-[0.14em] uppercase")}>
               {topic} · {items.length}
             </h2>
             <ul className="flex flex-col gap-2">
@@ -56,22 +48,22 @@ export default async function QuestionsPage({
                 <li
                   key={q.id}
                   className={cn(
-                    "flex flex-col gap-2 rounded-[14px] border border-foreground/[0.08]",
+                    "border-foreground/[0.08] flex flex-col gap-2 rounded-[14px] border",
                     "bg-surface/60 p-4",
                   )}
                 >
-                  <p className="text-[14px] leading-relaxed text-foreground/85">
-                    {q.body}
-                  </p>
-                  <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-foreground/55">
+                  <p className="text-foreground/85 text-[14px] leading-relaxed">{q.body}</p>
+                  <div className="text-foreground/55 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px]">
                     <ReviewBadge
-                      status={q.status === "sent" || q.status === "answered" ? "approved" : q.status}
+                      status={
+                        q.status === "sent" || q.status === "answered" ? "approved" : q.status
+                      }
                       raisedBy={q.raisedById === "ai" ? "ai" : "human"}
                     />
                     <span>raised by {q.raisedBy}</span>
                     <span>· {formatRelativeDate(q.createdAt)}</span>
                     {q.derivedFrom && (
-                      <span className="rounded-full bg-foreground/[0.05] px-2 py-0.5 text-[10.5px] text-foreground/65">
+                      <span className="bg-foreground/[0.05] text-foreground/65 rounded-full px-2 py-0.5 text-[10.5px]">
                         derived from {q.derivedFrom}
                       </span>
                     )}
