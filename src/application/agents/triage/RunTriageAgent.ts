@@ -41,6 +41,7 @@ export function makeRunTriageAgent(deps: RunTriageAgentDeps) {
       data: {
         runId: ctx.runId,
         agentId: A1_DEFINITION.agentId,
+        documentId: input.doc_id,
         status: "running",
         model: A1_DEFINITION.model,
         startedAt,

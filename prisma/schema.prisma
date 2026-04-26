@@ -386,8 +386,9 @@ model Document {
   createdAt       DateTime     @default(now())
   updatedAt       DateTime     @updatedAt
 
-  chunks    Chunk[]
-  citations Citation[]
+  chunks       Chunk[]
+  citations    Citation[]
+  agentOutputs AgentOutput[]
 
   @@index([dealId])
   @@map("document")
@@ -453,6 +454,8 @@ model AgentOutput {
   runId       String
   run         DDRun     @relation(fields: [runId], references: [id], onDelete: Cascade)
   agentId     String
+  documentId  String?
+  document    Document? @relation(fields: [documentId], references: [id], onDelete: SetNull)
   status      String
   output      Json?
   promptHash  String?
@@ -465,8 +468,9 @@ model AgentOutput {
   startedAt   DateTime?
   completedAt DateTime?
 
-  @@unique([runId, agentId])
+  @@unique([runId, agentId, documentId])
   @@index([agentId])
+  @@index([documentId])
   @@map("agent_output")
 }
 
