@@ -1,19 +1,49 @@
 @import "tailwindcss";
 
 :root {
-  --background: 0 0% 10%;
+  --background: 0 0% 7%;
   --foreground: 0 0% 100%;
-  --surface: 0 0% 15%;
+  --surface: 0 0% 11%;
+  --surface-2: 0 0% 14%;
+  --surface-3: 0 0% 18%;
+  --border: 0 0% 20%;
+  --border-strong: 0 0% 28%;
+  --muted: 0 0% 62%;
+  --subtle: 0 0% 42%;
   --accent: 204 100% 50%;
   --warm: 18 95% 55%;
+
+  --sev-low: 142 60% 45%;
+  --sev-med: 42 95% 55%;
+  --sev-high: 18 95% 55%;
+  --sev-crit: 0 75% 55%;
+
+  --state-ai: 204 100% 50%;
+  --state-pending: 42 95% 55%;
+  --state-approved: 142 60% 45%;
+  --state-rejected: 0 0% 50%;
 }
 
 @theme inline {
   --color-background: hsl(var(--background));
   --color-foreground: hsl(var(--foreground));
   --color-surface: hsl(var(--surface));
+  --color-surface-2: hsl(var(--surface-2));
+  --color-surface-3: hsl(var(--surface-3));
+  --color-border: hsl(var(--border));
+  --color-border-strong: hsl(var(--border-strong));
+  --color-muted: hsl(var(--muted));
+  --color-subtle: hsl(var(--subtle));
   --color-accent: hsl(var(--accent));
   --color-warm: hsl(var(--warm));
+  --color-sev-low: hsl(var(--sev-low));
+  --color-sev-med: hsl(var(--sev-med));
+  --color-sev-high: hsl(var(--sev-high));
+  --color-sev-crit: hsl(var(--sev-crit));
+  --color-state-ai: hsl(var(--state-ai));
+  --color-state-pending: hsl(var(--state-pending));
+  --color-state-approved: hsl(var(--state-approved));
+  --color-state-rejected: hsl(var(--state-rejected));
   --font-sans: var(--font-inter), "Inter", system-ui, sans-serif;
   --font-serif: var(--font-pt-serif), "PT Serif", serif;
   --font-display:
@@ -30,8 +60,28 @@ body {
   background: hsl(var(--background));
   color: hsl(var(--foreground));
   font-family: var(--font-sans);
+  font-feature-settings: "ss01", "cv11";
+}
+
+.tabular {
+  font-variant-numeric: tabular-nums;
 }
 
 ::selection {
   background: hsl(var(--foreground) / 0.15);
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--border));
+  border-radius: 100px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--border-strong));
 }
