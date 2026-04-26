@@ -1,0 +1,4 @@
+# Prisma Migrate lockfile v1
+# Read more about migration drift detection: https://pris.ly/d/migrate
+
+provider = "postgresql"

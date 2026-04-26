@@ -1,0 +1,287 @@
+// Athena — Prisma schema
+// - Better Auth tables (User, Session, Account, Verification)
+// - Domain tables (FundThesis, Lead, Contact, LeadEnrichment, LeadScore, EnrichmentCache, ImportBatch)
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Better Auth (canonical schema, v1.x — kept lowercase via @@map per docs)
+// ─────────────────────────────────────────────────────────────────────────────
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified Boolean   @default(false)
+  image         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  sessions      Session[]
+  accounts      Account[]
+  theses        FundThesis[]
+  importBatches ImportBatch[]
+
+  @@map("user")
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  expiresAt DateTime
+  token     String   @unique
+  ipAddress String?
+  userAgent String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("session")
+}
+
+model Account {
+  id           String    @id @default(cuid())
+  accountId    String
+  providerId   String
+  accessToken  String?
+  refreshToken String?
+  idToken      String?
+  expiresAt    DateTime?
+  tokenType    String?
+  scope        String?
+  password     String?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([providerId, accountId])
+  @@index([userId])
+  @@map("account")
+}
+
+model Verification {
+  id         String   @id @default(cuid())
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@unique([identifier, value])
+  @@map("verification")
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Domain — Fund thesis
+// ─────────────────────────────────────────────────────────────────────────────
+
+model FundThesis {
+  id            String   @id @default(cuid())
+  ownerId       String
+  owner         User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  name          String
+  sectors       String[]
+  countries     String[]
+  minRevenueEur Decimal? @db.Decimal(14, 2)
+  maxRevenueEur Decimal? @db.Decimal(14, 2)
+  preferences   Json
+  active        Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  leads Lead[]
+
+  @@index([ownerId])
+  @@map("fund_thesis")
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Domain — Lead
+// ─────────────────────────────────────────────────────────────────────────────
+
+enum LeadSource {
+  MANUAL
+  CSV_IMPORT
+  SIRENE
+  COMPANY_WEBSITE
+
+  @@map("lead_source")
+}
+
+enum LeadStatus {
+  NEW
+  ENRICHING
+  ENRICHED
+  SCORED
+  QUALIFIED
+  REJECTED
+  CONTACTED
+  DATA_ROOM_OPENED
+
+  @@map("lead_status")
+}
+
+enum ScoreDecision {
+  REJECT
+  WATCHLIST
+  OUTREACH
+
+  @@map("score_decision")
+}
+
+model Lead {
+  id               String     @id @default(cuid())
+  // Source / dedupe
+  source           LeadSource
+  sourceRef        String? // e.g. SIREN
+  importBatchId    String?
+  importBatch      ImportBatch? @relation(fields: [importBatchId], references: [id], onDelete: SetNull)
+  // Identification
+  companyName      String
+  legalName        String?
+  website          String?
+  country          String     @default("FR")
+  // Sector
+  sector           String?
+  napCode          String?
+  // Size
+  employeeCount    Int?
+  estimatedRevenue Decimal?   @db.Decimal(14, 2)
+  // Contact
+  founderName      String?
+  // Workflow
+  status           LeadStatus @default(NEW)
+  // Thesis link
+  thesisId         String?
+  thesis           FundThesis? @relation(fields: [thesisId], references: [id], onDelete: SetNull)
+  // Audit
+  createdAt        DateTime   @default(now())
+  updatedAt        DateTime   @updatedAt
+
+  contacts   Contact[]
+  enrichment LeadEnrichment?
+  score      LeadScore?
+
+  @@unique([source, sourceRef], name: "source_dedupe")
+  @@index([status])
+  @@index([sector])
+  @@index([country])
+  @@index([thesisId])
+  @@map("lead")
+}
+
+model Contact {
+  id          String   @id @default(cuid())
+  leadId      String
+  lead        Lead     @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  fullName    String
+  role        String?
+  email       String?
+  linkedinUrl String?
+  createdAt   DateTime @default(now())
+
+  @@index([leadId])
+  @@map("contact")
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Domain — Enrichment + score
+// ─────────────────────────────────────────────────────────────────────────────
+
+model LeadEnrichment {
+  id                     String        @id @default(cuid())
+  leadId                 String        @unique
+  lead                   Lead          @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  businessSummary        String
+  investmentRationale    String[]
+  concerns               String[]
+  suggestedOutreachAngle String?
+  peFitScore             Int           @default(0)
+  peFitDecision          ScoreDecision
+  reasons                String[]
+  missingInfo            String[]
+  enrichmentModel        String
+  promptHash             String
+  promptTokens           Int?
+  completionTokens       Int?
+  createdAt              DateTime      @default(now())
+  updatedAt              DateTime      @updatedAt
+
+  @@index([promptHash])
+  @@map("lead_enrichment")
+}
+
+model LeadScore {
+  id          String        @id @default(cuid())
+  leadId      String        @unique
+  lead        Lead          @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  score       Int
+  decision    ScoreDecision
+  reasons     String[]
+  missingInfo String[]
+  thesisId    String?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  @@map("lead_score")
+}
+
+// Persistent cache for scraped website snapshots — keyed by URL.
+// Avoids re-fetching the same site for repeated enrichments.
+model WebsiteSnapshot {
+  id          String   @id @default(cuid())
+  url         String   @unique
+  title       String?
+  description String?
+  h1s         String[]
+  h2s         String[]
+  emails      String[]
+  socialLinks String[]
+  fetchedAt   DateTime
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("website_snapshot")
+}
+
+// Idempotency cache for LLM enrichment — keyed by prompt hash.
+model EnrichmentCache {
+  promptHash       String   @id
+  enrichmentJson   Json
+  model            String
+  promptTokens     Int?
+  completionTokens Int?
+  createdAt        DateTime @default(now())
+
+  @@map("enrichment_cache")
+}
+
+// Audit trail for CSV imports — original file URL on Vercel Blob.
+model ImportBatch {
+  id            String     @id @default(cuid())
+  uploaderId    String
+  uploader      User       @relation(fields: [uploaderId], references: [id], onDelete: Cascade)
+  source        LeadSource
+  sourceFileUrl String?
+  totalRows     Int        @default(0)
+  importedRows  Int        @default(0)
+  skippedRows   Int        @default(0)
+  errorsJson    Json?
+  createdAt     DateTime   @default(now())
+
+  leads Lead[]
+
+  @@index([uploaderId])
+  @@map("import_batch")
+}
