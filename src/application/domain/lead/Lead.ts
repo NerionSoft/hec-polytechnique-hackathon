@@ -11,6 +11,10 @@ export interface LeadProps {
   companyName: string;
   legalName: string | null;
   website: string | null;
+  // Set when the website was auto-discovered (vs manually entered or from CSV).
+  // null = unknown source / pre-discovery.
+  websiteDiscoveredAt: Date | null;
+  websiteDiscoverySource: string | null;
   country: string;
   sector: string | null;
   napCode: string | null;
@@ -57,6 +61,8 @@ export class Lead {
       companyName: name,
       legalName: input.legalName ?? null,
       website: input.website ?? null,
+      websiteDiscoveredAt: null,
+      websiteDiscoverySource: null,
       country: input.country ?? "FR",
       sector: input.sector ?? null,
       napCode: input.napCode ?? null,
@@ -114,5 +120,22 @@ export class Lead {
 
   withStatus(status: LeadStatus, now: Date): Lead {
     return new Lead({ ...this.props, status, updatedAt: now });
+  }
+
+  withWebsite(website: string | null, now: Date, discovery?: { source: string } | null): Lead {
+    return new Lead({
+      ...this.props,
+      website,
+      websiteDiscoveredAt: discovery ? now : null,
+      websiteDiscoverySource: discovery ? discovery.source : null,
+      updatedAt: now,
+    });
+  }
+
+  get websiteDiscoveredAt(): Date | null {
+    return this.props.websiteDiscoveredAt;
+  }
+  get websiteDiscoverySource(): string | null {
+    return this.props.websiteDiscoverySource;
   }
 }

@@ -12,9 +12,16 @@ import { LEGAL_FORMS } from "@/src/application/reference/legalForm";
 interface Props {
   selectedThesisId: string | null;
   defaultSectors: string[];
+  // Whether the criteria sub-panel starts open. Header + Fetch button always
+  // render outside the collapsible.
+  criteriaOpenByDefault?: boolean;
 }
 
-export function SireneFetchPanel({ selectedThesisId, defaultSectors }: Props) {
+export function SireneFetchPanel({
+  selectedThesisId,
+  defaultSectors,
+  criteriaOpenByDefault = false,
+}: Props) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [busy, setBusy] = useState(false);
@@ -115,129 +122,163 @@ export function SireneFetchPanel({ selectedThesisId, defaultSectors }: Props) {
         </button>
       </header>
 
-      <Picker
-        title="NAF rév. 2 division"
-        sub="Filters on activite_principale. Empty = all sectors."
-      >
-        <div className="flex flex-col gap-2">
-          {NAF_SECTIONS.map((section) => {
-            const divs = NAF_DIVISIONS.filter((d) => d.section === section.code);
-            if (divs.length === 0) return null;
-            return (
-              <details key={section.code} className="group">
-                <summary
-                  className={cn(
-                    "cursor-pointer list-none rounded-[8px] px-2 py-1 text-[11.5px]",
-                    "text-foreground/65 hover:text-foreground",
-                  )}
-                >
-                  ▸ {section.code} — {section.label}
-                </summary>
-                <div className="mt-1.5 flex flex-wrap gap-1.5 pl-3">
-                  {divs.map((d) => {
-                    const active = sectors.includes(d.code);
-                    return (
-                      <button
-                        type="button"
-                        key={d.code}
-                        onClick={() => setSectors((s) => toggle(s, d.code))}
-                        className={cn(
-                          "rounded-full border px-2 py-0.5 text-[11px]",
-                          active
-                            ? "border-foreground/25 bg-foreground/10 text-foreground"
-                            : "border-foreground/[0.08] bg-foreground/[0.02] text-foreground/65",
-                        )}
-                      >
-                        <span className="tabular text-foreground/45 text-[10px]">{d.code}</span>{" "}
-                        {d.label}
-                      </button>
-                    );
-                  })}
-                </div>
-              </details>
-            );
-          })}
-        </div>
-      </Picker>
+      {/* Pages / per-page controls remain visible even when criteria is collapsed —
+         the user wants to see how many leads each fetch will request. */}
 
-      <Picker
-        title="Département"
-        sub="Sirene's `departement` filter — INSEE codes (01–95, 2A/2B, 971–976). Empty = all France."
+      <details
+        open={criteriaOpenByDefault}
+        className={cn(
+          "border-foreground/[0.08] bg-foreground/[0.02] rounded-[12px] border",
+          "[&_summary::-webkit-details-marker]:hidden",
+        )}
       >
-        <div className="flex flex-wrap gap-1">
-          {DEPARTEMENTS.map((d) => {
-            const active = departements.includes(d.code);
-            return (
-              <button
-                type="button"
-                key={d.code}
-                onClick={() => setDepartements((s) => toggle(s, d.code))}
-                className={cn(
-                  "tabular rounded-full border px-2 py-0.5 text-[10.5px]",
-                  active
-                    ? "border-foreground/25 bg-foreground/10 text-foreground"
-                    : "border-foreground/[0.08] bg-foreground/[0.02] text-foreground/55",
-                )}
-                title={d.label}
-              >
-                {d.code}
-              </button>
-            );
-          })}
-        </div>
-      </Picker>
+        <summary
+          className={cn(
+            "flex cursor-pointer items-center justify-between gap-2 px-3 py-2",
+            "text-foreground/75 hover:text-foreground text-[12px]",
+          )}
+        >
+          <span className="flex items-center gap-2">
+            <span className="text-foreground/45 text-[10.5px] tracking-[0.14em] uppercase">
+              Filter criteria
+            </span>
+            <span className="text-foreground/55">
+              {sectors.length} sector{sectors.length === 1 ? "" : "s"} ·{" "}
+              {departements.length || "all"} dept · {effectifCodes.length || "all"} effectif ·{" "}
+              {legalFormCodes.length || "all"} legal forms
+            </span>
+          </span>
+          <span className="text-foreground/45 text-[10.5px]">click to toggle</span>
+        </summary>
 
-      <Picker
-        title="Tranche d'effectif (INSEE)"
-        sub="Single companies are filtered at the establishment level."
-      >
-        <div className="flex flex-wrap gap-1.5">
-          {EFFECTIF_BRACKETS.map((b) => {
-            const active = effectifCodes.includes(b.code);
-            return (
-              <button
-                type="button"
-                key={b.code}
-                onClick={() => setEffectifCodes((s) => toggle(s, b.code))}
-                className={cn(
-                  "rounded-full border px-2.5 py-0.5 text-[11px]",
-                  active
-                    ? "border-foreground/25 bg-foreground/10 text-foreground"
-                    : "border-foreground/[0.08] bg-foreground/[0.02] text-foreground/65",
-                )}
-              >
-                <span className="tabular text-foreground/45 text-[10.5px]">{b.code}</span> {b.label}
-              </button>
-            );
-          })}
-        </div>
-      </Picker>
+        <div className="border-foreground/[0.06] flex flex-col gap-4 border-t p-4">
+          <Picker
+            title="NAF rév. 2 division"
+            sub="Filters on activite_principale. Empty = all sectors."
+          >
+            <div className="flex flex-col gap-2">
+              {NAF_SECTIONS.map((section) => {
+                const divs = NAF_DIVISIONS.filter((d) => d.section === section.code);
+                if (divs.length === 0) return null;
+                return (
+                  <details key={section.code} className="group">
+                    <summary
+                      className={cn(
+                        "cursor-pointer list-none rounded-[8px] px-2 py-1 text-[11.5px]",
+                        "text-foreground/65 hover:text-foreground",
+                      )}
+                    >
+                      ▸ {section.code} — {section.label}
+                    </summary>
+                    <div className="mt-1.5 flex flex-wrap gap-1.5 pl-3">
+                      {divs.map((d) => {
+                        const active = sectors.includes(d.code);
+                        return (
+                          <button
+                            type="button"
+                            key={d.code}
+                            onClick={() => setSectors((s) => toggle(s, d.code))}
+                            className={cn(
+                              "rounded-full border px-2 py-0.5 text-[11px]",
+                              active
+                                ? "border-foreground/25 bg-foreground/10 text-foreground"
+                                : "border-foreground/[0.08] bg-foreground/[0.02] text-foreground/65",
+                            )}
+                          >
+                            <span className="tabular text-foreground/45 text-[10px]">{d.code}</span>{" "}
+                            {d.label}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </details>
+                );
+              })}
+            </div>
+          </Picker>
 
-      <Picker
-        title="Forme juridique (INSEE)"
-        sub="Restrict to commercial companies typically targeted by PE."
-      >
-        <div className="flex flex-wrap gap-1.5">
-          {LEGAL_FORMS.map((f) => {
-            const active = legalFormCodes.includes(f.code);
-            return (
-              <button
-                type="button"
-                key={f.code}
-                onClick={() => setLegalFormCodes((s) => toggle(s, f.code))}
-                className={cn(
-                  "rounded-full border px-2.5 py-0.5 text-[11px]",
-                  active
-                    ? "border-foreground/25 bg-foreground/10 text-foreground"
-                    : "border-foreground/[0.08] bg-foreground/[0.02] text-foreground/65",
-                )}
-              >
-                <span className="tabular text-foreground/45 text-[10.5px]">{f.code}</span> {f.label}
-              </button>
-            );
-          })}
+          <Picker
+            title="Département"
+            sub="Sirene's `departement` filter — INSEE codes (01–95, 2A/2B, 971–976). Empty = all France."
+          >
+            <div className="flex flex-wrap gap-1">
+              {DEPARTEMENTS.map((d) => {
+                const active = departements.includes(d.code);
+                return (
+                  <button
+                    type="button"
+                    key={d.code}
+                    onClick={() => setDepartements((s) => toggle(s, d.code))}
+                    className={cn(
+                      "tabular rounded-full border px-2 py-0.5 text-[10.5px]",
+                      active
+                        ? "border-foreground/25 bg-foreground/10 text-foreground"
+                        : "border-foreground/[0.08] bg-foreground/[0.02] text-foreground/55",
+                    )}
+                    title={d.label}
+                  >
+                    {d.code}
+                  </button>
+                );
+              })}
+            </div>
+          </Picker>
+
+          <Picker
+            title="Tranche d'effectif (INSEE)"
+            sub="Single companies are filtered at the establishment level."
+          >
+            <div className="flex flex-wrap gap-1.5">
+              {EFFECTIF_BRACKETS.map((b) => {
+                const active = effectifCodes.includes(b.code);
+                return (
+                  <button
+                    type="button"
+                    key={b.code}
+                    onClick={() => setEffectifCodes((s) => toggle(s, b.code))}
+                    className={cn(
+                      "rounded-full border px-2.5 py-0.5 text-[11px]",
+                      active
+                        ? "border-foreground/25 bg-foreground/10 text-foreground"
+                        : "border-foreground/[0.08] bg-foreground/[0.02] text-foreground/65",
+                    )}
+                  >
+                    <span className="tabular text-foreground/45 text-[10.5px]">{b.code}</span>{" "}
+                    {b.label}
+                  </button>
+                );
+              })}
+            </div>
+          </Picker>
+
+          <Picker
+            title="Forme juridique (INSEE)"
+            sub="Restrict to commercial companies typically targeted by PE."
+          >
+            <div className="flex flex-wrap gap-1.5">
+              {LEGAL_FORMS.map((f) => {
+                const active = legalFormCodes.includes(f.code);
+                return (
+                  <button
+                    type="button"
+                    key={f.code}
+                    onClick={() => setLegalFormCodes((s) => toggle(s, f.code))}
+                    className={cn(
+                      "rounded-full border px-2.5 py-0.5 text-[11px]",
+                      active
+                        ? "border-foreground/25 bg-foreground/10 text-foreground"
+                        : "border-foreground/[0.08] bg-foreground/[0.02] text-foreground/65",
+                    )}
+                  >
+                    <span className="tabular text-foreground/45 text-[10.5px]">{f.code}</span>{" "}
+                    {f.label}
+                  </button>
+                );
+              })}
+            </div>
+          </Picker>
         </div>
-      </Picker>
+      </details>
 
       <div className="flex flex-wrap items-center gap-4">
         <label className="text-foreground/55 flex items-center gap-2 text-[11.5px]">

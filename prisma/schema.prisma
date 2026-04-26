@@ -3,12 +3,16 @@
 // - Domain tables (FundThesis, Lead, Contact, LeadEnrichment, LeadScore, EnrichmentCache, ImportBatch)
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["postgresqlExtensions"]
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider   = "postgresql"
+  url        = env("DATABASE_URL")
+  // pgvector is required by Chunk.embedding (Unsupported("vector(1536)")).
+  // Neon ships with pgvector available; the extension is enabled by the migration.
+  extensions = [vector]
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -151,33 +155,35 @@ enum OutreachStatus {
 }
 
 model Lead {
-  id               String       @id @default(cuid())
+  id                     String       @id @default(cuid())
   // Source / dedupe
-  source           LeadSource
-  sourceRef        String? // e.g. SIREN
-  importBatchId    String?
-  importBatch      ImportBatch? @relation(fields: [importBatchId], references: [id], onDelete: SetNull)
+  source                 LeadSource
+  sourceRef              String? // e.g. SIREN
+  importBatchId          String?
+  importBatch            ImportBatch? @relation(fields: [importBatchId], references: [id], onDelete: SetNull)
   // Identification
-  companyName      String
-  legalName        String?
-  website          String?
-  country          String       @default("FR")
+  companyName            String
+  legalName              String?
+  website                String?
+  websiteDiscoveredAt    DateTime?
+  websiteDiscoverySource String?
+  country                String       @default("FR")
   // Sector
-  sector           String?
-  napCode          String?
+  sector                 String?
+  napCode                String?
   // Size
-  employeeCount    Int?
-  estimatedRevenue Decimal?     @db.Decimal(14, 2)
+  employeeCount          Int?
+  estimatedRevenue       Decimal?     @db.Decimal(14, 2)
   // Contact
-  founderName      String?
+  founderName            String?
   // Workflow
-  status           LeadStatus   @default(NEW)
+  status                 LeadStatus   @default(NEW)
   // Thesis link
-  thesisId         String?
-  thesis           FundThesis?  @relation(fields: [thesisId], references: [id], onDelete: SetNull)
+  thesisId               String?
+  thesis                 FundThesis?  @relation(fields: [thesisId], references: [id], onDelete: SetNull)
   // Audit
-  createdAt        DateTime     @default(now())
-  updatedAt        DateTime     @updatedAt
+  createdAt              DateTime     @default(now())
+  updatedAt              DateTime     @updatedAt
 
   contacts       Contact[]
   enrichment     LeadEnrichment?

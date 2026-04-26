@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, ExternalLink, Sparkles } from "lucide-react";
 import { cn } from "@/src/presentation/lib/cn";
 import { getSession } from "@/src/infrastructure/auth/server";
 import { getUseCases } from "@/src/infrastructure/composition";
@@ -206,6 +206,36 @@ function Stat({ label, value }: { label: string; value: number }) {
       <p className="text-foreground/45 text-[10.5px] tracking-[0.14em] uppercase">{label}</p>
       <p className="tabular font-serif text-[26px] leading-none tracking-tight">{value}</p>
     </div>
+  );
+}
+
+function WebsiteCell({ url, autoSource }: { url: string | null; autoSource: string | null }) {
+  if (!url) return <span className="text-foreground/35">—</span>;
+  const display = url.replace(/^https?:\/\//, "").replace(/\/$/, "");
+  return (
+    <span className="inline-flex items-center gap-1.5">
+      <a
+        href={url}
+        target="_blank"
+        rel="noreferrer"
+        className="text-foreground/85 inline-flex max-w-[180px] items-center gap-0.5 truncate underline-offset-2 hover:underline"
+      >
+        <span className="truncate">{display}</span>
+        <ExternalLink strokeWidth={1.6} className="size-3 shrink-0" />
+      </a>
+      {autoSource && (
+        <span
+          className={cn(
+            "bg-foreground/[0.08] text-foreground/65",
+            "inline-flex items-center gap-0.5 rounded-full px-1.5 py-0.5 text-[9.5px] tracking-[0.10em] uppercase",
+          )}
+          title={`Auto-discovered via ${autoSource}`}
+        >
+          <Sparkles strokeWidth={1.6} className="size-2.5" />
+          auto
+        </span>
+      )}
+    </span>
   );
 }
 
