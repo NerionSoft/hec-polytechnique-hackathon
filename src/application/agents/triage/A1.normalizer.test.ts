@@ -27,6 +27,7 @@ const baseOutput: A1Output = {
   redflag_keywords_hit: [],
   route_to_agents: ["A2", "A3"],
   evidence: [],
+  gap: null,
 };
 
 describe("normalizeA1", () => {
@@ -68,7 +69,11 @@ describe("normalizeA1", () => {
     const output: A1Output = {
       ...baseOutput,
       pe_taxonomy: ["other"],
-      gap: { field: "extraction", reason: "extraction_failed_pdf_or_ocr_required" },
+      gap: {
+        field: "extraction",
+        reason: "extraction_failed_pdf_or_ocr_required",
+        suggested_request: null,
+      },
     };
 
     await normalizeA1({ prisma: prisma as never }, output);

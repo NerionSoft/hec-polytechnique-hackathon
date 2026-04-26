@@ -8,21 +8,27 @@ const baseOutput: S1Output = {
   thesis_pillars: [
     {
       pillar: "EU specialty-crop consolidation",
-      supporting_facts: [{ fact: "18% YoY revenue growth", source_agent: "A2" }],
+      supporting_facts: [
+        { fact: "18% YoY revenue growth", source_agent: "A2", source_finding_external_id: null },
+      ],
     },
     {
       pillar: "Cross-sell precision-irrigation module",
-      supporting_facts: [{ fact: "12% attach rate today", source_agent: "A8" }],
+      supporting_facts: [
+        { fact: "12% attach rate today", source_agent: "A8", source_finding_external_id: null },
+      ],
     },
     {
       pillar: "DACH expansion runway",
-      supporting_facts: [{ fact: "DACH = 7% of revenue", source_agent: "A2" }],
+      supporting_facts: [
+        { fact: "DACH = 7% of revenue", source_agent: "A2", source_finding_external_id: null },
+      ],
     },
   ],
   key_value_creation_levers: [
     {
       lever: "cross_sell",
-      evidence_basis: [{ source_agent: "A8" }],
+      evidence_basis: [{ source_agent: "A8", finding_external_id: null }],
       tied_to_redflag_or_opportunity: "precision-irrigation attach rate gap",
     },
   ],

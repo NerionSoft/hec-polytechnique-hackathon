@@ -135,6 +135,7 @@ const expectedOutput: A1Output = {
   redflag_keywords_hit: [],
   route_to_agents: ["A2", "A3"],
   evidence: [],
+  gap: null,
 };
 
 describe("RunTriageAgent", () => {

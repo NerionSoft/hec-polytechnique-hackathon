@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const A1_SCHEMA_VERSION = "v1";
+export const A1_SCHEMA_VERSION = "v2";
 
 const FRONT_CATEGORY = ["COMMERCIAL", "FINANCIAL", "LEGAL", "HR", "TAX"] as const;
 
@@ -31,38 +31,27 @@ const ROUTABLE_AGENTS = ["A2", "A3", "A4", "A5", "A6", "A7", "A8", "A9"] as cons
 const evidenceSchema = z.object({
   doc_id: z.string(),
   section: z.string().nullable(),
-  page: z.number().int().nullable().optional(),
-  quote: z.string().min(1).max(240),
+  page: z.number().int().nullable(),
+  quote: z.string(),
   chunk_id: z.string().nullable(),
 });
 
 export const A1OutputSchema = z.object({
-  doc_id: z.string().describe("Echo of the Document.id provided in input."),
-  front_category: z
-    .enum(FRONT_CATEGORY)
-    .describe("Top-level taxonomy used by the dashboard /data-room page."),
-  pe_taxonomy: z
-    .array(z.enum(PE_TAXONOMY))
-    .min(1)
-    .describe("Fine-grained tags for routing; one document can carry several."),
-  deal_relevance: z.number().int().min(1).max(5),
-  risk_signal: z.number().int().min(0).max(5),
-  redflag_keywords_hit: z.array(z.string()).default([]),
-  route_to_agents: z
-    .array(z.enum(ROUTABLE_AGENTS))
-    .describe("Specialists that must read this document."),
-  evidence: z
-    .array(evidenceSchema)
-    .max(2)
-    .describe("Up to 2 quotes justifying the classification."),
+  doc_id: z.string(),
+  front_category: z.enum(FRONT_CATEGORY),
+  pe_taxonomy: z.array(z.enum(PE_TAXONOMY)),
+  deal_relevance: z.number().int(),
+  risk_signal: z.number().int(),
+  redflag_keywords_hit: z.array(z.string()),
+  route_to_agents: z.array(z.enum(ROUTABLE_AGENTS)),
+  evidence: z.array(evidenceSchema),
   gap: z
     .object({
       field: z.string(),
       reason: z.string(),
-      suggested_request: z.string().nullable().optional(),
+      suggested_request: z.string().nullable(),
     })
-    .nullable()
-    .optional(),
+    .nullable(),
 });
 
 export type A1Output = z.infer<typeof A1OutputSchema>;

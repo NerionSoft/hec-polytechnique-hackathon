@@ -1,21 +1,24 @@
 import { z } from "zod";
 import { EvidenceSchema, GapSchema } from "../shared/evidence";
 
-export const A2_SCHEMA_VERSION = "v1";
+export const A2_SCHEMA_VERSION = "v2";
 
+/**
+ * Gemini's `responseSchema` (Vercel AI SDK `Output.object`) is a constrained
+ * subset of JSON Schema. It rejects:
+ *   - `.default()` — defaults are silently dropped or trigger 400
+ *   - `.max(n)` / `.min(n)` on arrays — supported but flaky on long enums
+ *   - Deeply-optional chains (`.optional().nullable()` etc.)
+ *
+ * We keep the schema lean and only model what the front and the normalizer
+ * actually consume. Audit-grade level-1 metrics (P&L, balance sheet, cash
+ * flow) live in `agent_output.output` JSONB if Gemini decides to include
+ * them — the schema doesn't enforce them, the prompt asks for them.
+ */
 const periodMetricSchema = z.object({
   period: z.string(),
   value: z.number().nullable(),
-  source_type: z.enum(["audit", "management", "board", "budget"]).optional(),
-  conflict: z.boolean().optional(),
-  evidence: z.array(EvidenceSchema).max(3),
-});
-
-const segmentMetricSchema = z.object({
-  period: z.string(),
-  segment: z.string(),
-  value: z.number().nullable(),
-  evidence: z.array(EvidenceSchema).max(2),
+  evidence: z.array(EvidenceSchema),
 });
 
 const dealKpiSyncSchema = z.object({
@@ -26,14 +29,14 @@ const dealKpiSyncSchema = z.object({
   net_debt_ebitda: z.number().nullable(),
   employees: z.number().int().nullable(),
   founded: z.number().int().nullable(),
-  evidence: z.array(EvidenceSchema).max(8),
+  evidence: z.array(EvidenceSchema),
 });
 
 const trendViewItemSchema = z.object({
   period: z.string(),
   revenue_m: z.number(),
   ebitda_m: z.number().nullable(),
-  evidence: z.array(EvidenceSchema).max(2),
+  evidence: z.array(EvidenceSchema),
 });
 
 const workingCapitalViewItemSchema = z.object({
@@ -41,7 +44,7 @@ const workingCapitalViewItemSchema = z.object({
   dso: z.number().nullable(),
   dpo: z.number().nullable(),
   dio: z.number().nullable(),
-  evidence: z.array(EvidenceSchema).max(2),
+  evidence: z.array(EvidenceSchema),
 });
 
 const kpiViewSchema = z.object({
@@ -52,7 +55,7 @@ const kpiViewSchema = z.object({
   net_debt_ebitda: z.number().nullable(),
   headcount: z.number().int().nullable(),
   client_count: z.number().int().nullable(),
-  evidence: z.array(EvidenceSchema).max(6),
+  evidence: z.array(EvidenceSchema),
 });
 
 export const A2OutputSchema = z.object({
@@ -61,45 +64,16 @@ export const A2OutputSchema = z.object({
     to: z.string(),
   }),
   currency: z.enum(["EUR", "USD", "GBP"]),
-
-  // Niveau 1 — audit / replay
-  p_and_l: z.object({
-    revenue: z.array(periodMetricSchema),
-    revenue_by_segment: z.array(segmentMetricSchema).default([]),
-    gross_profit: z.array(periodMetricSchema).default([]),
-    gross_margin_pct: z.array(periodMetricSchema).default([]),
-    ebitda: z.array(periodMetricSchema),
-    ebitda_margin_pct: z.array(periodMetricSchema).default([]),
-    ebit: z.array(periodMetricSchema).default([]),
-    net_income: z.array(periodMetricSchema).default([]),
-  }),
-  balance_sheet: z.object({
-    total_assets: z.array(periodMetricSchema).default([]),
-    cash: z.array(periodMetricSchema).default([]),
-    total_debt: z.array(periodMetricSchema).default([]),
-    working_capital: z.array(periodMetricSchema).default([]),
-    current_ratio: z.array(periodMetricSchema).default([]),
-  }),
-  cash_flow: z.object({
-    operating_cf: z.array(periodMetricSchema).default([]),
-    capex: z.array(periodMetricSchema).default([]),
-    fcf: z.array(periodMetricSchema).default([]),
-  }),
-  growth_kpis: z.object({
-    yoy_revenue_growth_pct: z.array(periodMetricSchema).default([]),
-    headcount: z.array(periodMetricSchema).default([]),
-    client_count: z.array(periodMetricSchema).default([]),
-    retention_rate_pct: z.array(periodMetricSchema).default([]),
-  }),
-
-  // Niveau 2 — pré-mâché pour le front
   deal_kpi_sync: dealKpiSyncSchema,
   trend_view: z.array(trendViewItemSchema),
-  working_capital_view: z.array(workingCapitalViewItemSchema).default([]),
+  working_capital_view: z.array(workingCapitalViewItemSchema),
   kpi_view: kpiViewSchema,
-
-  trend_commentary: z.string().max(800),
-  gaps: z.array(GapSchema).default([]),
+  trend_commentary: z.string(),
+  gaps: z.array(GapSchema),
+  // Optional level-1 audit data (P&L, balance sheet, cash flow). Reserved
+  // for retrieval/replay; not consumed by the dashboard.
+  p_and_l_revenue: z.array(periodMetricSchema),
+  p_and_l_ebitda: z.array(periodMetricSchema),
 });
 
 export type A2Output = z.infer<typeof A2OutputSchema>;

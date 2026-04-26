@@ -2,13 +2,13 @@ import { z } from "zod";
 import { EvidenceSchema, GapSchema } from "../shared/evidence";
 import { SharedFindingSchema } from "../shared/findingShape";
 
-export const A5_SCHEMA_VERSION = "v1";
+export const A5_SCHEMA_VERSION = "v2";
 
 const concentrationViewItemSchema = z.object({
   name: z.string(),
-  share: z.number().min(0).max(1),
+  share: z.number(),
   flag: z.boolean(),
-  evidence: z.array(EvidenceSchema).max(2),
+  evidence: z.array(EvidenceSchema),
 });
 
 const retentionViewSchema = z.object({
@@ -16,7 +16,7 @@ const retentionViewSchema = z.object({
   nrr: z.number().nullable(),
   grr: z.number().nullable(),
   churn: z.number().nullable(),
-  evidence: z.array(EvidenceSchema).max(3),
+  evidence: z.array(EvidenceSchema),
 });
 
 const contractSchema = z.object({
@@ -32,11 +32,10 @@ const contractSchema = z.object({
   exclusivity: z.boolean().nullable(),
   mfn_clause: z.boolean().nullable(),
   sla_penalties_pct_revenue: z.number().nullable(),
-  evidence: z.array(EvidenceSchema).min(1),
+  evidence: z.array(EvidenceSchema),
 });
 
 const A5FindingSchema = SharedFindingSchema.extend({
-  category: z.literal("COMMERCIAL"),
   trigger: z.enum([
     "top1_>20pct",
     "top3_>40pct",
@@ -56,34 +55,30 @@ export const A5OutputSchema = z.object({
     top_3_pct: z.number().nullable(),
     top_5_pct: z.number().nullable(),
     top_10_pct: z.number().nullable(),
-    evidence: z.array(EvidenceSchema).max(3),
+    evidence: z.array(EvidenceSchema),
   }),
-  tier_breakdown: z
-    .array(
-      z.object({
-        tier: z.string(),
-        threshold_eur: z.number(),
-        client_count: z.number().int(),
-        total_eur: z.number(),
-        share_of_revenue_pct: z.number(),
-        evidence: z.array(EvidenceSchema).max(2),
-      }),
-    )
-    .default([]),
-  contracts: z.array(contractSchema).default([]),
-  churn_signals: z
-    .array(
-      z.object({
-        client: z.string(),
-        signal: z.enum(["non-renewal notice", "scope reduction", "litigation", "price concession"]),
-        evidence: z.array(EvidenceSchema).min(1),
-      }),
-    )
-    .default([]),
+  tier_breakdown: z.array(
+    z.object({
+      tier: z.string(),
+      threshold_eur: z.number(),
+      client_count: z.number().int(),
+      total_eur: z.number(),
+      share_of_revenue_pct: z.number(),
+      evidence: z.array(EvidenceSchema),
+    }),
+  ),
+  contracts: z.array(contractSchema),
+  churn_signals: z.array(
+    z.object({
+      client: z.string(),
+      signal: z.enum(["non-renewal notice", "scope reduction", "litigation", "price concession"]),
+      evidence: z.array(EvidenceSchema),
+    }),
+  ),
   concentration_view: z.array(concentrationViewItemSchema),
   retention_view: retentionViewSchema,
-  redflag_findings: z.array(A5FindingSchema).default([]),
-  gaps: z.array(GapSchema).default([]),
+  redflag_findings: z.array(A5FindingSchema),
+  gaps: z.array(GapSchema),
 });
 
 export type A5Output = z.infer<typeof A5OutputSchema>;

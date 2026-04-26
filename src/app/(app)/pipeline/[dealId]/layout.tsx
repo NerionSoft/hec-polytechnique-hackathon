@@ -1,6 +1,9 @@
 import { notFound } from "next/navigation";
-import { getDeal } from "@/src/lib/mock/deals";
-import { redFlagsForDeal } from "@/src/lib/mock/red-flags";
+import {
+  findPipelineDeal,
+  findPipelineEntityKind,
+  listPipelineRedFlags,
+} from "@/src/lib/data/pipeline";
 import { DealHeader } from "./_components/DealHeader";
 import { DealTabs } from "./_components/DealTabs";
 import { CitationDrawer } from "./_components/CitationDrawer";
@@ -13,15 +16,17 @@ export default async function DealLayout({
   params: Promise<{ dealId: string }>;
 }) {
   const { dealId } = await params;
-  const deal = getDeal(dealId);
+  const [deal, kind, redFlags] = await Promise.all([
+    findPipelineDeal(dealId),
+    findPipelineEntityKind(dealId),
+    listPipelineRedFlags(dealId),
+  ]);
   if (!deal) notFound();
-
-  const redFlagCount = redFlagsForDeal(dealId).length;
 
   return (
     <>
-      <DealHeader deal={deal} />
-      <DealTabs dealId={deal.id} currentStage={deal.stage} redFlagCount={redFlagCount} />
+      <DealHeader deal={deal} entityKind={kind ?? "mock"} sourceId={dealId} />
+      <DealTabs dealId={deal.id} currentStage={deal.stage} redFlagCount={redFlags.length} />
       {children}
       <CitationDrawer />
     </>

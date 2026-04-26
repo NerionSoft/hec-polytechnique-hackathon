@@ -67,6 +67,8 @@ export async function normalizeA4(
       primary_evidence_index: 0,
       evidence: a.evidence,
       management_question: a.management_question ?? null,
+      exposure_eur: a.amount_eur,
+      deal_impact: null,
     }));
 
   if (aggressiveFindings.length === 0) {

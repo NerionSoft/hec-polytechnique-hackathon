@@ -3,8 +3,11 @@ import { EvidenceSchema } from "./evidence";
 
 /**
  * Common shape every findings-emitting agent (A3/A6/A7/A9) produces per item.
- * Centralising this prevents drift between agents and lets a single
- * normalizer handle them.
+ *
+ * Schema constraints kept Gemini-friendly: no `.max()` on strings, no
+ * `.default()`, no `.optional()` chained with `.nullable()`. Plain
+ * `.nullable()` everywhere — the model returns `null` when the field is
+ * missing.
  */
 export const SeverityEnum = z.enum(["LOW", "MEDIUM", "HIGH", "CRITICAL"]);
 export const ConfidenceEnum = z.enum(["HIGH", "MEDIUM", "LOW"]);
@@ -28,16 +31,16 @@ export const SharedFindingSchema = z.object({
   external_id: z.string(),
   severity: SeverityEnum,
   category: FindingCategoryEnum,
-  title: z.string().max(120),
-  summary: z.string().max(220).nullable().optional(),
-  detail: z.string().max(800).nullable().optional(),
+  title: z.string(),
+  summary: z.string().nullable(),
+  detail: z.string().nullable(),
   confidence: ConfidenceEnum,
-  impact: z.string().max(400).nullable().optional(),
-  primary_evidence_index: z.number().int().min(0).default(0),
-  evidence: z.array(EvidenceSchema).min(1),
-  management_question: z.string().max(400).nullable().optional(),
-  exposure_eur: z.number().nullable().optional(),
-  deal_impact: DealImpactEnum.optional(),
+  impact: z.string().nullable(),
+  primary_evidence_index: z.number().int(),
+  evidence: z.array(EvidenceSchema),
+  management_question: z.string().nullable(),
+  exposure_eur: z.number().nullable(),
+  deal_impact: DealImpactEnum.nullable(),
 });
 
 export type SharedFinding = z.infer<typeof SharedFindingSchema>;

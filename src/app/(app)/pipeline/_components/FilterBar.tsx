@@ -1,7 +1,7 @@
-import { Filter, Plus, Users } from "lucide-react";
+import { Filter, Users } from "lucide-react";
 import { cn } from "@/src/presentation/lib/cn";
-import { GlassButton } from "@/src/presentation/components/landing/GlassButton";
 import { ViewToggle } from "./ViewToggle";
+import { NewDealButton } from "./NewDealButton";
 
 export function FilterBar() {
   return (
@@ -10,10 +10,7 @@ export function FilterBar() {
       <FilterPill icon={Filter} label="Sector" value="All" />
       <FilterPill icon={Users} label="Owner" value="Anyone" />
       <div className="ml-auto">
-        <GlassButton size="sm" variant="solid">
-          <Plus strokeWidth={1.8} className="size-3.5" />
-          New deal
-        </GlassButton>
+        <NewDealButton />
       </div>
     </div>
   );

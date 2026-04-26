@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
-import { Loader2, Sparkles, Target } from "lucide-react";
+import { ArrowRight, Loader2, Sparkles, Target } from "lucide-react";
 import { cn } from "@/src/presentation/lib/cn";
 
 interface Props {
@@ -15,7 +15,7 @@ interface Props {
 export function LeadActions({ leadId, thesisId, hasEnrichment, hasScore }: Props) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
-  const [busy, setBusy] = useState<"enrich" | "score" | null>(null);
+  const [busy, setBusy] = useState<"enrich" | "score" | "promote" | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   async function enrich() {
@@ -62,6 +62,26 @@ export function LeadActions({ leadId, thesisId, hasEnrichment, hasScore }: Props
     }
   }
 
+  async function promoteToDeal() {
+    setBusy("promote");
+    setError(null);
+    try {
+      const res = await fetch(`/api/leads/${leadId}/open-data-room`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+      });
+      if (!res.ok) {
+        const json = (await res.json().catch(() => ({}))) as { message?: string };
+        setError(`Promote to deal failed: ${json.message ?? res.statusText}`);
+        return;
+      }
+      const { dealId } = (await res.json()) as { dealId: string };
+      router.push(`/pipeline/${dealId}/data-room`);
+    } finally {
+      setBusy(null);
+    }
+  }
+
   return (
     <div className="flex flex-col items-end gap-2">
       <div className="flex items-center gap-2">
@@ -88,8 +108,9 @@ export function LeadActions({ leadId, thesisId, hasEnrichment, hasScore }: Props
           onClick={score}
           disabled={busy !== null || pending || !thesisId || !hasEnrichment}
           className={cn(
-            "bg-foreground inline-flex items-center gap-1.5 rounded-full px-4 py-1.5",
-            "text-background text-[12px] font-medium hover:opacity-90",
+            "inline-flex items-center gap-1.5 rounded-full",
+            "border-foreground/[0.10] bg-foreground/[0.04] border px-3 py-1.5",
+            "text-foreground/85 hover:bg-foreground/[0.08] text-[12px]",
             "disabled:opacity-40",
           )}
           title={!hasEnrichment ? "Enrich first" : undefined}
@@ -100,6 +121,24 @@ export function LeadActions({ leadId, thesisId, hasEnrichment, hasScore }: Props
             <Target strokeWidth={1.6} className="size-3.5" />
           )}
           {hasScore ? "Re-score" : "Score against thesis"}
+        </button>
+        <button
+          type="button"
+          onClick={promoteToDeal}
+          disabled={busy !== null || pending}
+          className={cn(
+            "bg-foreground inline-flex items-center gap-1.5 rounded-full px-4 py-1.5",
+            "text-background text-[12px] font-medium hover:opacity-90",
+            "disabled:opacity-40",
+          )}
+          title="Promote this lead to a deal and open the data room"
+        >
+          {busy === "promote" ? (
+            <Loader2 strokeWidth={1.6} className="size-3.5 animate-spin" />
+          ) : (
+            <ArrowRight strokeWidth={1.6} className="size-3.5" />
+          )}
+          Promote to deal
         </button>
       </div>
       {error && (

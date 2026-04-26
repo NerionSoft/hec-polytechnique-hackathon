@@ -37,58 +37,6 @@ function makePrismaSpy() {
 const baseOutput: A2Output = {
   period_covered: { from: "FY2022", to: "FY2024" },
   currency: "EUR",
-  p_and_l: {
-    revenue: [
-      {
-        period: "FY2024",
-        value: 31_000_000,
-        evidence: [
-          {
-            doc_id: "doc_1",
-            section: "§3.2",
-            page: 12,
-            quote: "Total revenue FY2024: €31,000,000",
-            chunk_id: "chunk_1",
-          },
-        ],
-      },
-    ],
-    revenue_by_segment: [],
-    gross_profit: [],
-    gross_margin_pct: [],
-    ebitda: [
-      {
-        period: "FY2024",
-        value: 4_200_000,
-        evidence: [
-          {
-            doc_id: "doc_1",
-            section: "§3.3",
-            page: 13,
-            quote: "EBITDA: €4,200,000",
-            chunk_id: "chunk_2",
-          },
-        ],
-      },
-    ],
-    ebitda_margin_pct: [],
-    ebit: [],
-    net_income: [],
-  },
-  balance_sheet: {
-    total_assets: [],
-    cash: [],
-    total_debt: [],
-    working_capital: [],
-    current_ratio: [],
-  },
-  cash_flow: { operating_cf: [], capex: [], fcf: [] },
-  growth_kpis: {
-    yoy_revenue_growth_pct: [],
-    headcount: [],
-    client_count: [],
-    retention_rate_pct: [],
-  },
   deal_kpi_sync: {
     revenue_eur: 31_000_000,
     ebitda_eur: 4_200_000,
@@ -121,6 +69,8 @@ const baseOutput: A2Output = {
   trend_commentary:
     "Revenue grew from €17.5M (FY2021) to €31.0M (FY2024). EBITDA margin contracted from 15.0% to 13.5% over the same period.",
   gaps: [],
+  p_and_l_revenue: [],
+  p_and_l_ebitda: [],
 };
 
 describe("normalizeA2", () => {

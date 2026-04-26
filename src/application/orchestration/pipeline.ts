@@ -1,5 +1,6 @@
 import type { Prisma, PrismaClient } from "@prisma/client";
 import type { AgentRunner } from "../ports/AgentRunner";
+import type { BlobStorage } from "../ports/BlobStorage";
 import type { PdfExtractor } from "../ports/PdfExtractor";
 import { buildAgentContext } from "./buildAgentContext";
 import { ingestDocuments } from "./steps/ingestDocuments";
@@ -26,7 +27,7 @@ export interface PipelineDeps {
   prisma: PrismaClient;
   agentRunner: AgentRunner;
   pdfExtractor: PdfExtractor;
-  fetch: typeof fetch;
+  blobStorage: BlobStorage;
 }
 
 export interface RunPipelineArgs {
@@ -74,9 +75,62 @@ export async function runPipeline(deps: PipelineDeps, args: RunPipelineArgs): Pr
     where: { dealId: args.dealId, status: "INDEXED" },
     select: { id: true },
   });
-  for (const d of indexedDocs) {
-    await runTriageOnDocument(deps, { ctx, documentId: d.id });
-  }
+  // A1 fan-out — parallel + per-doc try/catch so one bad doc doesn't sink
+  // the whole pipeline. Emits audit start/end events bracketing the burst.
+  await deps.prisma.dealAuditEvent
+    .create({
+      data: {
+        dealId: ctx.dealId,
+        kind: "phase1_triage_started",
+        entity: "A1",
+        payload: { runId: ctx.runId, docCount: indexedDocs.length },
+      },
+    })
+    .catch(() => undefined);
+
+  const a1StartedAt = Date.now();
+  const A1_CONCURRENCY = 50;
+  let a1Cursor = 0;
+  let a1Ok = 0;
+  let a1Failed = 0;
+  const a1Workers = Array.from(
+    { length: Math.min(A1_CONCURRENCY, indexedDocs.length) },
+    async () => {
+      while (true) {
+        const idx = a1Cursor++;
+        if (idx >= indexedDocs.length) return;
+        const d = indexedDocs[idx];
+        try {
+          await runTriageOnDocument(deps, { ctx, documentId: d.id });
+          a1Ok++;
+        } catch (err) {
+          a1Failed++;
+          console.error(
+            `[pipeline] A1 failed on ${d.id}:`,
+            err instanceof Error ? err.message : err,
+          );
+        }
+      }
+    },
+  );
+  await Promise.all(a1Workers);
+
+  await deps.prisma.dealAuditEvent
+    .create({
+      data: {
+        dealId: ctx.dealId,
+        kind: "phase1_triage_completed",
+        entity: "A1",
+        payload: {
+          runId: ctx.runId,
+          docCount: indexedDocs.length,
+          ok: a1Ok,
+          failed: a1Failed,
+          durationMs: Date.now() - a1StartedAt,
+        },
+      },
+    })
+    .catch(() => undefined);
 
   // ─── Phase 1b : specialists in parallel ──────────────────────────────
   await deps.prisma.dDRun.update({
@@ -94,36 +148,28 @@ export async function runPipeline(deps: PipelineDeps, args: RunPipelineArgs): Pr
   const a9Run = makeRunManagementAgent(deps);
 
   await Promise.all([
-    settle(
-      "A2",
+    track(deps, ctx, "A2", async () =>
       a2Run({ ctx, chunks: await retrieveForAgent(deps, { agentId: "A2", dealId: ctx.dealId }) }),
     ),
-    settle(
-      "A3",
+    track(deps, ctx, "A3", async () =>
       a3Run({ ctx, chunks: await retrieveForAgent(deps, { agentId: "A3", dealId: ctx.dealId }) }),
     ),
-    settle(
-      "A4",
+    track(deps, ctx, "A4", async () =>
       a4Run({ ctx, chunks: await retrieveForAgent(deps, { agentId: "A4", dealId: ctx.dealId }) }),
     ),
-    settle(
-      "A5",
+    track(deps, ctx, "A5", async () =>
       a5Run({ ctx, chunks: await retrieveForAgent(deps, { agentId: "A5", dealId: ctx.dealId }) }),
     ),
-    settle(
-      "A6",
+    track(deps, ctx, "A6", async () =>
       a6Run({ ctx, chunks: await retrieveForAgent(deps, { agentId: "A6", dealId: ctx.dealId }) }),
     ),
-    settle(
-      "A7",
+    track(deps, ctx, "A7", async () =>
       a7Run({ ctx, chunks: await retrieveForAgent(deps, { agentId: "A7", dealId: ctx.dealId }) }),
     ),
-    settle(
-      "A8",
+    track(deps, ctx, "A8", async () =>
       a8Run({ ctx, chunks: await retrieveForAgent(deps, { agentId: "A8", dealId: ctx.dealId }) }),
     ),
-    settle(
-      "A9",
+    track(deps, ctx, "A9", async () =>
       a9Run({ ctx, chunks: await retrieveForAgent(deps, { agentId: "A9", dealId: ctx.dealId }) }),
     ),
   ]);
@@ -213,15 +259,63 @@ export async function runPipeline(deps: PipelineDeps, args: RunPipelineArgs): Pr
 }
 
 /**
- * Wraps a stage-1 agent run so a single failure doesn't abort the whole
- * Promise.all (the run is still recorded with status="failed" by the
- * agent's own use case — we just need to swallow the throw here).
+ * Wraps a stage-1 agent run with audit events so the dashboard's audit page
+ * shows live progress: one `agent_started` row, then either `agent_completed`
+ * or `agent_failed`. A single failure does NOT abort the parent Promise.all
+ * (the run is still recorded with status="failed" by the agent's own use case).
  */
-async function settle<T>(label: string, p: Promise<T>): Promise<T | null> {
+async function track<T>(
+  deps: PipelineDeps,
+  ctx: AgentContextLike,
+  label: string,
+  body: () => Promise<T>,
+): Promise<T | null> {
+  const startedAt = Date.now();
+  await deps.prisma.dealAuditEvent
+    .create({
+      data: {
+        dealId: ctx.dealId,
+        kind: "agent_started",
+        entity: label,
+        payload: { runId: ctx.runId },
+      },
+    })
+    .catch(() => undefined);
+
   try {
-    return await p;
+    const result = await body();
+    await deps.prisma.dealAuditEvent
+      .create({
+        data: {
+          dealId: ctx.dealId,
+          kind: "agent_completed",
+          entity: label,
+          payload: { runId: ctx.runId, durationMs: Date.now() - startedAt },
+        },
+      })
+      .catch(() => undefined);
+    return result;
   } catch (err) {
     console.error(`[pipeline] stage-1 ${label} failed:`, (err as Error).message);
+    await deps.prisma.dealAuditEvent
+      .create({
+        data: {
+          dealId: ctx.dealId,
+          kind: "agent_failed",
+          entity: label,
+          payload: {
+            runId: ctx.runId,
+            durationMs: Date.now() - startedAt,
+            error: (err as Error).message,
+          },
+        },
+      })
+      .catch(() => undefined);
     return null;
   }
+}
+
+interface AgentContextLike {
+  runId: string;
+  dealId: string;
 }

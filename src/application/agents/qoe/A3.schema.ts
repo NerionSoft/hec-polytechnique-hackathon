@@ -2,7 +2,7 @@ import { z } from "zod";
 import { GapSchema } from "../shared/evidence";
 import { SharedFindingSchema } from "../shared/findingShape";
 
-export const A3_SCHEMA_VERSION = "v1";
+export const A3_SCHEMA_VERSION = "v2";
 
 const QOE_CHECKLIST_ITEMS = [
   "revenue_recognition",
@@ -19,22 +19,15 @@ const QOE_CHECKLIST_ITEMS = [
 
 const A3FindingSchema = SharedFindingSchema.extend({
   checklist_item: z.enum(QOE_CHECKLIST_ITEMS),
-  category: z.literal("FINANCIAL"),
-  metric_observed: z.string().max(400).nullable().optional(),
-  potential_impact_on_ebitda_eur: z.number().nullable().optional(),
-  false_positive_check: z.string().max(300).nullable().optional(),
-  cross_ref: z
-    .object({
-      agent: z.enum(["A2", "A4", "A5", "A6", "A7", "A8", "A9"]),
-      purpose: z.string().max(160),
-    })
-    .optional(),
+  metric_observed: z.string().nullable(),
+  potential_impact_on_ebitda_eur: z.number().nullable(),
+  false_positive_check: z.string().nullable(),
 });
 
 export const A3OutputSchema = z.object({
   findings: z.array(A3FindingSchema),
-  clean_areas: z.array(z.enum(QOE_CHECKLIST_ITEMS)).default([]),
-  gaps: z.array(GapSchema).default([]),
+  clean_areas: z.array(z.enum(QOE_CHECKLIST_ITEMS)),
+  gaps: z.array(GapSchema),
 });
 
 export type A3Output = z.infer<typeof A3OutputSchema>;
