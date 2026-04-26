@@ -11,7 +11,7 @@ export function Navigation() {
       className={cn(
         "sticky top-0 z-40 w-full",
         "bg-background/40 backdrop-blur-[34px]",
-        "border-b border-foreground/[0.08]",
+        "border-foreground/[0.08] border-b",
       )}
     >
       <nav
@@ -30,29 +30,19 @@ export function Navigation() {
           )}
         >
           <BrandMark size={18} />
-          <span
-            className={cn(
-              "font-serif text-[18px] font-normal leading-none",
-              "tracking-tight",
-            )}
-          >
+          <span className={cn("font-serif text-[18px] leading-none font-normal", "tracking-tight")}>
             {brand.name}
           </span>
         </a>
 
-        <ul
-          className={cn(
-            "hidden items-center gap-8 md:flex",
-            "text-[14px] font-normal",
-          )}
-        >
+        <ul className={cn("hidden items-center gap-8 md:flex", "text-[14px] font-normal")}>
           {navigation.links.map((link) => (
             <li key={link.href}>
               <a
                 href={link.href}
                 className={cn(
                   "text-foreground/70 transition-opacity",
-                  "duration-200 ease-out hover:text-foreground",
+                  "hover:text-foreground duration-200 ease-out",
                 )}
               >
                 {link.label}

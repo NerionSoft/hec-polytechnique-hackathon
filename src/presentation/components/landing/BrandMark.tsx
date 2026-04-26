@@ -11,7 +11,7 @@ export function BrandMark({ className, size = 18 }: BrandMarkProps) {
     <Hexagon
       aria-hidden="true"
       strokeWidth={1.4}
-      className={cn("shrink-0 text-foreground", className)}
+      className={cn("text-foreground shrink-0", className)}
       style={undefined}
       width={size}
       height={size}

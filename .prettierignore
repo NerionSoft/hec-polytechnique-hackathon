@@ -1,0 +1,14 @@
+node_modules
+.next
+out
+build
+coverage
+dist
+public
+pnpm-lock.yaml
+next-env.d.ts
+*.tsbuildinfo
+.husky
+.vercel
+.scannerwork
+.idea

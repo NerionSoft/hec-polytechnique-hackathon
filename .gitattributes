@@ -1,0 +1,52 @@
+# Normalize all text files to LF in the repo, regardless of OS checkout.
+* text=auto eol=lf
+
+# Explicit text formats (defensive — overrides any local autocrlf=true).
+*.ts        text eol=lf
+*.tsx       text eol=lf
+*.js        text eol=lf
+*.jsx       text eol=lf
+*.mjs       text eol=lf
+*.cjs       text eol=lf
+*.json      text eol=lf
+*.jsonc     text eol=lf
+*.md        text eol=lf
+*.mdx       text eol=lf
+*.yml       text eol=lf
+*.yaml      text eol=lf
+*.css       text eol=lf
+*.scss      text eol=lf
+*.html      text eol=lf
+*.svg       text eol=lf
+*.sh        text eol=lf
+*.properties text eol=lf
+.gitignore  text eol=lf
+.gitattributes text eol=lf
+.husky/*    text eol=lf
+
+# Binary assets — never touch line endings, never diff as text.
+*.png       binary
+*.jpg       binary
+*.jpeg      binary
+*.gif       binary
+*.ico       binary
+*.webp      binary
+*.avif      binary
+*.woff      binary
+*.woff2     binary
+*.ttf       binary
+*.otf       binary
+*.eot       binary
+*.pdf       binary
+*.zip       binary
+*.gz        binary
+
+# Lockfile: keep as text (LF) but hide from PR diffs by default.
+pnpm-lock.yaml text eol=lf linguist-generated=true -diff
+
+# Exclude generated/vendored content from GitHub language stats.
+.next/**       linguist-generated=true
+out/**         linguist-generated=true
+build/**       linguist-generated=true
+coverage/**    linguist-generated=true
+public/**      linguist-vendored=true

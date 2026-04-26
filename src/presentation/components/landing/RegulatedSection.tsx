@@ -5,18 +5,12 @@ export function RegulatedSection() {
   const { regulated } = landingContent;
 
   return (
-    <section
-      id="about"
-      className={cn(
-        "mx-auto w-full max-w-[1200px] px-6",
-        "py-20",
-      )}
-    >
+    <section id="about" className={cn("mx-auto w-full max-w-[1200px] px-6", "py-20")}>
       <h2
         className={cn(
           "mb-12 max-w-[640px] whitespace-pre-line",
-          "font-serif text-[36px] font-light leading-tight",
-          "tracking-tight text-foreground sm:text-[44px]",
+          "font-serif text-[36px] leading-tight font-light",
+          "text-foreground tracking-tight sm:text-[44px]",
         )}
       >
         {regulated.title}
@@ -26,21 +20,8 @@ export function RegulatedSection() {
         {regulated.items.map((item) => (
           <article key={item.title} className="flex flex-col gap-3">
             <RegulatedIcon />
-            <h3
-              className={cn(
-                "text-[15px] font-medium text-foreground",
-              )}
-            >
-              {item.title}
-            </h3>
-            <p
-              className={cn(
-                "text-[13px] leading-relaxed",
-                "text-foreground/60",
-              )}
-            >
-              {item.body}
-            </p>
+            <h3 className={cn("text-foreground text-[15px] font-medium")}>{item.title}</h3>
+            <p className={cn("text-[13px] leading-relaxed", "text-foreground/60")}>{item.body}</p>
           </article>
         ))}
       </div>
@@ -50,11 +31,7 @@ export function RegulatedSection() {
 
 function RegulatedIcon() {
   return (
-    <svg
-      viewBox="0 0 24 24"
-      className="size-6 text-warm"
-      aria-hidden="true"
-    >
+    <svg viewBox="0 0 24 24" className="text-warm size-6" aria-hidden="true">
       <path
         d="M12 2 L20 6 V12 C20 17 16 21 12 22 C8 21 4 17 4 12 V6 L12 2 Z"
         fill="none"

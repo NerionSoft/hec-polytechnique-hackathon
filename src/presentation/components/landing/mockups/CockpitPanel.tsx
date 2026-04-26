@@ -30,17 +30,12 @@ export function CockpitPanel() {
     <aside
       className={cn(
         "hidden w-[260px] shrink-0 flex-col gap-4",
-        "border-l border-foreground/[0.08] p-4 lg:flex",
+        "border-foreground/[0.08] border-l p-4 lg:flex",
       )}
       aria-label="Deal panel"
     >
       <div>
-        <h5
-          className={cn(
-            "mb-2 text-[10px] uppercase tracking-[0.16em]",
-            "text-foreground/45",
-          )}
-        >
+        <h5 className={cn("mb-2 text-[10px] tracking-[0.16em] uppercase", "text-foreground/45")}>
           {stats.title}
         </h5>
         <ul className="flex flex-col gap-2">
@@ -50,21 +45,12 @@ export function CockpitPanel() {
               <li
                 key={s.label}
                 className={cn(
-                  "rounded-[12px] border border-foreground/10",
+                  "border-foreground/10 rounded-[12px] border",
                   "bg-foreground/[0.03] p-3",
                 )}
               >
-                <p className="text-[10.5px] text-foreground/55">
-                  {s.label}
-                </p>
-                <p
-                  className={cn(
-                    "mt-1 font-serif text-[18px]",
-                    "text-foreground",
-                  )}
-                >
-                  {s.value}
-                </p>
+                <p className="text-foreground/55 text-[10.5px]">{s.label}</p>
+                <p className={cn("mt-1 font-serif text-[18px]", "text-foreground")}>{s.value}</p>
                 <p
                   className={cn(
                     "mt-1 flex items-center gap-1.5 text-[10.5px]",
@@ -80,53 +66,22 @@ export function CockpitPanel() {
         </ul>
       </div>
 
-      <div
-        className={cn(
-          "rounded-[12px] border border-foreground/10",
-          "bg-foreground/[0.03] p-3",
-        )}
-      >
-        <p
-          className={cn(
-            "text-[10px] uppercase tracking-[0.16em]",
-            "text-foreground/45",
-          )}
-        >
+      <div className={cn("border-foreground/10 rounded-[12px] border", "bg-foreground/[0.03] p-3")}>
+        <p className={cn("text-[10px] tracking-[0.16em] uppercase", "text-foreground/45")}>
           {readiness.label}
         </p>
-        <p
-          className={cn(
-            "mt-1 font-serif text-[20px] text-foreground",
-          )}
-        >
-          {readiness.value}%
-        </p>
+        <p className={cn("text-foreground mt-1 font-serif text-[20px]")}>{readiness.value}%</p>
         <div
-          className={cn(
-            "mt-2 h-1.5 overflow-hidden rounded-full",
-            "bg-foreground/10",
-          )}
+          className={cn("mt-2 h-1.5 overflow-hidden rounded-full", "bg-foreground/10")}
           aria-hidden="true"
         >
-          <span
-            className={cn(
-              "block h-full rounded-full bg-accent",
-              "w-[87%]",
-            )}
-          />
+          <span className={cn("bg-accent block h-full rounded-full", "w-[87%]")} />
         </div>
-        <p className="mt-1.5 text-[10px] text-foreground/50">
-          {readiness.caption}
-        </p>
+        <p className="text-foreground/50 mt-1.5 text-[10px]">{readiness.caption}</p>
       </div>
 
       <div>
-        <h5
-          className={cn(
-            "mb-2 text-[10px] uppercase tracking-[0.16em]",
-            "text-foreground/45",
-          )}
-        >
+        <h5 className={cn("mb-2 text-[10px] tracking-[0.16em] uppercase", "text-foreground/45")}>
           {agents.title}
         </h5>
         <ul className="flex flex-col gap-1.5">

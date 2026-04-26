@@ -11,23 +11,10 @@ export function HeroSection() {
   return (
     <section
       id="top"
-      className={cn(
-        "relative isolate overflow-hidden",
-        "bg-background pb-24 pt-16",
-      )}
+      className={cn("relative isolate overflow-hidden", "bg-background pt-16 pb-24")}
     >
-      <div
-        aria-hidden="true"
-        className="absolute inset-0 -z-10"
-      >
-        <Image
-          src="/images/hero.jpg"
-          alt=""
-          fill
-          priority
-          sizes="100vw"
-          className="object-cover"
-        />
+      <div aria-hidden="true" className="absolute inset-0 -z-10">
+        <Image src="/images/hero.jpg" alt="" fill priority sizes="100vw" className="object-cover" />
       </div>
 
       <div
@@ -39,12 +26,12 @@ export function HeroSection() {
         <span
           className={cn(
             "flex items-center gap-2 rounded-full",
-            "border border-foreground/10 bg-foreground/[0.06]",
-            "px-3 py-1 text-[11px] uppercase tracking-[0.16em]",
+            "border-foreground/10 bg-foreground/[0.06] border",
+            "px-3 py-1 text-[11px] tracking-[0.16em] uppercase",
             "text-foreground/70 backdrop-blur-[34px]",
           )}
         >
-          <span className="size-1.5 rounded-full bg-accent" />
+          <span className="bg-accent size-1.5 rounded-full" />
           AI Due Diligence Copilot
         </span>
         <h1
@@ -56,12 +43,7 @@ export function HeroSection() {
         >
           {hero.title}
         </h1>
-        <p
-          className={cn(
-            "max-w-[560px] text-[16px] leading-relaxed",
-            "text-foreground/70",
-          )}
-        >
+        <p className={cn("max-w-[560px] text-[16px] leading-relaxed", "text-foreground/70")}>
           {hero.subtitle}
         </p>
         <div className="flex flex-wrap items-center justify-center gap-3">

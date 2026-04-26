@@ -11,23 +11,19 @@ export function DealCockpitMockup() {
     <div
       className={cn(
         "mx-auto w-full max-w-[1080px]",
-        "rounded-[28px] border border-foreground/10",
+        "border-foreground/10 rounded-[28px] border",
         "bg-foreground/[0.03] p-2 backdrop-blur-[34px]",
         "shadow-[0_50px_140px_-40px_rgba(0,0,0,0.7)]",
       )}
     >
       <div
         className={cn(
-          "rounded-[22px] border border-foreground/[0.08]",
+          "border-foreground/[0.08] rounded-[22px] border",
           "bg-background/80 backdrop-blur-[34px]",
         )}
       >
         <CockpitTopBar />
-        <div
-          className={cn(
-            "flex min-h-[520px] divide-x divide-foreground/[0.08]",
-          )}
-        >
+        <div className={cn("divide-foreground/[0.08] flex min-h-[520px] divide-x")}>
           <CockpitNav />
           <CockpitStream />
           <CockpitPanel />
@@ -44,57 +40,36 @@ function CockpitTopBar() {
     <div
       className={cn(
         "flex items-center justify-between gap-4",
-        "border-b border-foreground/[0.08] px-5 py-3.5",
+        "border-foreground/[0.08] border-b px-5 py-3.5",
       )}
     >
-      <div className="flex items-center gap-3 min-w-0">
+      <div className="flex min-w-0 items-center gap-3">
         <span
-          className={cn(
-            "flex size-7 items-center justify-center",
-            "rounded-full bg-foreground/10",
-          )}
+          className={cn("flex size-7 items-center justify-center", "bg-foreground/10 rounded-full")}
           aria-hidden="true"
         >
-          <Sparkles
-            strokeWidth={1.6}
-            className="size-3.5 text-foreground/80"
-          />
+          <Sparkles strokeWidth={1.6} className="text-foreground/80 size-3.5" />
         </span>
         <div className="min-w-0">
-          <p
-            className={cn(
-              "truncate font-serif text-[15px]",
-              "tracking-tight text-foreground",
-            )}
-          >
+          <p className={cn("truncate font-serif text-[15px]", "text-foreground tracking-tight")}>
             {cockpit.deal}
           </p>
-          <p
-            className={cn(
-              "truncate text-[11px] text-foreground/50",
-            )}
-          >
-            {cockpit.breadcrumb}
-          </p>
+          <p className={cn("text-foreground/50 truncate text-[11px]")}>{cockpit.breadcrumb}</p>
         </div>
       </div>
       <div className="flex items-center gap-2">
         <span
           className={cn(
             "flex items-center gap-1.5 rounded-full",
-            "border border-warm/30 bg-warm/10 px-2.5 py-1",
-            "text-[10.5px] uppercase tracking-[0.14em]",
+            "border-warm/30 bg-warm/10 border px-2.5 py-1",
+            "text-[10.5px] tracking-[0.14em] uppercase",
             "text-warm",
           )}
         >
           <CircleDot strokeWidth={1.8} className="size-3" />
           {cockpit.statusLabel}
         </span>
-        <span
-          className={cn(
-            "hidden text-[11px] text-foreground/50 sm:inline",
-          )}
-        >
+        <span className={cn("text-foreground/50 hidden text-[11px] sm:inline")}>
           {cockpit.period}
         </span>
         <button
@@ -102,7 +77,7 @@ function CockpitTopBar() {
           aria-label="More options"
           className={cn(
             "flex size-7 items-center justify-center",
-            "rounded-full text-foreground/60",
+            "text-foreground/60 rounded-full",
             "hover:bg-foreground/[0.06] hover:text-foreground",
           )}
         >
@@ -119,12 +94,10 @@ function CockpitFooter() {
     <div
       className={cn(
         "flex flex-wrap items-center justify-between gap-3",
-        "border-t border-foreground/[0.08] px-5 py-3",
+        "border-foreground/[0.08] border-t px-5 py-3",
       )}
     >
-      <p className="text-[11px] text-foreground/50">
-        Last sync · 12 seconds ago
-      </p>
+      <p className="text-foreground/50 text-[11px]">Last sync · 12 seconds ago</p>
       <div className="flex items-center gap-2">
         <GlassButton size="sm" variant="ghost">
           <Download strokeWidth={1.6} className="size-3.5" />
