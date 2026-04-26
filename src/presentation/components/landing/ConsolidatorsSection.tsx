@@ -36,7 +36,7 @@ export function ConsolidatorsSection() {
           )}
         >
           <Image
-            src="/images/card.jpg"
+            src="/images/card3.jpg"
             alt=""
             fill
             sizes="(min-width: 1024px) 60vw, 100vw"
@@ -44,7 +44,8 @@ export function ConsolidatorsSection() {
           />
           <div
             className={cn(
-              "relative z-10 flex h-full items-end p-6",
+              "relative z-10 flex h-full items-center",
+              "justify-center p-6",
             )}
           >
             <div

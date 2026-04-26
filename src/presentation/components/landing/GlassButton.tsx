@@ -1,7 +1,6 @@
 import {
   forwardRef,
   type ComponentPropsWithoutRef,
-  type ReactNode,
 } from "react";
 import { cn } from "@/src/presentation/lib/cn";
 
@@ -11,16 +10,16 @@ type GlassButtonSize = "sm" | "md";
 interface GlassButtonProps extends ComponentPropsWithoutRef<"button"> {
   variant?: GlassButtonVariant;
   size?: GlassButtonSize;
-  leadingIcon?: ReactNode;
-  trailingIcon?: ReactNode;
 }
 
 const base = cn(
-  "inline-flex items-center justify-center gap-2",
+  "inline-flex flex-row flex-nowrap items-center justify-center",
+  "gap-2 whitespace-nowrap leading-none",
   "rounded-[50px] font-medium tracking-tight",
   "transition-all duration-200 ease-out",
   "focus-visible:outline-none focus-visible:ring-2",
   "focus-visible:ring-foreground/40",
+  "[&>svg]:shrink-0 [&>svg]:inline-block",
 );
 
 const variants: Record<GlassButtonVariant, string> = {
@@ -51,8 +50,6 @@ const GlassButton = forwardRef<HTMLButtonElement, GlassButtonProps>(
       className,
       variant = "glass",
       size = "md",
-      leadingIcon,
-      trailingIcon,
       children,
       type = "button",
       ...props
@@ -66,13 +63,7 @@ const GlassButton = forwardRef<HTMLButtonElement, GlassButtonProps>(
         className={cn(base, variants[variant], sizes[size], className)}
         {...props}
       >
-        {leadingIcon ? (
-          <span className="grid place-items-center">{leadingIcon}</span>
-        ) : null}
-        <span>{children}</span>
-        {trailingIcon ? (
-          <span className="grid place-items-center">{trailingIcon}</span>
-        ) : null}
+        {children}
       </button>
     );
   },

@@ -15,8 +15,7 @@ export function FooterSection() {
       >
         <div
           className={cn(
-            "flex flex-col gap-6 border-b border-foreground/[0.08]",
-            "pb-10 md:flex-row md:items-end md:justify-between",
+            "border-b border-foreground/[0.08] pb-10",
           )}
         >
           <p
@@ -27,21 +26,6 @@ export function FooterSection() {
           >
             {footer.disclaimer}
           </p>
-          <div
-            className={cn(
-              "flex items-center gap-3",
-              "text-[12px] text-foreground/60",
-            )}
-          >
-            <span>{footer.powered}</span>
-            <span
-              className={cn(
-                "font-serif text-[16px] text-foreground/80",
-              )}
-            >
-              {footer.poweredBy}
-            </span>
-          </div>
         </div>
 
         <div

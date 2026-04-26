@@ -36,22 +36,11 @@ export function HeroSection() {
           "flex-col items-center gap-8 px-6 pt-20 text-center",
         )}
       >
-        <span
-          className={cn(
-            "flex items-center gap-2 rounded-full",
-            "border border-foreground/10 bg-foreground/[0.06]",
-            "px-3 py-1 text-[11px] uppercase tracking-[0.16em]",
-            "text-foreground/70 backdrop-blur-[34px]",
-          )}
-        >
-          <span className="size-1.5 rounded-full bg-accent" />
-          AI Due Diligence Copilot
-        </span>
         <h1
           className={cn(
-            "max-w-[820px] font-serif font-light",
-            "text-[44px] leading-[1.05] tracking-[-0.02em]",
-            "text-foreground sm:text-[56px] md:text-[64px]",
+            "max-w-[860px] font-display font-extrabold",
+            "text-[44px] leading-[1.02] tracking-[-0.035em]",
+            "text-foreground sm:text-[58px] md:text-[68px]",
           )}
         >
           {hero.title}
