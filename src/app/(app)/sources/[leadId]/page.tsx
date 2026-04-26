@@ -142,15 +142,45 @@ export default async function LeadDetailPage({ params }: { params: Promise<{ lea
               </span>
             )}
             {j.website && (
-              <a
-                href={j.website}
-                target="_blank"
-                rel="noreferrer"
-                className="text-foreground/65 inline-flex items-center gap-0.5 underline-offset-2 hover:underline"
-              >
-                {j.website.replace(/^https?:\/\//, "").replace(/\/$/, "")}
-                <ExternalLink strokeWidth={1.6} className="size-3" />
-              </a>
+              <>
+                <a
+                  href={j.website}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-foreground/65 inline-flex items-center gap-0.5 underline-offset-2 hover:underline"
+                >
+                  {j.website.replace(/^https?:\/\//, "").replace(/\/$/, "")}
+                  <ExternalLink strokeWidth={1.6} className="size-3" />
+                </a>
+                {j.websiteDiscoverySource && (
+                  <span
+                    className="text-foreground/45 tabular"
+                    title={
+                      j.websiteDiscoveredAt
+                        ? `Auto-discovered ${j.websiteDiscoveredAt.toISOString().slice(0, 10)}`
+                        : "Auto-discovered"
+                    }
+                  >
+                    via {j.websiteDiscoverySource}
+                  </span>
+                )}
+                {snapshot ? (
+                  <span
+                    className="border-sev-low/30 bg-sev-low/[0.06] text-sev-low inline-flex items-center gap-1 rounded-full border px-1.5 py-0.5 tracking-[0.10em] uppercase"
+                    title={`Snapshot fetched ${snapshot.fetchedAt.toISOString()}`}
+                  >
+                    <span className="bg-sev-low size-1 rounded-full" />
+                    Scraped
+                  </span>
+                ) : (
+                  <span
+                    className="border-foreground/15 text-foreground/45 inline-flex items-center gap-1 rounded-full border border-dashed px-1.5 py-0.5 tracking-[0.10em] uppercase"
+                    title="Website discovered but not yet scraped — run Enrich to fetch a snapshot."
+                  >
+                    Not scraped
+                  </span>
+                )}
+              </>
             )}
           </div>
         </div>
