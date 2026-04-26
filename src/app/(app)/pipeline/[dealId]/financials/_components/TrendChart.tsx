@@ -47,8 +47,8 @@ export function TrendChart({ data }: { data: FinancialsHelios["trend"] }) {
               padding: "8px 10px",
             }}
             labelStyle={{ color: "hsl(var(--muted))", marginBottom: 4 }}
-            formatter={(v: number, name: string) => [
-              `€${v.toFixed(1)}M`,
+            formatter={(v, name) => [
+              `€${Number(v).toFixed(1)}M`,
               name === "revenue" ? "Revenue" : "EBITDA",
             ]}
           />
@@ -68,12 +68,12 @@ export function TrendChart({ data }: { data: FinancialsHelios["trend"] }) {
           />
         </AreaChart>
       </ResponsiveContainer>
-      <div className="mt-2 flex items-center justify-end gap-4 px-2 text-[11px] text-foreground/60">
+      <div className="text-foreground/60 mt-2 flex items-center justify-end gap-4 px-2 text-[11px]">
         <span className="flex items-center gap-1.5">
-          <span className="h-0.5 w-3 rounded bg-accent" /> Revenue
+          <span className="bg-accent h-0.5 w-3 rounded" /> Revenue
         </span>
         <span className="flex items-center gap-1.5">
-          <span className="h-0.5 w-3 rounded bg-warm" /> EBITDA
+          <span className="bg-warm h-0.5 w-3 rounded" /> EBITDA
         </span>
       </div>
     </div>
