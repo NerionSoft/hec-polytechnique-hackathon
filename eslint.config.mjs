@@ -7,7 +7,15 @@ const eslintConfig = defineConfig([
   ...nextVitals,
   ...nextTs,
   prettier,
-  globalIgnores([".next/**", "out/**", "build/**", "next-env.d.ts"]),
+  {
+    files: ["**/*.test.ts", "**/*.test.tsx", "**/*.integration.test.ts", "**/*.spec.ts"],
+    rules: {
+      "@typescript-eslint/no-explicit-any": "off",
+      "@typescript-eslint/no-non-null-assertion": "off",
+      "@typescript-eslint/no-unused-vars": "off",
+    },
+  },
+  globalIgnores([".next/**", "out/**", "build/**", "coverage/**", "next-env.d.ts"]),
 ]);
 
 export default eslintConfig;

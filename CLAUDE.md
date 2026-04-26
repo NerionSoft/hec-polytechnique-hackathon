@@ -24,9 +24,21 @@ pnpm lint:fix         # ESLint with --fix
 pnpm format           # Prettier write
 pnpm format:check     # Prettier check (CI parity)
 pnpm typecheck        # tsc --noEmit
+
+pnpm test             # Vitest run (unit + integration)
+pnpm test:watch       # Vitest watch mode
+pnpm test:unit        # Only src/application/**/*.test.ts
+pnpm test:integration # Only src/infrastructure/**/*.integration.test.ts
+pnpm test:coverage    # Both projects + lcov for Sonar
 ```
 
-There is no test runner wired up yet. If you add one, also add a CI job — current `.github/workflows/ci.yml` only runs lint/format/typecheck → build + sonar.
+### Testing scope
+
+- `src/application/` — unit tests next to the code (`*.test.ts`), in-process, no I/O.
+- `src/infrastructure/` — integration tests next to the code (`*.integration.test.ts`); may hit real services (DB, S3, mocked LLM).
+- `src/app/` and `src/presentation/` — **not tested**, only linted/formatted. Excluded from Vitest `include` and from Sonar coverage math.
+
+The two test types are configured as Vitest `projects` in `vitest.config.ts`, selected via `--project unit` / `--project integration`. `passWithNoTests` is on so empty layers don't break CI.
 
 ## Architecture
 
@@ -47,10 +59,18 @@ Three Google fonts (Inter, PT Serif, Urbanist) are loaded in `src/app/layout.tsx
 
 ## CI / Release
 
-- **CI** (`.github/workflows/ci.yml`) runs on push/PR to `main`: `lint`, `format`, `typecheck` in parallel, then `build` and `sonarcloud` after they pass. Node 24, pinned action SHAs, concurrency cancels in-flight runs on the same ref.
+- **CI** (`.github/workflows/ci.yml`) runs on push/PR to `main`: `lint`, `format`, `typecheck` in parallel → `test-unit` (with coverage upload) and `test-integration` in parallel → `build` and `sonarcloud`. Build blocks on unit tests; Sonar pulls the `coverage` artifact. Node 24, pinned action SHAs, concurrency cancels in-flight runs on the same ref.
 - **Release** (`.github/workflows/release.yml`) uses **release-please** (config: `release-please-config.json`, manifest: `.release-please-manifest.json`) on push to `main`, then maintains floating `vMAJOR` and `vMAJOR.MINOR` tags. Commit messages should follow Conventional Commits so release-please can compute the next version.
 - **SonarCloud** project: `NerionSoft_hec-polytechnique-hackathon` (org `nerionsoft`). Requires `SONAR_TOKEN` repo secret. `sonar.sources=src`.
 
 ## Local hooks
 
 `husky` is installed via `pnpm install`'s `prepare` script. The `.husky/pre-commit` hook runs `lint-staged` (ESLint --fix + Prettier on staged files). Pair changes to lint or format rules with a manual `pnpm format` so commits don't get rewritten unexpectedly.
+
+To verify Husky is wired up after a fresh clone: `git config --get core.hooksPath` should return `.husky/_`. If empty, `pnpm install` hasn't run yet.
+
+## Repo conventions
+
+- **Line endings**: `.gitattributes` forces `eol=lf` on all text files. Don't override with `core.autocrlf=true`; the repo will renormalize on commit anyway.
+- **pnpm postinstall opt-out**: `pnpm-workspace.yaml` lists `ignoredBuiltDependencies: [sharp, unrs-resolver]`. This is intentional — pnpm 10 blocks postinstall scripts by default and these two don't need to run for the landing site. Don't remove without checking why a downstream feature actually needs them.
+- **Landing copy source of truth**: edit `src/presentation/content/landing.content.ts`. Note that `<title>` / `<meta description>` in `src/app/layout.tsx` are _separate_ from that content file — when reframing the product narrative, update both.
