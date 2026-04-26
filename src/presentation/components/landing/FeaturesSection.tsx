@@ -5,35 +5,23 @@ export function FeaturesSection() {
   const { features } = landingContent;
 
   return (
-    <section
-      id="features"
-      className={cn(
-        "mx-auto w-full max-w-[1200px] px-6",
-        "py-20",
-      )}
-    >
+    <section id="features" className={cn("mx-auto w-full max-w-[1200px] px-6", "py-20")}>
       <div className="mb-12 flex flex-col gap-5 md:max-w-[640px]">
         <h2
           className={cn(
-            "font-serif text-[36px] font-light leading-tight",
-            "tracking-tight text-foreground sm:text-[44px]",
+            "font-serif text-[36px] leading-tight font-light",
+            "text-foreground tracking-tight sm:text-[44px]",
           )}
         >
           {features.title}
         </h2>
-        <p
-          className={cn(
-            "text-[15px] leading-relaxed text-foreground/70",
-          )}
-        >
-          {features.subtitle}
-        </p>
+        <p className={cn("text-foreground/70 text-[15px] leading-relaxed")}>{features.subtitle}</p>
       </div>
 
       <div
         className={cn(
-          "grid gap-px rounded-[24px] overflow-hidden",
-          "border border-foreground/10 bg-foreground/[0.06]",
+          "grid gap-px overflow-hidden rounded-[24px]",
+          "border-foreground/10 bg-foreground/[0.06] border",
           "sm:grid-cols-2 lg:grid-cols-3",
         )}
       >
@@ -51,25 +39,18 @@ function FeatureTile({ item }: { item: Item }) {
   return (
     <article
       className={cn(
-        "flex flex-col gap-4 bg-background p-7",
+        "bg-background flex flex-col gap-4 p-7",
         "transition-colors duration-200 ease-out",
         "hover:bg-foreground/[0.04]",
       )}
     >
       <div className="flex items-center justify-between">
-        <h3
-          className={cn(
-            "font-serif text-[20px] font-normal tracking-tight",
-            "text-foreground",
-          )}
-        >
+        <h3 className={cn("font-serif text-[20px] font-normal tracking-tight", "text-foreground")}>
           {item.title}
         </h3>
         <CoverageBadge value={item.coverage} />
       </div>
-      <p className="text-[13px] leading-relaxed text-foreground/70">
-        {item.body}
-      </p>
+      <p className="text-foreground/70 text-[13px] leading-relaxed">{item.body}</p>
     </article>
   );
 }
@@ -78,9 +59,9 @@ function CoverageBadge({ value }: { value: string }) {
   return (
     <span
       className={cn(
-        "rounded-full border border-accent/40",
+        "border-accent/40 rounded-full border",
         "bg-accent/10 px-3 py-1 text-[11px]",
-        "font-medium tracking-tight text-accent",
+        "text-accent font-medium tracking-tight",
       )}
     >
       {value} automated

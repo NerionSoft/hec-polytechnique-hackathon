@@ -41,7 +41,7 @@ export function ProductsSection() {
         {products.title}
       </h2>
 
-      <div className="grid gap-6 md:grid-cols-2">
+      <div className="grid gap-8 md:grid-cols-2">
         {products.cards.map((card) => (
           <ProductCard key={card.title} card={card} />
         ))}
@@ -61,12 +61,12 @@ function ProductCard({ card }: { card: Card }) {
     >
       <div
         className={cn(
-          "relative flex h-[260px] items-center justify-center",
+          "relative flex h-[420px] items-center justify-center",
           "overflow-hidden border-b border-foreground/10",
         )}
       >
         <Image
-          src="/images/card.jpg"
+          src={card.image}
           alt=""
           fill
           sizes="(min-width: 768px) 50vw, 100vw"
@@ -80,10 +80,10 @@ function ProductCard({ card }: { card: Card }) {
           )}
         </div>
       </div>
-      <div className="flex flex-col gap-4 p-6">
+      <div className="flex flex-col gap-5 p-10">
         <span
           className={cn(
-            "text-[11px] uppercase tracking-[0.16em]",
+            "text-[12px] uppercase tracking-[0.18em]",
             "text-foreground/50",
           )}
         >
@@ -91,17 +91,22 @@ function ProductCard({ card }: { card: Card }) {
         </span>
         <h3
           className={cn(
-            "font-serif text-[24px] font-normal",
-            "tracking-tight text-foreground",
+            "font-serif text-[34px] font-normal leading-[1.1]",
+            "tracking-tight text-foreground sm:text-[40px]",
           )}
         >
           {card.title}
         </h3>
-        <p className="text-[14px] text-foreground/70">
+        <p
+          className={cn(
+            "max-w-[480px] text-[16px] leading-relaxed",
+            "text-foreground/70",
+          )}
+        >
           {card.description}
         </p>
-        <div className="pt-2">
-          <GlassButton size="sm" variant="glass">
+        <div className="pt-3">
+          <GlassButton size="md" variant="glass">
             {card.cta}
           </GlassButton>
         </div>
@@ -114,20 +119,20 @@ function RecordingVisual({ label }: { label: string }) {
   return (
     <div
       className={cn(
-        "mx-auto flex h-14 w-full max-w-[320px]",
-        "items-center gap-3 rounded-[100px]",
+        "mx-auto flex h-16 w-full max-w-[420px]",
+        "items-center gap-4 rounded-[100px]",
         "border border-foreground/10",
-        "bg-foreground/[0.06] px-5 backdrop-blur-[34px]",
+        "bg-foreground/[0.06] px-7 backdrop-blur-[34px]",
       )}
     >
-      <span className="size-2 rounded-full bg-warm" />
-      <span className="text-[13px] text-foreground/80">{label}</span>
-      <span className="ml-auto flex items-center gap-1">
+      <span className="size-2.5 rounded-full bg-warm" />
+      <span className="text-[15px] text-foreground/80">{label}</span>
+      <span className="ml-auto flex items-center gap-1.5">
         {WAVEFORM_HEIGHTS.map((h, idx) => (
           <span
             key={`${idx}-${h}`}
             className={cn(
-              "block w-[2px] rounded-full bg-foreground/40",
+              "block w-[3px] rounded-full bg-foreground/40",
               h,
             )}
           />
@@ -146,30 +151,38 @@ function PerformanceVisual({ visual }: { visual: PerformanceVisual }) {
   return (
     <div
       className={cn(
-        "mx-auto w-full max-w-[360px] rounded-[18px]",
+        "mx-auto w-full max-w-[460px] rounded-[20px]",
         "border border-foreground/10 bg-background/60",
-        "p-5 backdrop-blur-[34px]",
+        "p-7 backdrop-blur-[34px]",
       )}
     >
-      <p className="text-[11px] uppercase tracking-[0.14em] text-foreground/50">
+      <p
+        className={cn(
+          "text-[12px] uppercase tracking-[0.16em]",
+          "text-foreground/50",
+        )}
+      >
         {visual.heading}
       </p>
       <p
         className={cn(
-          "mt-1 font-serif text-[28px] font-normal",
+          "mt-2 font-serif text-[40px] font-normal",
           "tracking-tight text-foreground",
         )}
       >
         {visual.value}
       </p>
-      <p className="mt-1 text-[11px] text-foreground/50">
+      <p className="mt-1 text-[12px] text-foreground/50">
         {visual.period}
       </p>
-      <ul className="mt-4 space-y-2 text-[12px]">
+      <ul className="mt-5 space-y-2.5 text-[13px]">
         {visual.rows.map((row) => (
           <li
             key={row.label}
-            className="flex justify-between text-foreground/70"
+            className={cn(
+              "flex justify-between rounded-md",
+              "bg-foreground/[0.03] px-3 py-2 text-foreground/70",
+            )}
           >
             <span>{row.label}</span>
             <span className="flex gap-3 text-foreground/60">

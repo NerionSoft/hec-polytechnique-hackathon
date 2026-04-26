@@ -29,22 +29,13 @@ export const metadata: Metadata = {
     "generation of financial advisers.",
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{ children: React.ReactNode }>) {
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html
       lang="en"
-      className={[
-        inter.variable,
-        ptSerif.variable,
-        urbanist.variable,
-        "antialiased",
-      ].join(" ")}
+      className={[inter.variable, ptSerif.variable, urbanist.variable, "antialiased"].join(" ")}
     >
-      <body className="min-h-screen bg-background text-foreground">
-        {children}
-      </body>
+      <body className="bg-background text-foreground min-h-screen">{children}</body>
     </html>
   );
 }

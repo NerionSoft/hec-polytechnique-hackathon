@@ -71,14 +71,10 @@ export const landingContent = {
     stats: {
       title: "Snapshot",
       items: [
-        { label: "Revenue FY24", value: "€31.0M", trend: "up" as const,
-          delta: "+18%" },
-        { label: "EBITDA", value: "€4.2M", trend: "up" as const,
-          delta: "13.5% margin" },
-        { label: "Net Debt / EBITDA", value: "3.4×",
-          trend: "down" as const, delta: "-0.2× YoY" },
-        { label: "Top-3 customers", value: "64%",
-          trend: "warn" as const, delta: "concentrated" },
+        { label: "Revenue FY24", value: "€31.0M", trend: "up" as const, delta: "+18%" },
+        { label: "EBITDA", value: "€4.2M", trend: "up" as const, delta: "13.5% margin" },
+        { label: "Net Debt / EBITDA", value: "3.4×", trend: "down" as const, delta: "-0.2× YoY" },
+        { label: "Top-3 customers", value: "64%", trend: "warn" as const, delta: "concentrated" },
       ],
     },
     readiness: {
@@ -117,17 +113,13 @@ export const landingContent = {
       {
         id: "02",
         title: "Financial snapshot",
-        body:
-          "Revenue €31.0M, EBITDA €4.2M (13.5% margin), Net Debt " +
-          "€14.3M, growth +18% YoY.",
+        body: "Revenue €31.0M, EBITDA €4.2M (13.5% margin), Net Debt " + "€14.3M, growth +18% YoY.",
         citation: "P&L 2024.pdf · p.04",
       },
       {
         id: "03",
         title: "Customer concentration risk",
-        body:
-          "Top-3 = 64% of revenue. Retention >92% over 5 years " +
-          "but renewal cycle Q4 2026.",
+        body: "Top-3 = 64% of revenue. Retention >92% over 5 years " + "but renewal cycle Q4 2026.",
         citation: "Annexe-3.xlsx · p.12",
       },
     ],
@@ -144,9 +136,7 @@ export const landingContent = {
     label: "Built for PE deal teams investing in",
     logos: ["Services", "Healthcare", "Energy", "Agriculture"],
     cookies: {
-      message:
-        "We use cookies to personalize content and analyze " +
-        "platform usage.",
+      message: "We use cookies to personalize content and analyze " + "platform usage.",
       cta: "Okay",
     },
   },
@@ -160,6 +150,7 @@ export const landingContent = {
           "Upload a data room. Get sourced red flags, management " +
           "questions and a draft IC memo with citations — in 30 minutes.",
         cta: "See it run",
+        image: "/images/card1.jpg",
         visual: {
           kind: "recording" as const,
           label: "Analyzing 247 documents...",
@@ -172,6 +163,7 @@ export const landingContent = {
           "Score targets against your investment thesis, enrich " +
           "with financials, and trigger outreach — wired to your CRM.",
         cta: "Join waitlist",
+        image: "/images/card2.jpg",
         visual: {
           kind: "performance" as const,
           heading: "Pipeline coverage",
@@ -203,80 +195,60 @@ export const landingContent = {
   },
   pipeline: {
     title: "From lead to IC decision\nin one workflow",
-    subtitle:
-      "End-to-end automation with human checkpoints where it " +
-      "matters most.",
+    subtitle: "End-to-end automation with human checkpoints where it " + "matters most.",
     stages: [
       {
         id: "01",
         title: "Lead Sourcing",
-        body:
-          "Scraping and ingestion across deal networks, brokers " +
-          "and public registries.",
+        body: "Scraping and ingestion across deal networks, brokers " + "and public registries.",
         coverage: "100%",
       },
       {
         id: "02",
         title: "Enrichment",
-        body:
-          "Financials, headcount, ownership and intent signals " +
-          "layered onto every target.",
+        body: "Financials, headcount, ownership and intent signals " + "layered onto every target.",
         coverage: "100%",
       },
       {
         id: "03",
         title: "Thesis Scoring",
-        body:
-          "Each target ranked against your fund's mandate and " +
-          "investment thesis.",
+        body: "Each target ranked against your fund's mandate and " + "investment thesis.",
         coverage: "100%",
       },
       {
         id: "04",
         title: "Outreach",
-        body:
-          "Personalized intros, replies and meeting scheduling — " +
-          "your tone, your CRM.",
+        body: "Personalized intros, replies and meeting scheduling — " + "your tone, your CRM.",
         coverage: "85%",
       },
       {
         id: "05",
         title: "Virtual Data Room",
-        body:
-          "Secure upload with RBAC. Documents auto-categorized " +
-          "on ingest.",
+        body: "Secure upload with RBAC. Documents auto-categorized " + "on ingest.",
         coverage: "100%",
       },
       {
         id: "06",
         title: "Due Diligence Agents",
-        body:
-          "Specialized agents for finance, legal, commercial, HR " +
-          "and IT workstreams.",
+        body: "Specialized agents for finance, legal, commercial, HR " + "and IT workstreams.",
         coverage: "92%",
       },
       {
         id: "07",
         title: "Risk Engine",
-        body:
-          "Sourced red and green flags with severity scoring " +
-          "across every workstream.",
+        body: "Sourced red and green flags with severity scoring " + "across every workstream.",
         coverage: "92%",
       },
       {
         id: "08",
         title: "Human Review",
-        body:
-          "Analysts validate, comment and override before " +
-          "anything ships to the IC.",
+        body: "Analysts validate, comment and override before " + "anything ships to the IC.",
         coverage: "Human",
       },
       {
         id: "09",
         title: "IC Memo",
-        body:
-          "Decision-ready memo with citations, charts and a " +
-          "management Q&A appendix.",
+        body: "Decision-ready memo with citations, charts and a " + "management Q&A appendix.",
         coverage: "100%",
       },
     ],
@@ -285,9 +257,7 @@ export const landingContent = {
     title: "The deal workspace\nfor lean PE teams",
     column: {
       heading: "Lower-mid-market PE",
-      lead:
-        "Small teams, manual workflows. The biggest efficiency " +
-        "wins are right here.",
+      lead: "Small teams, manual workflows. The biggest efficiency " + "wins are right here.",
       sectionTitle: "Deal workspace",
       body:
         "A shared cockpit for the deal team. Every analyst, " +
@@ -305,72 +275,52 @@ export const landingContent = {
   },
   features: {
     title: "Decision-grade output",
-    subtitle:
-      "Not summaries. A PE-grade memo with a traceable source " +
-      "on every claim.",
+    subtitle: "Not summaries. A PE-grade memo with a traceable source " + "on every claim.",
     items: [
       {
         title: "Deal thesis",
         coverage: "100%",
-        body:
-          "Pre-filled from your fund's mandate and the target's " +
-          "profile.",
+        body: "Pre-filled from your fund's mandate and the target's " + "profile.",
       },
       {
         title: "Financial snapshot",
         coverage: "100%",
-        body:
-          "Revenue, EBITDA, debt and growth normalized across " +
-          "reporting years.",
+        body: "Revenue, EBITDA, debt and growth normalized across " + "reporting years.",
       },
       {
         title: "EBITDA adjustments",
         coverage: "95%",
-        body:
-          "One-offs, run-rate and pro-forma bridges with " +
-          "footnoted sources.",
+        body: "One-offs, run-rate and pro-forma bridges with " + "footnoted sources.",
       },
       {
         title: "Customer concentration",
         coverage: "100%",
-        body:
-          "Top-N exposure and contract duration risk by client " +
-          "and segment.",
+        body: "Top-N exposure and contract duration risk by client " + "and segment.",
       },
       {
         title: "Debt & covenant risks",
         coverage: "92%",
-        body:
-          "Maturity walls, headroom analysis and covenant " +
-          "breaches with citations.",
+        body: "Maturity walls, headroom analysis and covenant " + "breaches with citations.",
       },
       {
         title: "Quality of earnings",
         coverage: "90%",
-        body:
-          "Flags on revenue recognition, working capital and " +
-          "cash conversion.",
+        body: "Flags on revenue recognition, working capital and " + "cash conversion.",
       },
       {
         title: "Commercial DD questions",
         coverage: "85%",
-        body:
-          "Targeted questions ready to send to commercial " +
-          "advisors and management.",
+        body: "Targeted questions ready to send to commercial " + "advisors and management.",
       },
       {
         title: "Legal red flags",
         coverage: "88%",
-        body:
-          "Risky clauses, litigation exposure, IP and ownership " +
-          "issues surfaced.",
+        body: "Risky clauses, litigation exposure, IP and ownership " + "issues surfaced.",
       },
       {
         title: "Management questions",
         coverage: "100%",
-        body:
-          "Sharp, sourced questions ready for the next " +
-          "management meeting.",
+        body: "Sharp, sourced questions ready for the next " + "management meeting.",
       },
     ],
   },
@@ -399,8 +349,7 @@ export const landingContent = {
         "Audit logs",
         "Custom investment thesis",
       ],
-      footer:
-        "Everything for single funds — across your whole platform.",
+      footer: "Everything for single funds — across your whole platform.",
     },
   },
   regulated: {
@@ -408,21 +357,15 @@ export const landingContent = {
     items: [
       {
         title: "Sourced on every line",
-        body:
-          "Every claim cites the underlying document, page and " +
-          "clause.",
+        body: "Every claim cites the underlying document, page and " + "clause.",
       },
       {
         title: "Secure by default",
-        body:
-          "RBAC, SSO and encrypted virtual data rooms hosted in " +
-          "the EU.",
+        body: "RBAC, SSO and encrypted virtual data rooms hosted in " + "the EU.",
       },
       {
         title: "Audit-ready logs",
-        body:
-          "Every action, every export, every override is " +
-          "traceable.",
+        body: "Every action, every export, every override is " + "traceable.",
       },
     ],
   },
@@ -437,29 +380,15 @@ export const landingContent = {
     columns: [
       {
         heading: "Product",
-        items: [
-          "AI Due Diligence",
-          "Lead Sourcing",
-          "Virtual Data Room",
-        ],
+        items: ["AI Due Diligence", "Lead Sourcing", "Virtual Data Room"],
       },
       {
         heading: "Athena",
-        items: [
-          "About",
-          "Customers",
-          "Careers",
-          "Contact",
-          "LinkedIn",
-        ],
+        items: ["About", "Customers", "Careers", "Contact", "LinkedIn"],
       },
       {
         heading: "Trust",
-        items: [
-          "Privacy Policy",
-          "Terms of Service",
-          "Security",
-        ],
+        items: ["Privacy Policy", "Terms of Service", "Security"],
       },
     ],
     copyright:
