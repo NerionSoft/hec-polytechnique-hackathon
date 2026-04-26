@@ -7,16 +7,11 @@ interface PageHeaderProps {
   className?: string;
 }
 
-export function PageHeader({
-  title,
-  description,
-  action,
-  className,
-}: PageHeaderProps) {
+export function PageHeader({ title, description, action, className }: PageHeaderProps) {
   return (
     <div
       className={cn(
-        "flex flex-col gap-3 px-8 pb-6 pt-8",
+        "flex flex-col gap-3 px-8 pt-8 pb-6",
         "sm:flex-row sm:items-end sm:justify-between",
         className,
       )}
@@ -24,15 +19,13 @@ export function PageHeader({
       <div className="flex flex-col gap-1.5">
         <h1
           className={cn(
-            "font-serif text-[28px] font-normal leading-[1.1]",
-            "tracking-tight text-foreground",
+            "font-serif text-[28px] leading-[1.1] font-normal",
+            "text-foreground tracking-tight",
           )}
         >
           {title}
         </h1>
-        {description && (
-          <p className="text-[13.5px] text-foreground/60">{description}</p>
-        )}
+        {description && <p className="text-foreground/60 text-[13.5px]">{description}</p>}
       </div>
       {action && <div className="flex shrink-0 items-center gap-2">{action}</div>}
     </div>

@@ -1,6 +1,3 @@
-warn The configuration property `package.json#prisma` is deprecated and will be removed in Prisma 7. Please migrate to a Prisma config file (e.g., `prisma.config.ts`).
-For more information, see: https://pris.ly/prisma-config
-
 -- CreateSchema
 CREATE SCHEMA IF NOT EXISTS "public";
 
@@ -12,6 +9,9 @@ CREATE TYPE "lead_status" AS ENUM ('NEW', 'ENRICHING', 'ENRICHED', 'SCORED', 'QU
 
 -- CreateEnum
 CREATE TYPE "score_decision" AS ENUM ('REJECT', 'WATCHLIST', 'OUTREACH');
+
+-- CreateEnum
+CREATE TYPE "outreach_status" AS ENUM ('DRAFT', 'APPROVED', 'SENT');
 
 -- CreateTable
 CREATE TABLE "user" (
@@ -191,6 +191,28 @@ CREATE TABLE "enrichment_cache" (
 );
 
 -- CreateTable
+CREATE TABLE "outreach_draft" (
+    "id" TEXT NOT NULL,
+    "leadId" TEXT NOT NULL,
+    "thesisId" TEXT,
+    "recipient" TEXT,
+    "subject" TEXT NOT NULL,
+    "body" TEXT NOT NULL,
+    "status" "outreach_status" NOT NULL DEFAULT 'DRAFT',
+    "model" TEXT NOT NULL,
+    "promptHash" TEXT NOT NULL,
+    "promptTokens" INTEGER,
+    "completionTokens" INTEGER,
+    "generatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "approvedAt" TIMESTAMP(3),
+    "sentAt" TIMESTAMP(3),
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "outreach_draft_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "import_batch" (
     "id" TEXT NOT NULL,
     "uploaderId" TEXT NOT NULL,
@@ -257,6 +279,9 @@ CREATE UNIQUE INDEX "lead_score_leadId_key" ON "lead_score"("leadId");
 CREATE UNIQUE INDEX "website_snapshot_url_key" ON "website_snapshot"("url");
 
 -- CreateIndex
+CREATE INDEX "outreach_draft_leadId_idx" ON "outreach_draft"("leadId");
+
+-- CreateIndex
 CREATE INDEX "import_batch_uploaderId_idx" ON "import_batch"("uploaderId");
 
 -- AddForeignKey
@@ -282,6 +307,9 @@ ALTER TABLE "lead_enrichment" ADD CONSTRAINT "lead_enrichment_leadId_fkey" FOREI
 
 -- AddForeignKey
 ALTER TABLE "lead_score" ADD CONSTRAINT "lead_score_leadId_fkey" FOREIGN KEY ("leadId") REFERENCES "lead"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "outreach_draft" ADD CONSTRAINT "outreach_draft_leadId_fkey" FOREIGN KEY ("leadId") REFERENCES "lead"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "import_batch" ADD CONSTRAINT "import_batch_uploaderId_fkey" FOREIGN KEY ("uploaderId") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE CASCADE;

@@ -10,3 +10,5 @@ export { InMemoryBlobStorage } from "./InMemoryBlobStorage";
 export { FakeCompanyDataSource } from "./FakeCompanyDataSource";
 export { FakeWebsiteScraper } from "./FakeWebsiteScraper";
 export { FakeLeadEnricher } from "./FakeLeadEnricher";
+export { FakeOutreachDrafter } from "./FakeOutreachDrafter";
+export { InMemoryOutreachDraftRepository } from "./InMemoryOutreachDraftRepository";

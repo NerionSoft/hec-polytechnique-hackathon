@@ -4,11 +4,7 @@ import { getDeal } from "@/src/lib/mock/deals";
 import { PageHeader } from "../../../_components/PageHeader";
 import { RisksFilterBar } from "./_components/RisksFilterBar";
 
-export default async function RisksPage({
-  params,
-}: {
-  params: Promise<{ dealId: string }>;
-}) {
+export default async function RisksPage({ params }: { params: Promise<{ dealId: string }> }) {
   const { dealId } = await params;
   const deal = getDeal(dealId);
   if (!deal) notFound();

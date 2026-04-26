@@ -13,7 +13,7 @@ export function DealCard({ deal }: { deal: Deal }) {
       href={`/pipeline/${deal.id}/overview`}
       className={cn(
         "group flex flex-col gap-2.5 rounded-[14px]",
-        "border border-foreground/[0.08] bg-surface/60 p-3",
+        "border-foreground/[0.08] bg-surface/60 border p-3",
         "transition-all duration-150 ease-out",
         "hover:border-foreground/15 hover:bg-surface",
         "hover:shadow-[0_18px_40px_-22px_rgba(0,0,0,0.6)]",
@@ -21,18 +21,16 @@ export function DealCard({ deal }: { deal: Deal }) {
     >
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0 flex-1">
-          <p className="truncate text-[13.5px] font-medium leading-tight">
+          <p className="truncate text-[13.5px] leading-tight font-medium">
             {deal.flag} {deal.name}
           </p>
-          <p className="mt-0.5 truncate text-[11px] text-foreground/50">
-            {deal.sector}
-          </p>
+          <p className="text-foreground/50 mt-0.5 truncate text-[11px]">{deal.sector}</p>
         </div>
         {deal.thesisFit !== null && (
           <span
             className={cn(
               "shrink-0 rounded-full px-1.5 py-0.5",
-              "text-[10.5px] font-medium tabular",
+              "tabular text-[10.5px] font-medium",
               fitTone,
             )}
           >
@@ -42,15 +40,15 @@ export function DealCard({ deal }: { deal: Deal }) {
       </div>
 
       <div className="flex items-center justify-between gap-2">
-        <span className="tabular text-[12.5px] text-foreground/80">
+        <span className="tabular text-foreground/80 text-[12.5px]">
           €{deal.revenue.toFixed(1)}M
         </span>
         {deal.redFlags > 0 && (
           <span
             className={cn(
               "flex items-center gap-1 rounded-full",
-              "border border-warm/25 bg-warm/10 px-1.5 py-0.5",
-              "text-[10.5px] font-medium tabular text-warm",
+              "border-warm/25 bg-warm/10 border px-1.5 py-0.5",
+              "tabular text-warm text-[10.5px] font-medium",
             )}
           >
             <AlertTriangle strokeWidth={1.8} className="size-2.5" />
@@ -59,12 +57,12 @@ export function DealCard({ deal }: { deal: Deal }) {
         )}
       </div>
 
-      <div className="mt-1 flex items-center justify-between gap-2 border-t border-foreground/[0.06] pt-2">
+      <div className="border-foreground/[0.06] mt-1 flex items-center justify-between gap-2 border-t pt-2">
         {owner ? (
           <span
             className={cn(
               "flex size-5 items-center justify-center rounded-full",
-              "text-[9.5px] font-medium tracking-tight text-foreground",
+              "text-foreground text-[9.5px] font-medium tracking-tight",
             )}
             style={{ background: `hsl(${owner.avatarHue} 60% 35%)` }}
             title={owner.name}
@@ -72,10 +70,10 @@ export function DealCard({ deal }: { deal: Deal }) {
             {owner.initials}
           </span>
         ) : (
-          <span className="text-[10px] text-foreground/40">Unassigned</span>
+          <span className="text-foreground/40 text-[10px]">Unassigned</span>
         )}
         {deal.timeSavedDays > 0 && (
-          <span className="text-[10px] tabular text-foreground/45">
+          <span className="tabular text-foreground/45 text-[10px]">
             ⏱ {deal.timeSavedDays.toFixed(1)}d saved
           </span>
         )}

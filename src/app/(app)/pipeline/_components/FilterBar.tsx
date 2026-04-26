@@ -33,8 +33,8 @@ function FilterPill({
       type="button"
       className={cn(
         "flex items-center gap-1.5 rounded-full",
-        "border border-foreground/[0.08] bg-foreground/[0.02] px-3 py-1.5",
-        "text-[12px] text-foreground/65 transition-colors",
+        "border-foreground/[0.08] bg-foreground/[0.02] border px-3 py-1.5",
+        "text-foreground/65 text-[12px] transition-colors",
         "hover:bg-foreground/[0.05] hover:text-foreground",
       )}
     >

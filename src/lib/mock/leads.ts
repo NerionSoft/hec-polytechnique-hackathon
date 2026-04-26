@@ -228,8 +228,7 @@ export function scoreBreakdown(lead: Lead): ScoreBreakdown[] {
     },
     {
       axis: "Growth",
-      score:
-        lead.growth >= 0.4 ? 18 : lead.growth >= 0.25 ? 14 : 8,
+      score: lead.growth >= 0.4 ? 18 : lead.growth >= 0.25 ? 14 : 8,
       max: 20,
       rationale: `${(lead.growth * 100).toFixed(0)}% YoY · ${lead.growth >= 0.2 ? "above thesis floor" : "below thesis floor"}`,
     },

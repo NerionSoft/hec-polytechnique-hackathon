@@ -5,7 +5,7 @@ import type { FinancialsHelios } from "@/src/lib/mock/financials";
 export function WorkingCapital({ data }: { data: FinancialsHelios["workingCapital"] }) {
   return (
     <div className="flex flex-col gap-3">
-      <div className="grid grid-cols-3 gap-2 text-[11px] text-foreground/55">
+      <div className="text-foreground/55 grid grid-cols-3 gap-2 text-[11px]">
         <span>Period</span>
         <span className="text-right">DSO (days)</span>
         <span className="text-right">DPO / DIO</span>
@@ -17,11 +17,11 @@ export function WorkingCapital({ data }: { data: FinancialsHelios["workingCapita
           <div
             key={row.period}
             className={cn(
-              "grid grid-cols-3 items-baseline gap-2 border-t border-foreground/[0.06] pt-3",
+              "border-foreground/[0.06] grid grid-cols-3 items-baseline gap-2 border-t pt-3",
               "first:border-0 first:pt-0",
             )}
           >
-            <span className="text-[12.5px] text-foreground/85">{row.period}</span>
+            <span className="text-foreground/85 text-[12.5px]">{row.period}</span>
             <div className="flex items-baseline justify-end gap-1.5">
               <span
                 className={cn(
@@ -42,13 +42,13 @@ export function WorkingCapital({ data }: { data: FinancialsHelios["workingCapita
                 </span>
               )}
             </div>
-            <span className="text-right tabular text-[12px] text-foreground/55">
+            <span className="tabular text-foreground/55 text-right text-[12px]">
               {row.dpo} / {row.dio}
             </span>
           </div>
         );
       })}
-      <p className="text-[11px] text-warm">
+      <p className="text-warm text-[11px]">
         <ArrowUpRight strokeWidth={1.6} className="mr-1 inline size-3" />
         DSO +21d over 2 years · €2M expected WC outflow if trend continues
       </p>
