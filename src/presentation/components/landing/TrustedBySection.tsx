@@ -7,10 +7,7 @@ export function TrustedBySection() {
 
   return (
     <section
-      className={cn(
-        "border-y border-foreground/[0.08]",
-        "bg-background/40 backdrop-blur-[34px]",
-      )}
+      className={cn("border-foreground/[0.08] border-y", "bg-background/40 backdrop-blur-[34px]")}
       aria-label={trustedBy.label}
     >
       <div
@@ -21,12 +18,7 @@ export function TrustedBySection() {
         )}
       >
         <div className="flex flex-col items-center gap-5 md:items-start">
-          <p
-            className={cn(
-              "text-[12px] uppercase tracking-[0.16em]",
-              "text-foreground/50",
-            )}
-          >
+          <p className={cn("text-[12px] tracking-[0.16em] uppercase", "text-foreground/50")}>
             {trustedBy.label}
           </p>
           <ul
@@ -40,7 +32,7 @@ export function TrustedBySection() {
                 key={logo}
                 className={cn(
                   "font-serif text-[18px] font-normal",
-                  "tracking-tight text-foreground/80",
+                  "text-foreground/80 tracking-tight",
                 )}
               >
                 {logo}
@@ -52,13 +44,11 @@ export function TrustedBySection() {
         <div
           className={cn(
             "flex max-w-md items-center gap-4",
-            "rounded-[24px] border border-foreground/10",
+            "border-foreground/10 rounded-[24px] border",
             "bg-foreground/[0.04] px-5 py-4 backdrop-blur-[34px]",
           )}
         >
-          <p className="text-[13px] text-foreground/70">
-            {trustedBy.cookies.message}
-          </p>
+          <p className="text-foreground/70 text-[13px]">{trustedBy.cookies.message}</p>
           <GlassButton size="sm" variant="glass">
             {trustedBy.cookies.cta}
           </GlassButton>

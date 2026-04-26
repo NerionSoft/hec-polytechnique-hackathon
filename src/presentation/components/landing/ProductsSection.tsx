@@ -24,17 +24,11 @@ export function ProductsSection() {
   const { products } = landingContent;
 
   return (
-    <section
-      id="offer"
-      className={cn(
-        "mx-auto w-full max-w-[1200px] px-6",
-        "py-20",
-      )}
-    >
+    <section id="offer" className={cn("mx-auto w-full max-w-[1200px] px-6", "py-20")}>
       <h2
         className={cn(
           "mb-12 font-serif font-light tracking-tight",
-          "text-[36px] leading-tight text-foreground",
+          "text-foreground text-[36px] leading-tight",
           "sm:text-[44px]",
         )}
       >
@@ -55,14 +49,14 @@ function ProductCard({ card }: { card: Card }) {
     <article
       className={cn(
         "flex flex-col overflow-hidden",
-        "rounded-[24px] border border-foreground/10",
+        "border-foreground/10 rounded-[24px] border",
         "bg-foreground/[0.03] backdrop-blur-[34px]",
       )}
     >
       <div
         className={cn(
           "relative flex h-[260px] items-center justify-center",
-          "overflow-hidden border-b border-foreground/10",
+          "border-foreground/10 overflow-hidden border-b",
         )}
       >
         <Image
@@ -81,25 +75,13 @@ function ProductCard({ card }: { card: Card }) {
         </div>
       </div>
       <div className="flex flex-col gap-4 p-6">
-        <span
-          className={cn(
-            "text-[11px] uppercase tracking-[0.16em]",
-            "text-foreground/50",
-          )}
-        >
+        <span className={cn("text-[11px] tracking-[0.16em] uppercase", "text-foreground/50")}>
           {card.tag}
         </span>
-        <h3
-          className={cn(
-            "font-serif text-[24px] font-normal",
-            "tracking-tight text-foreground",
-          )}
-        >
+        <h3 className={cn("font-serif text-[24px] font-normal", "text-foreground tracking-tight")}>
           {card.title}
         </h3>
-        <p className="text-[14px] text-foreground/70">
-          {card.description}
-        </p>
+        <p className="text-foreground/70 text-[14px]">{card.description}</p>
         <div className="pt-2">
           <GlassButton size="sm" variant="glass">
             {card.cta}
@@ -116,20 +98,17 @@ function RecordingVisual({ label }: { label: string }) {
       className={cn(
         "mx-auto flex h-14 w-full max-w-[320px]",
         "items-center gap-3 rounded-[100px]",
-        "border border-foreground/10",
+        "border-foreground/10 border",
         "bg-foreground/[0.06] px-5 backdrop-blur-[34px]",
       )}
     >
-      <span className="size-2 rounded-full bg-warm" />
-      <span className="text-[13px] text-foreground/80">{label}</span>
+      <span className="bg-warm size-2 rounded-full" />
+      <span className="text-foreground/80 text-[13px]">{label}</span>
       <span className="ml-auto flex items-center gap-1">
         {WAVEFORM_HEIGHTS.map((h, idx) => (
           <span
             key={`${idx}-${h}`}
-            className={cn(
-              "block w-[2px] rounded-full bg-foreground/40",
-              h,
-            )}
+            className={cn("bg-foreground/40 block w-[2px] rounded-full", h)}
           />
         ))}
       </span>
@@ -137,42 +116,29 @@ function RecordingVisual({ label }: { label: string }) {
   );
 }
 
-type PerformanceVisual = Extract<
-  Card["visual"],
-  { kind: "performance" }
->;
+type PerformanceVisual = Extract<Card["visual"], { kind: "performance" }>;
 
 function PerformanceVisual({ visual }: { visual: PerformanceVisual }) {
   return (
     <div
       className={cn(
         "mx-auto w-full max-w-[360px] rounded-[18px]",
-        "border border-foreground/10 bg-background/60",
+        "border-foreground/10 bg-background/60 border",
         "p-5 backdrop-blur-[34px]",
       )}
     >
-      <p className="text-[11px] uppercase tracking-[0.14em] text-foreground/50">
-        {visual.heading}
-      </p>
+      <p className="text-foreground/50 text-[11px] tracking-[0.14em] uppercase">{visual.heading}</p>
       <p
-        className={cn(
-          "mt-1 font-serif text-[28px] font-normal",
-          "tracking-tight text-foreground",
-        )}
+        className={cn("mt-1 font-serif text-[28px] font-normal", "text-foreground tracking-tight")}
       >
         {visual.value}
       </p>
-      <p className="mt-1 text-[11px] text-foreground/50">
-        {visual.period}
-      </p>
+      <p className="text-foreground/50 mt-1 text-[11px]">{visual.period}</p>
       <ul className="mt-4 space-y-2 text-[12px]">
         {visual.rows.map((row) => (
-          <li
-            key={row.label}
-            className="flex justify-between text-foreground/70"
-          >
+          <li key={row.label} className="text-foreground/70 flex justify-between">
             <span>{row.label}</span>
-            <span className="flex gap-3 text-foreground/60">
+            <span className="text-foreground/60 flex gap-3">
               <span>{row.current}</span>
               <span>{row.target}</span>
               <span className="text-accent">{row.trade}</span>

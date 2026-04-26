@@ -1,8 +1,4 @@
-import {
-  forwardRef,
-  type ComponentPropsWithoutRef,
-  type ReactNode,
-} from "react";
+import { forwardRef, type ComponentPropsWithoutRef, type ReactNode } from "react";
 import { cn } from "@/src/presentation/lib/cn";
 
 type GlassButtonVariant = "glass" | "solid" | "ghost";
@@ -30,14 +26,8 @@ const variants: Record<GlassButtonVariant, string> = {
     "backdrop-blur-[34px]",
     "hover:bg-foreground/15",
   ),
-  solid: cn(
-    "bg-foreground text-background",
-    "hover:bg-foreground/90",
-  ),
-  ghost: cn(
-    "text-foreground/70",
-    "hover:text-foreground",
-  ),
+  solid: cn("bg-foreground text-background", "hover:bg-foreground/90"),
+  ghost: cn("text-foreground/70", "hover:text-foreground"),
 };
 
 const sizes: Record<GlassButtonSize, string> = {
@@ -66,13 +56,9 @@ const GlassButton = forwardRef<HTMLButtonElement, GlassButtonProps>(
         className={cn(base, variants[variant], sizes[size], className)}
         {...props}
       >
-        {leadingIcon ? (
-          <span className="grid place-items-center">{leadingIcon}</span>
-        ) : null}
+        {leadingIcon ? <span className="grid place-items-center">{leadingIcon}</span> : null}
         <span>{children}</span>
-        {trailingIcon ? (
-          <span className="grid place-items-center">{trailingIcon}</span>
-        ) : null}
+        {trailingIcon ? <span className="grid place-items-center">{trailingIcon}</span> : null}
       </button>
     );
   },
