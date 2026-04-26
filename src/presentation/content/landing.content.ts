@@ -150,6 +150,7 @@ export const landingContent = {
           "Upload a data room. Get sourced red flags, management " +
           "questions and a draft IC memo with citations — in 30 minutes.",
         cta: "See it run",
+        image: "/images/card1.jpg",
         visual: {
           kind: "recording" as const,
           label: "Analyzing 247 documents...",
@@ -162,6 +163,7 @@ export const landingContent = {
           "Score targets against your investment thesis, enrich " +
           "with financials, and trigger outreach — wired to your CRM.",
         cta: "Join waitlist",
+        image: "/images/card2.jpg",
         visual: {
           kind: "performance" as const,
           heading: "Pipeline coverage",
