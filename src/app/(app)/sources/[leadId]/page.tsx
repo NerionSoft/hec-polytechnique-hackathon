@@ -78,6 +78,14 @@ export default async function LeadDetailPage({ params }: { params: Promise<{ lea
     source: j.source,
     sourceRef: j.sourceRef,
     website: j.website,
+    websiteDiscovery: j.websiteDiscoverySource
+      ? {
+          source: j.websiteDiscoverySource,
+          rationale: j.websiteDiscoveredAt
+            ? `Auto-discovered ${j.websiteDiscoveredAt.toISOString().slice(0, 10)}`
+            : "Auto-discovered",
+        }
+      : null,
     websiteSnapshot: snapshot
       ? {
           fetchedAt: snapshot.fetchedAt.toISOString(),

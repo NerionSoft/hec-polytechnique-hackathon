@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, ExternalLink, Sparkles } from "lucide-react";
 import { cn } from "@/src/presentation/lib/cn";
 import { getSession } from "@/src/infrastructure/auth/server";
 import { getUseCases } from "@/src/infrastructure/composition";
@@ -78,35 +78,14 @@ export default async function SourcesPage() {
       </div>
 
       {selectedThesis && (
-        <details
-          className={cn(
-            "border-foreground/[0.08] bg-foreground/[0.02] mx-8 mb-6 rounded-[16px] border",
-            "[&_summary::-webkit-details-marker]:hidden",
-          )}
-          open={leads.length === 0}
-        >
-          <summary
-            className={cn(
-              "flex cursor-pointer items-center justify-between px-5 py-3",
-              "text-foreground/75 hover:text-foreground text-[12.5px]",
-            )}
-          >
-            <span className="flex items-center gap-2">
-              <span className="text-foreground/45 text-[10.5px] tracking-[0.14em] uppercase">
-                Add leads
-              </span>
-              <span className="text-foreground/65">· Sirene API · CSV import</span>
-            </span>
-            <span className="text-foreground/45 text-[10.5px]">click to expand</span>
-          </summary>
-          <div className="grid grid-cols-1 gap-4 p-4 lg:grid-cols-[2fr_1fr]">
-            <SireneFetchPanel
-              selectedThesisId={selectedThesisId}
-              defaultSectors={selectedThesis.sectors}
-            />
-            <CsvImportPanel selectedThesisId={selectedThesisId} />
-          </div>
-        </details>
+        <div className="mx-8 mb-6 grid grid-cols-1 gap-4 lg:grid-cols-[2fr_1fr]">
+          <SireneFetchPanel
+            selectedThesisId={selectedThesisId}
+            defaultSectors={selectedThesis.sectors}
+            criteriaOpenByDefault={leads.length === 0}
+          />
+          <CsvImportPanel selectedThesisId={selectedThesisId} />
+        </div>
       )}
 
       <div className="border-foreground/[0.08] bg-surface/40 mx-8 mb-12 overflow-hidden rounded-[18px] border">
@@ -125,6 +104,7 @@ export default async function SourcesPage() {
                 <th className="px-4 py-2.5 font-medium">Company</th>
                 <th className="px-4 py-2.5 font-medium">Sector / NAF</th>
                 <th className="px-4 py-2.5 font-medium">Country</th>
+                <th className="px-4 py-2.5 font-medium">Site</th>
                 <th className="px-4 py-2.5 text-right font-medium">Employees</th>
                 <th className="px-4 py-2.5 text-right font-medium">Revenue €</th>
                 <th className="px-4 py-2.5 font-medium">Status</th>
@@ -151,6 +131,9 @@ export default async function SourcesPage() {
                     </td>
                     <td className="text-foreground/65 px-4 py-3">
                       {country ? `${country.code} · ${country.label}` : j.country}
+                    </td>
+                    <td className="px-4 py-3 text-[11.5px]">
+                      <WebsiteCell url={j.website} autoSource={j.websiteDiscoverySource} />
                     </td>
                     <td className="tabular text-foreground/85 px-4 py-3 text-right">
                       {j.employeeCount ?? "—"}
@@ -204,6 +187,36 @@ function Stat({ label, value }: { label: string; value: number }) {
       <p className="text-foreground/45 text-[10.5px] tracking-[0.14em] uppercase">{label}</p>
       <p className="tabular font-serif text-[26px] leading-none tracking-tight">{value}</p>
     </div>
+  );
+}
+
+function WebsiteCell({ url, autoSource }: { url: string | null; autoSource: string | null }) {
+  if (!url) return <span className="text-foreground/35">—</span>;
+  const display = url.replace(/^https?:\/\//, "").replace(/\/$/, "");
+  return (
+    <span className="inline-flex items-center gap-1.5">
+      <a
+        href={url}
+        target="_blank"
+        rel="noreferrer"
+        className="text-foreground/85 inline-flex max-w-[180px] items-center gap-0.5 truncate underline-offset-2 hover:underline"
+      >
+        <span className="truncate">{display}</span>
+        <ExternalLink strokeWidth={1.6} className="size-3 shrink-0" />
+      </a>
+      {autoSource && (
+        <span
+          className={cn(
+            "bg-foreground/[0.08] text-foreground/65",
+            "inline-flex items-center gap-0.5 rounded-full px-1.5 py-0.5 text-[9.5px] tracking-[0.10em] uppercase",
+          )}
+          title={`Auto-discovered via ${autoSource}`}
+        >
+          <Sparkles strokeWidth={1.6} className="size-2.5" />
+          auto
+        </span>
+      )}
+    </span>
   );
 }
 

@@ -6,6 +6,7 @@ import type { WebsiteScraper } from "@/src/application/ports/WebsiteScraper";
 import {
   FakeClock,
   FakeLeadEnricher,
+  FakeWebsiteDiscoverer,
   FakeWebsiteScraper,
   InMemoryEnrichmentCache,
   InMemoryLeadEnrichmentRepository,
@@ -152,6 +153,52 @@ describe("EnrichLead", () => {
     expect(deps.scraper.scrapeCalls).toEqual([]);
     expect(result.websiteSnapshot).toBeNull();
     expect(deps.enricher.enrichCalls[0]?.website).toBeNull();
+  });
+
+  it("lead has no website but discoverer finds one: persist + scrape + enrich", async () => {
+    const deps = buildDeps();
+    const discoverer = new FakeWebsiteDiscoverer();
+    discoverer.setNext("Acme SAS", {
+      url: "https://acme-found.test",
+      source: "duckduckgo",
+      rationale: "Company name in hostname (acme-found.test)",
+    });
+    const scraper = new FakeWebsiteScraper();
+    scraper.setSnapshot({ ...buildSnapshot("https://acme-found.test") });
+
+    const lead = buildLead({ website: null });
+    deps.leadRepo.seed(lead);
+
+    const result = await makeEnrichLead({ ...deps, scraper, websiteDiscoverer: discoverer })({
+      ownerId: "owner-1",
+      leadId: lead.id,
+    });
+
+    expect(discoverer.discoverCalls).toHaveLength(1);
+    expect(result.websiteDiscovered).toEqual({
+      url: "https://acme-found.test",
+      source: "duckduckgo",
+      rationale: "Company name in hostname (acme-found.test)",
+    });
+    expect((await deps.leadRepo.findById(lead.id))?.website).toBe("https://acme-found.test");
+    expect(scraper.scrapeCalls).toEqual(["https://acme-found.test"]);
+  });
+
+  it("discoverer returns null: enrichment proceeds without a website", async () => {
+    const deps = buildDeps();
+    const discoverer = new FakeWebsiteDiscoverer();
+    discoverer.setFallback(null);
+    const lead = buildLead({ website: null });
+    deps.leadRepo.seed(lead);
+
+    const result = await makeEnrichLead({ ...deps, websiteDiscoverer: discoverer })({
+      ownerId: "owner-1",
+      leadId: lead.id,
+    });
+
+    expect(result.websiteDiscovered).toBeNull();
+    expect((await deps.leadRepo.findById(lead.id))?.website).toBeNull();
+    expect(deps.enricher.enrichCalls).toHaveLength(1);
   });
 
   it("scraper throws: snapshot stays null but enrichment still happens", async () => {
