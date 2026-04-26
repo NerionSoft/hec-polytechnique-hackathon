@@ -10,26 +10,18 @@ export function CockpitNav() {
       aria-label="Workspace"
       className={cn(
         "hidden w-[180px] shrink-0 flex-col gap-1",
-        "border-r border-foreground/[0.08] p-3",
+        "border-foreground/[0.08] border-r p-3",
         "lg:flex",
       )}
     >
       <div
-        className={cn(
-          "mb-2 flex items-center gap-2 px-2 py-2",
-          "text-[12px] text-foreground/50",
-        )}
+        className={cn("mb-2 flex items-center gap-2 px-2 py-2", "text-foreground/50 text-[12px]")}
       >
         <span
-          className={cn(
-            "size-6 rounded-full border border-foreground/15",
-            "bg-foreground/[0.04]",
-          )}
+          className={cn("border-foreground/15 size-6 rounded-full border", "bg-foreground/[0.04]")}
           aria-hidden="true"
         />
-        <span className="font-serif text-[13px] text-foreground/80">
-          Athena
-        </span>
+        <span className="text-foreground/80 font-serif text-[13px]">Athena</span>
       </div>
       <ul className="flex flex-col gap-0.5">
         {nav.map((item, idx) => {
@@ -51,9 +43,7 @@ export function CockpitNav() {
                       ),
                 )}
               >
-                {Icon ? (
-                  <Icon className="size-4 shrink-0" strokeWidth={1.5} />
-                ) : null}
+                {Icon ? <Icon className="size-4 shrink-0" strokeWidth={1.5} /> : null}
                 <span className="truncate">{item.label}</span>
               </button>
             </li>

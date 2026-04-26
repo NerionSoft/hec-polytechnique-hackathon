@@ -46,8 +46,7 @@
   --color-state-rejected: hsl(var(--state-rejected));
   --font-sans: var(--font-inter), "Inter", system-ui, sans-serif;
   --font-serif: var(--font-pt-serif), "PT Serif", serif;
-  --font-display:
-    var(--font-urbanist), "Urbanist", system-ui, sans-serif;
+  --font-display: var(--font-urbanist), "Urbanist", system-ui, sans-serif;
   --radius-pill: 100px;
   --radius-card: 24px;
   --radius-button: 50px;
