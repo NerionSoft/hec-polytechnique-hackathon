@@ -9,7 +9,17 @@ import { prisma } from "@/src/infrastructure/persistence/prisma/client";
 // the placeholder, Better Auth will refuse real sign-ins.
 const SECRET =
   process.env.BETTER_AUTH_SECRET ?? "REPLACE_ME_BUILD_PLACEHOLDER_NEVER_USE_IN_PROD_xxxxxxxxxxxx";
-const BASE_URL = process.env.BETTER_AUTH_URL ?? "http://localhost:3000";
+
+// Resolve baseURL in this order:
+//   1. BETTER_AUTH_URL (explicit override)
+//   2. VERCEL_URL (auto-set on Vercel deploys, no protocol)
+//   3. http://localhost:${PORT} for local dev
+function resolveBaseUrl(): string {
+  if (process.env.BETTER_AUTH_URL) return process.env.BETTER_AUTH_URL;
+  if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`;
+  return `http://localhost:${process.env.PORT ?? 3000}`;
+}
+const BASE_URL = resolveBaseUrl();
 
 export const auth = betterAuth({
   database: prismaAdapter(prisma, { provider: "postgresql" }),
