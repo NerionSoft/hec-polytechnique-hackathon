@@ -9,7 +9,7 @@ export function Topbar() {
     <header
       className={cn(
         "sticky top-0 z-20 flex h-16 items-center gap-4",
-        "border-b border-foreground/[0.08] bg-background/70",
+        "border-foreground/[0.08] bg-background/70 border-b",
         "px-6 backdrop-blur-[34px]",
       )}
     >
@@ -18,19 +18,17 @@ export function Topbar() {
           type="button"
           className={cn(
             "flex h-9 w-full max-w-[420px] items-center gap-2.5 rounded-full",
-            "border border-foreground/[0.08] bg-foreground/[0.03] px-3.5",
-            "text-[13px] text-foreground/55 transition-colors",
+            "border-foreground/[0.08] bg-foreground/[0.03] border px-3.5",
+            "text-foreground/55 text-[13px] transition-colors",
             "hover:bg-foreground/[0.06] hover:text-foreground/75",
           )}
         >
           <Search strokeWidth={1.6} className="size-4" />
-          <span className="flex-1 text-left">
-            Search deals, documents, citations…
-          </span>
+          <span className="flex-1 text-left">Search deals, documents, citations…</span>
           <kbd
             className={cn(
-              "rounded-md border border-foreground/[0.08] bg-foreground/[0.04]",
-              "px-1.5 py-0.5 text-[10px] font-medium text-foreground/55",
+              "border-foreground/[0.08] bg-foreground/[0.04] rounded-md border",
+              "text-foreground/55 px-1.5 py-0.5 text-[10px] font-medium",
             )}
           >
             ⌘K
@@ -49,12 +47,7 @@ export function Topbar() {
           )}
         >
           <Bell strokeWidth={1.6} className="size-4" />
-          <span
-            className={cn(
-              "absolute right-1.5 top-1.5 size-1.5 rounded-full",
-              "bg-warm",
-            )}
-          />
+          <span className={cn("absolute top-1.5 right-1.5 size-1.5 rounded-full", "bg-warm")} />
         </button>
         <RoleSwitcher />
       </div>

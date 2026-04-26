@@ -75,15 +75,13 @@ export function RisksFilterBar({ flags }: { flags: RedFlag[] }) {
             </button>
           );
         })}
-        <span className="mx-2 hidden h-5 w-px bg-foreground/[0.08] sm:block" />
+        <span className="bg-foreground/[0.08] mx-2 hidden h-5 w-px sm:block" />
         <select
           value={status}
-          onChange={(e) =>
-            setStatus(e.target.value as (typeof STATUSES)[number]["id"])
-          }
+          onChange={(e) => setStatus(e.target.value as (typeof STATUSES)[number]["id"])}
           className={cn(
-            "rounded-full border border-foreground/[0.08] bg-foreground/[0.02]",
-            "px-3 py-1.5 text-[12px] text-foreground/75 outline-none",
+            "border-foreground/[0.08] bg-foreground/[0.02] rounded-full border",
+            "text-foreground/75 px-3 py-1.5 text-[12px] outline-none",
             "appearance-none [background-image:none]",
             "hover:bg-foreground/[0.05]",
           )}
@@ -100,12 +98,12 @@ export function RisksFilterBar({ flags }: { flags: RedFlag[] }) {
         {sorted.length === 0 ? (
           <div
             className={cn(
-              "rounded-[18px] border border-dashed border-foreground/[0.10]",
+              "border-foreground/[0.10] rounded-[18px] border border-dashed",
               "bg-foreground/[0.02] px-8 py-16 text-center",
             )}
           >
             <p className="font-serif text-[18px]">No red flags match these filters</p>
-            <p className="mt-1 text-[12.5px] text-foreground/55">
+            <p className="text-foreground/55 mt-1 text-[12.5px]">
               Try widening the category or status selection.
             </p>
           </div>

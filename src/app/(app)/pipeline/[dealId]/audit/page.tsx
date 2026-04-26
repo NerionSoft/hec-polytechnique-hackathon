@@ -6,11 +6,7 @@ import { getDeal } from "@/src/lib/mock/deals";
 import { team } from "@/src/lib/mock/fund";
 import { PageHeader } from "../../../_components/PageHeader";
 
-export default async function AuditPage({
-  params,
-}: {
-  params: Promise<{ dealId: string }>;
-}) {
+export default async function AuditPage({ params }: { params: Promise<{ dealId: string }> }) {
   const { dealId } = await params;
   const deal = getDeal(dealId);
   if (!deal) notFound();
@@ -26,8 +22,8 @@ export default async function AuditPage({
             type="button"
             className={cn(
               "inline-flex items-center gap-1.5 rounded-full",
-              "border border-foreground/[0.10] px-3 py-1.5",
-              "text-[12px] text-foreground/70 hover:bg-foreground/[0.06] hover:text-foreground",
+              "border-foreground/[0.10] border px-3 py-1.5",
+              "text-foreground/70 hover:bg-foreground/[0.06] hover:text-foreground text-[12px]",
             )}
           >
             <Download strokeWidth={1.6} className="size-3.5" />
@@ -39,17 +35,17 @@ export default async function AuditPage({
       <div className="px-8 pb-12">
         <ol
           className={cn(
-            "relative flex flex-col gap-4 rounded-[18px] border border-foreground/[0.08]",
+            "border-foreground/[0.08] relative flex flex-col gap-4 rounded-[18px] border",
             "bg-surface/60 p-6",
           )}
         >
-          <span className="absolute left-[34px] top-6 bottom-6 w-px bg-foreground/[0.08]" />
+          <span className="bg-foreground/[0.08] absolute top-6 bottom-6 left-[34px] w-px" />
           {entries.map((entry) => {
             const member = entry.actor !== "ai" ? team.find((t) => t.id === entry.actor) : null;
             return (
               <li key={entry.id} className="relative flex items-start gap-4">
                 {entry.actor === "ai" ? (
-                  <span className="z-10 flex size-7 shrink-0 items-center justify-center rounded-full border border-state-ai/25 bg-state-ai/10 text-state-ai">
+                  <span className="border-state-ai/25 bg-state-ai/10 text-state-ai z-10 flex size-7 shrink-0 items-center justify-center rounded-full border">
                     <Bot strokeWidth={1.8} className="size-3.5" />
                   </span>
                 ) : member ? (
@@ -61,14 +57,14 @@ export default async function AuditPage({
                   </span>
                 ) : null}
                 <div className="min-w-0 flex-1 pt-0.5">
-                  <p className="text-[13px] text-foreground/85">
-                    <span className="font-medium text-foreground">
+                  <p className="text-foreground/85 text-[13px]">
+                    <span className="text-foreground font-medium">
                       {entry.actor === "ai" ? "AI agent" : member?.name}
                     </span>{" "}
                     <span className="text-foreground/55">{entry.action}</span>{" "}
                     <span>{entry.target}</span>
                   </p>
-                  <p className="mt-0.5 text-[11px] text-foreground/45">
+                  <p className="text-foreground/45 mt-0.5 text-[11px]">
                     {new Date(entry.timestamp).toLocaleString("en-GB", {
                       day: "numeric",
                       month: "short",

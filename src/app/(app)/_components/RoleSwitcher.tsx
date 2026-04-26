@@ -17,36 +17,32 @@ export function RoleSwitcher() {
         onClick={() => setOpen((o) => !o)}
         className={cn(
           "flex items-center gap-2.5 rounded-full px-2 py-1",
-          "border border-foreground/[0.08] bg-foreground/[0.03]",
-          "transition-colors hover:bg-foreground/[0.06]",
+          "border-foreground/[0.08] bg-foreground/[0.03] border",
+          "hover:bg-foreground/[0.06] transition-colors",
         )}
       >
         <Avatar member={user} />
         <div className="hidden text-left leading-tight sm:block">
           <p className="text-[12.5px] font-medium">{user.name}</p>
-          <p className="text-[10.5px] text-foreground/55">{user.role}</p>
+          <p className="text-foreground/55 text-[10.5px]">{user.role}</p>
         </div>
-        <ChevronDown strokeWidth={1.6} className="size-3.5 text-foreground/55" />
+        <ChevronDown strokeWidth={1.6} className="text-foreground/55 size-3.5" />
       </button>
 
       {open && (
         <>
-          <div
-            className="fixed inset-0 z-40"
-            onClick={() => setOpen(false)}
-            aria-hidden="true"
-          />
+          <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} aria-hidden="true" />
           <div
             className={cn(
-              "absolute right-0 top-[calc(100%+6px)] z-50 w-[260px]",
-              "rounded-[14px] border border-foreground/10 bg-surface",
+              "absolute top-[calc(100%+6px)] right-0 z-50 w-[260px]",
+              "border-foreground/10 bg-surface rounded-[14px] border",
               "p-1.5 shadow-[0_30px_80px_-30px_rgba(0,0,0,0.7)]",
             )}
           >
             <p
               className={cn(
-                "px-2.5 pb-1.5 pt-2 text-[10.5px] uppercase",
-                "tracking-[0.14em] text-foreground/40",
+                "px-2.5 pt-2 pb-1.5 text-[10.5px] uppercase",
+                "text-foreground/40 tracking-[0.14em]",
               )}
             >
               View as
@@ -64,24 +60,15 @@ export function RoleSwitcher() {
                   className={cn(
                     "flex w-full items-center gap-2.5 rounded-[10px] px-2.5 py-2",
                     "text-left transition-colors",
-                    active
-                      ? "bg-foreground/[0.06]"
-                      : "hover:bg-foreground/[0.04]",
+                    active ? "bg-foreground/[0.06]" : "hover:bg-foreground/[0.04]",
                   )}
                 >
                   <Avatar member={member} />
                   <div className="flex-1 leading-tight">
                     <p className="text-[12.5px] font-medium">{member.name}</p>
-                    <p className="text-[10.5px] text-foreground/55">
-                      {member.role}
-                    </p>
+                    <p className="text-foreground/55 text-[10.5px]">{member.role}</p>
                   </div>
-                  {active && (
-                    <Check
-                      strokeWidth={2}
-                      className="size-3.5 text-foreground/70"
-                    />
-                  )}
+                  {active && <Check strokeWidth={2} className="text-foreground/70 size-3.5" />}
                 </button>
               );
             })}

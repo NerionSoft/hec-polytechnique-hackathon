@@ -1,7 +1,4 @@
-import {
-  forwardRef,
-  type ComponentPropsWithoutRef,
-} from "react";
+import { forwardRef, type ComponentPropsWithoutRef } from "react";
 import { cn } from "@/src/presentation/lib/cn";
 
 type GlassButtonVariant = "glass" | "solid" | "ghost";
@@ -29,14 +26,8 @@ const variants: Record<GlassButtonVariant, string> = {
     "backdrop-blur-[34px]",
     "hover:bg-foreground/15",
   ),
-  solid: cn(
-    "bg-foreground text-background",
-    "hover:bg-foreground/90",
-  ),
-  ghost: cn(
-    "text-foreground/70",
-    "hover:text-foreground",
-  ),
+  solid: cn("bg-foreground text-background", "hover:bg-foreground/90"),
+  ghost: cn("text-foreground/70", "hover:text-foreground"),
 };
 
 const sizes: Record<GlassButtonSize, string> = {
@@ -45,17 +36,7 @@ const sizes: Record<GlassButtonSize, string> = {
 };
 
 const GlassButton = forwardRef<HTMLButtonElement, GlassButtonProps>(
-  (
-    {
-      className,
-      variant = "glass",
-      size = "md",
-      children,
-      type = "button",
-      ...props
-    },
-    ref,
-  ) => {
+  ({ className, variant = "glass", size = "md", children, type = "button", ...props }, ref) => {
     return (
       <button
         ref={ref}

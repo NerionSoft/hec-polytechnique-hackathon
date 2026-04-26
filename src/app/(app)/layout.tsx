@@ -1,13 +1,9 @@
 import { Sidebar } from "./_components/Sidebar";
 import { Topbar } from "./_components/Topbar";
 
-export default function AppLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function AppLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="bg-background min-h-screen">
       <Sidebar />
       <div className="pl-[240px]">
         <Topbar />

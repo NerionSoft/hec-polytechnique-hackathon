@@ -18,8 +18,8 @@ export default function SourcesPage() {
             type="button"
             className={cn(
               "inline-flex items-center gap-1.5 rounded-full",
-              "border border-foreground/[0.10] px-3 py-1.5",
-              "text-[12px] text-foreground/70 hover:bg-foreground/[0.06] hover:text-foreground",
+              "border-foreground/[0.10] border px-3 py-1.5",
+              "text-foreground/70 hover:bg-foreground/[0.06] hover:text-foreground text-[12px]",
             )}
           >
             <Plus strokeWidth={1.8} className="size-3.5" />
@@ -28,18 +28,18 @@ export default function SourcesPage() {
         }
       />
 
-      <div className="mx-8 mb-6 overflow-hidden rounded-[20px] border border-foreground/[0.08] bg-foreground/[0.02]">
+      <div className="border-foreground/[0.08] bg-foreground/[0.02] mx-8 mb-6 overflow-hidden rounded-[20px] border">
         <div
           className={cn(
-            "flex items-center justify-between border-b border-foreground/[0.08] px-5 py-2.5",
+            "border-foreground/[0.08] flex items-center justify-between border-b px-5 py-2.5",
           )}
         >
-          <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.14em] text-foreground/45">
+          <div className="text-foreground/45 flex items-center gap-2 text-[11px] tracking-[0.14em] uppercase">
             <Radar strokeWidth={1.6} className="size-3" />
             This week
           </div>
         </div>
-        <div className="grid grid-cols-2 divide-foreground/[0.08] sm:grid-cols-4 sm:divide-x">
+        <div className="divide-foreground/[0.08] grid grid-cols-2 sm:grid-cols-4 sm:divide-x">
           <Stat label="New leads" value="44" />
           <Stat label="Qualified" value="18" />
           <Stat label="Promoted to deal" value="6" />
@@ -61,7 +61,7 @@ export default function SourcesPage() {
           >
             {src.name}
             {src.active && (
-              <span className="rounded-full bg-warm/15 px-1.5 py-px text-[9.5px] tabular text-warm">
+              <span className="bg-warm/15 tabular text-warm rounded-full px-1.5 py-px text-[9.5px]">
                 +{src.newToday}
               </span>
             )}
@@ -69,10 +69,10 @@ export default function SourcesPage() {
         ))}
       </div>
 
-      <div className="mx-8 mb-12 overflow-hidden rounded-[18px] border border-foreground/[0.08] bg-surface/40">
+      <div className="border-foreground/[0.08] bg-surface/40 mx-8 mb-12 overflow-hidden rounded-[18px] border">
         <table className="w-full text-[12.5px]">
           <thead>
-            <tr className="border-b border-foreground/[0.08] text-left text-[10.5px] uppercase tracking-[0.14em] text-foreground/45">
+            <tr className="border-foreground/[0.08] text-foreground/45 border-b text-left text-[10.5px] tracking-[0.14em] uppercase">
               <th className="px-4 py-2.5 font-medium">Name</th>
               <th className="px-4 py-2.5 font-medium">Sector</th>
               <th className="px-4 py-2.5 font-medium">Geo</th>
@@ -88,19 +88,19 @@ export default function SourcesPage() {
             {leads.map((lead) => (
               <tr
                 key={lead.id}
-                className="group border-b border-foreground/[0.04] last:border-0 hover:bg-foreground/[0.02]"
+                className="group border-foreground/[0.04] hover:bg-foreground/[0.02] border-b last:border-0"
               >
-                <td className="px-4 py-3 font-medium text-foreground">
+                <td className="text-foreground px-4 py-3 font-medium">
                   {lead.flag} {lead.name}
                 </td>
-                <td className="px-4 py-3 text-foreground/65">{lead.sector}</td>
-                <td className="px-4 py-3 text-foreground/55">{lead.geo}</td>
-                <td className="px-4 py-3 text-right tabular text-foreground/85">
+                <td className="text-foreground/65 px-4 py-3">{lead.sector}</td>
+                <td className="text-foreground/55 px-4 py-3">{lead.geo}</td>
+                <td className="tabular text-foreground/85 px-4 py-3 text-right">
                   €{lead.revenue.toFixed(1)}M
                 </td>
                 <td
                   className={cn(
-                    "px-4 py-3 text-right tabular",
+                    "tabular px-4 py-3 text-right",
                     lead.growth >= 0.4 ? "text-sev-low" : "text-foreground/65",
                   )}
                 >
@@ -109,8 +109,8 @@ export default function SourcesPage() {
                 <td className="px-4 py-3 text-right">
                   <ScorePill score={lead.score} />
                 </td>
-                <td className="px-4 py-3 text-foreground/65">{lead.source}</td>
-                <td className="px-4 py-3 text-right tabular text-foreground/45">
+                <td className="text-foreground/65 px-4 py-3">{lead.source}</td>
+                <td className="tabular text-foreground/45 px-4 py-3 text-right">
                   {formatRelativeDate(lead.ingestedAt)}
                 </td>
                 <td className="px-4 py-3 text-right">
@@ -118,8 +118,8 @@ export default function SourcesPage() {
                     href={`/sources/${lead.id}`}
                     className={cn(
                       "inline-flex items-center gap-1 rounded-full px-2 py-1",
-                      "text-[11.5px] text-foreground/55",
-                      "transition-colors group-hover:text-foreground",
+                      "text-foreground/55 text-[11.5px]",
+                      "group-hover:text-foreground transition-colors",
                     )}
                   >
                     Detail
@@ -138,12 +138,8 @@ export default function SourcesPage() {
 function Stat({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex flex-col gap-1 px-5 py-4">
-      <p className="text-[10.5px] uppercase tracking-[0.14em] text-foreground/45">
-        {label}
-      </p>
-      <p className="tabular font-serif text-[26px] leading-none tracking-tight">
-        {value}
-      </p>
+      <p className="text-foreground/45 text-[10.5px] tracking-[0.14em] uppercase">{label}</p>
+      <p className="tabular font-serif text-[26px] leading-none tracking-tight">{value}</p>
     </div>
   );
 }
@@ -160,7 +156,7 @@ function ScorePill({ score }: { score: number | null }) {
     <span
       className={cn(
         "inline-block min-w-[44px] rounded-full px-2 py-0.5",
-        "text-center text-[11.5px] font-medium tabular",
+        "tabular text-center text-[11.5px] font-medium",
         tone,
       )}
     >

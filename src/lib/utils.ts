@@ -35,9 +35,7 @@ export function formatRelativeDate(iso: string) {
   return d.toLocaleDateString("en-GB", { day: "numeric", month: "short" });
 }
 
-export function severityColor(
-  severity: "low" | "medium" | "high" | "critical",
-) {
+export function severityColor(severity: "low" | "medium" | "high" | "critical") {
   return {
     low: "sev-low",
     medium: "sev-med",
@@ -46,8 +44,6 @@ export function severityColor(
   }[severity];
 }
 
-export function severityEmoji(
-  severity: "low" | "medium" | "high" | "critical",
-) {
+export function severityEmoji(severity: "low" | "medium" | "high" | "critical") {
   return { low: "🟢", medium: "🟡", high: "🟠", critical: "🔴" }[severity];
 }

@@ -16,24 +16,17 @@ export function EbitdaBridge({ data }: { data: FinancialsHelios["ebitdaBridge"] 
               <p
                 className={cn(
                   "text-[12px]",
-                  isTotal ? "font-medium text-foreground" : "text-foreground/75",
+                  isTotal ? "text-foreground font-medium" : "text-foreground/75",
                 )}
               >
                 {row.label}
                 {isWarning && (
-                  <AlertTriangle
-                    strokeWidth={1.8}
-                    className="ml-1 inline size-3 text-warm"
-                  />
+                  <AlertTriangle strokeWidth={1.8} className="text-warm ml-1 inline size-3" />
                 )}
               </p>
-              {row.note && (
-                <p className="mt-0.5 text-[10.5px] text-foreground/45">
-                  {row.note}
-                </p>
-              )}
+              {row.note && <p className="text-foreground/45 mt-0.5 text-[10.5px]">{row.note}</p>}
             </div>
-            <div className="relative h-6 flex-1 rounded-[6px] bg-foreground/[0.04]">
+            <div className="bg-foreground/[0.04] relative h-6 flex-1 rounded-[6px]">
               <div
                 className={cn(
                   "h-full rounded-[6px] transition-all",
@@ -47,12 +40,11 @@ export function EbitdaBridge({ data }: { data: FinancialsHelios["ebitdaBridge"] 
             </div>
             <p
               className={cn(
-                "w-14 text-right tabular text-[12.5px]",
-                isTotal ? "font-medium text-foreground" : "text-foreground/75",
+                "tabular w-14 text-right text-[12.5px]",
+                isTotal ? "text-foreground font-medium" : "text-foreground/75",
               )}
             >
-              {row.type === "addition" || row.type === "warning" ? "+" : ""}
-              €{row.value.toFixed(1)}M
+              {row.type === "addition" || row.type === "warning" ? "+" : ""}€{row.value.toFixed(1)}M
             </p>
           </div>
         );
