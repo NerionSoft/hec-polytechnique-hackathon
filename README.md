@@ -54,8 +54,8 @@ pnpm typecheck         # tsc --noEmit
 pnpm lint              # ESLint
 pnpm format            # Prettier write
 pnpm test              # Vitest (unit + integration)
-pnpm test:unit         # src/application/**/*.test.ts
-pnpm test:integration  # src/infrastructure/**/*.integration.test.ts
+pnpm test:unit         # tests/unit/**/*.test.ts
+pnpm test:integration  # tests/integration/**/*.integration.test.ts
 
 pnpm db:generate       # Regenerate Prisma client
 pnpm db:migrate        # prisma migrate dev (uses .env.local)

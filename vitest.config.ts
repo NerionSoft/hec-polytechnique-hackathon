@@ -1,3 +1,4 @@
+import { resolve } from "node:path";
 import { defineConfig } from "vitest/config";
 
 export default defineConfig({
@@ -7,18 +8,24 @@ export default defineConfig({
       {
         test: {
           name: "unit",
-          include: ["src/application/**/*.test.ts"],
+          include: ["tests/unit/**/*.test.ts"],
           environment: "node",
+        },
+        resolve: {
+          alias: { "@": resolve(__dirname, ".") },
         },
       },
       {
         test: {
           name: "integration",
-          include: ["src/infrastructure/**/*.integration.test.ts"],
+          include: ["tests/integration/**/*.integration.test.ts"],
           environment: "node",
           testTimeout: 30_000,
           hookTimeout: 30_000,
           pool: "forks",
+        },
+        resolve: {
+          alias: { "@": resolve(__dirname, ".") },
         },
       },
     ],
@@ -30,6 +37,7 @@ export default defineConfig({
       exclude: [
         "src/app/**",
         "src/presentation/**",
+        "tests/**",
         "**/*.test.ts",
         "**/*.integration.test.ts",
         "**/*.d.ts",
@@ -37,5 +45,8 @@ export default defineConfig({
         "**/*.config.*",
       ],
     },
+  },
+  resolve: {
+    alias: { "@": resolve(__dirname, ".") },
   },
 });
