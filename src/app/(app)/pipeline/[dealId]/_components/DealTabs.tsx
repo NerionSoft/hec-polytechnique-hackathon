@@ -6,7 +6,6 @@ import {
   AlertTriangle,
   FileText,
   FolderLock,
-  Gavel,
   History,
   LayoutDashboard,
   MessageSquareQuote,
@@ -32,7 +31,6 @@ const TABS: TabDef[] = [
   { slug: "risks", label: "Risks", icon: AlertTriangle, unlocksAt: "in_dd", badge: "warn" },
   { slug: "questions", label: "Questions", icon: MessageSquareQuote, unlocksAt: "in_dd" },
   { slug: "memo", label: "Memo", icon: FileText, unlocksAt: "in_dd" },
-  { slug: "decision", label: "Decision", icon: Gavel, unlocksAt: "decided" },
   { slug: "audit", label: "Audit", icon: History },
 ];
 
