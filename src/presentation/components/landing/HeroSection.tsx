@@ -11,10 +11,23 @@ export function HeroSection() {
   return (
     <section
       id="top"
-      className={cn("relative isolate overflow-hidden", "bg-background pt-16 pb-24")}
+      className={cn(
+        "relative isolate overflow-hidden",
+        "bg-background pb-24 pt-16",
+      )}
     >
-      <div aria-hidden="true" className="absolute inset-0 -z-10">
-        <Image src="/images/hero.jpg" alt="" fill priority sizes="100vw" className="object-cover" />
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 -z-10"
+      >
+        <Image
+          src="/images/hero.jpg"
+          alt=""
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover"
+        />
       </div>
 
       <div
@@ -23,35 +36,40 @@ export function HeroSection() {
           "flex-col items-center gap-8 px-6 pt-20 text-center",
         )}
       >
-        <span
-          className={cn(
-            "flex items-center gap-2 rounded-full",
-            "border-foreground/10 bg-foreground/[0.06] border",
-            "px-3 py-1 text-[11px] tracking-[0.16em] uppercase",
-            "text-foreground/70 backdrop-blur-[34px]",
-          )}
-        >
-          <span className="bg-accent size-1.5 rounded-full" />
-          AI Due Diligence Copilot
-        </span>
         <h1
           className={cn(
-            "max-w-[820px] font-serif font-light",
-            "text-[44px] leading-[1.05] tracking-[-0.02em]",
-            "text-foreground sm:text-[56px] md:text-[64px]",
+            "max-w-[860px] font-display font-extrabold",
+            "text-[44px] leading-[1.02] tracking-[-0.035em]",
+            "text-white sm:text-[58px] md:text-[68px]",
           )}
         >
           {hero.title}
         </h1>
-        <p className={cn("max-w-[560px] text-[16px] leading-relaxed", "text-foreground/70")}>
+        <p
+          className={cn(
+            "max-w-[560px] text-[16px] leading-relaxed",
+            "text-white/75",
+          )}
+        >
           {hero.subtitle}
         </p>
         <div className="flex flex-wrap items-center justify-center gap-3">
-          <GlassButton variant="solid" size="md">
+          <GlassButton
+            variant="solid"
+            size="md"
+            className="bg-white text-black hover:bg-white/90"
+          >
             {hero.cta}
             <ArrowRight strokeWidth={1.6} className="size-4" />
           </GlassButton>
-          <GlassButton variant="glass" size="md">
+          <GlassButton
+            variant="glass"
+            size="md"
+            className={cn(
+              "border-white/20 bg-white/10 text-white",
+              "hover:bg-white/20",
+            )}
+          >
             <Play strokeWidth={1.6} className="size-4" />
             {hero.secondaryCta}
           </GlassButton>
