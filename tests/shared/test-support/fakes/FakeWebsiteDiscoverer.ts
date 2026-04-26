@@ -2,7 +2,7 @@ import type {
   WebsiteDiscoverer,
   WebsiteDiscovererInput,
   WebsiteDiscovererResult,
-} from "../../ports/WebsiteDiscoverer";
+} from "@/src/application/ports/WebsiteDiscoverer";
 
 export class FakeWebsiteDiscoverer implements WebsiteDiscoverer {
   readonly discoverCalls: WebsiteDiscovererInput[] = [];
