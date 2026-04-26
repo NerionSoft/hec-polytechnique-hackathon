@@ -72,6 +72,6 @@ describe("FetchLeadsFromSirene", () => {
     expect(result.imported).toBe(2);
     const saved = deps.leadRepo.saveManyCalls[0];
     expect(saved.every((l) => l.thesisId === null)).toBe(true);
-    expect(deps.sirene.searchCalls[0]).toEqual({ sectors: ["6201Z"], perPage: 25 });
+    expect(deps.sirene.searchCalls[0]).toEqual({ sectors: ["6201Z"], perPage: 25, page: 1 });
   });
 });

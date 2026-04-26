@@ -61,7 +61,11 @@ const eslintConfig = defineConfig([
   // Mirrors the application/** SDK list (minus next, which routes legitimately need
   // for NextRequest/NextResponse).
   {
-    files: ["src/app/api/leads/**/route.ts", "src/app/api/theses/**/route.ts"],
+    files: [
+      "src/app/api/leads/**/route.ts",
+      "src/app/api/theses/**/route.ts",
+      "src/app/api/outreach/**/route.ts",
+    ],
     rules: {
       "no-restricted-imports": [
         "error",

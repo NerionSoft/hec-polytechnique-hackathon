@@ -62,8 +62,14 @@ export interface EnrichmentResult {
 }
 
 export interface SireneSearchQuery {
-  sectors?: string[]; // NAF codes
+  // Full NAF rev2 codes in API format (e.g. "62.01Z"). Forwarded as `activite_principale`.
+  sectors?: string[];
+  // NAF section letters A–U. Forwarded as `section_activite_principale` for coarse filtering.
+  sections?: string[];
+  // Full 5-digit postal codes (e.g. "75001"). Forwarded as `code_postal`.
   postalCodes?: string[];
+  // INSEE département codes (e.g. "75", "2A"). Forwarded as `departement`.
+  departements?: string[];
   employeeBracketCodes?: string[]; // tranche_effectif_salarie
   legalFormCodes?: string[];
   page?: number;

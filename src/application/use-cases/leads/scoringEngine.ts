@@ -69,13 +69,18 @@ export function scoreLead(input: ScoreLeadInput): LeadScoreResult {
     .toLowerCase();
 
   // Rule 1 — Sector match (+20)
+  // Match is a prefix check: a thesis sector code like "62" (NAF division) matches
+  // a lead.sector of "6201Z" (full NAF rev2 class). Plain-string equality remains.
   if (thesis.sectors.length === 0) {
     /* permissive thesis, skip */
   } else if (!lead.sector) {
     missingInfo.push("lead.sector unknown — cannot evaluate sector fit");
   } else {
     const leadSector = lead.sector.toLowerCase().trim();
-    const matched = thesis.sectors.some((s) => s.toLowerCase().trim() === leadSector);
+    const matched = thesis.sectors.some((s) => {
+      const t = s.toLowerCase().trim();
+      return t.length > 0 && (leadSector === t || leadSector.startsWith(t));
+    });
     if (matched) {
       score += 20;
       reasons.push(`Sector "${lead.sector}" matches thesis (+20)`);
