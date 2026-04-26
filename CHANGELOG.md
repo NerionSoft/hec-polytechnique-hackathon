@@ -1,5 +1,29 @@
 # Changelog
 
+## [0.1.2](https://github.com/NerionSoft/hec-polytechnique-hackathon/compare/v0.1.1...v0.1.2) (2026-04-26)
+
+
+### Features
+
+* add outreach drafting functionality with related types and inte… ([304ffd6](https://github.com/NerionSoft/hec-polytechnique-hackathon/commit/304ffd65669545dcb86937736091affc9297e848))
+* add outreach drafting functionality with related types and interfaces ([98e09f5](https://github.com/NerionSoft/hec-polytechnique-hackathon/commit/98e09f53fdf949fb8d4f34f2bbda1f8ad2caa0c0))
+* **dd-pipeline:** production-grade extraction, parallel ingestion, audit visibility ([8043e75](https://github.com/NerionSoft/hec-polytechnique-hackathon/commit/8043e75322e8681ecfaf42a19831bec5ea4078b9))
+* **dd:** add multi-agent due-diligence pipeline with Gemini and Inngest ([317a0a2](https://github.com/NerionSoft/hec-polytechnique-hackathon/commit/317a0a22a516327d06c2fda13b6ce2b64ee5368d))
+* enhance website display with discovery source and snapshot stat… ([801c69e](https://github.com/NerionSoft/hec-polytechnique-hackathon/commit/801c69efc90d277103a1108079d269b5ff5598ba))
+* enhance website display with discovery source and snapshot status indicators ([7e20306](https://github.com/NerionSoft/hec-polytechnique-hackathon/commit/7e2030695323f60535699d21b32d7659cb9a8dc1))
+* implement website discovery functionality with DuckDuckGo integration and related data structures ([e2ced9d](https://github.com/NerionSoft/hec-polytechnique-hackathon/commit/e2ced9d95eb55d51eb9982df8970935e5fc5030a))
+* **memo:** add professional PDF export via dedicated print route ([861a758](https://github.com/NerionSoft/hec-polytechnique-hackathon/commit/861a7586363b0226d9a02a4f617ee37ac8ebd184))
+* relocate test files to 'tests' directory and update import paths ([580ea83](https://github.com/NerionSoft/hec-polytechnique-hackathon/commit/580ea83d473b23adef6abdda4426580f1ed6bcf2))
+* **risks:** wire approve/dismiss/edit/add-to-memo/mgmt-q actions ([1098db8](https://github.com/NerionSoft/hec-polytechnique-hackathon/commit/1098db81fc0440bf8de19420675ff1e35225fbe0))
+* **ui:** add mobile sidebar with menu toggle and responsive layouts ([c1175b8](https://github.com/NerionSoft/hec-polytechnique-hackathon/commit/c1175b876855ea90ed6b55f2f628d67b9e7d9a87))
+
+
+### Bug Fixes
+
+* **prisma:** regenerate clean init migration without duplicates ([bb853e3](https://github.com/NerionSoft/hec-polytechnique-hackathon/commit/bb853e33567cbcdca81faced8aef172715a15a24))
+* **prisma:** regenerate clean init migration without duplicates ([3440f20](https://github.com/NerionSoft/hec-polytechnique-hackathon/commit/3440f20e4da06536f5e466b62d0a3033184a4eec))
+* **triage:** scope A1 AgentOutput rows by document ([4a8dc27](https://github.com/NerionSoft/hec-polytechnique-hackathon/commit/4a8dc2721b67045326fecf98f5eac160595fe1f9))
+
 ## [0.1.1](https://github.com/NerionSoft/hec-polytechnique-hackathon/compare/v0.1.0...v0.1.1) (2026-04-26)
 
 
