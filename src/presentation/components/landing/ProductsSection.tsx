@@ -90,7 +90,7 @@ function ProductCard({ card }: { card: Card }) {
           {card.description}
         </p>
         <div className="pt-3">
-          <GlassButton size="md" variant="glass">
+          <GlassButton size="md" variant="glass" href="/sign-in">
             {card.cta}
           </GlassButton>
         </div>

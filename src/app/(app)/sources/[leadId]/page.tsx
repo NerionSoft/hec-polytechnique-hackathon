@@ -94,7 +94,7 @@ export default async function LeadDetailPage({ params }: { params: Promise<{ lea
   };
 
   return (
-    <div className="px-8 pb-12">
+    <div className="px-4 pb-12 sm:px-8">
       <div className="pt-6">
         <Link
           href="/sources"

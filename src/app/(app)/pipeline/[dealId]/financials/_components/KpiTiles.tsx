@@ -5,7 +5,7 @@ import { CitationLink } from "../../_components/CitationLink";
 
 export function KpiTiles({ deal }: { deal: Deal }) {
   return (
-    <div className="grid grid-cols-2 gap-3 px-8 lg:grid-cols-4">
+    <div className="grid grid-cols-2 gap-3 px-4 sm:px-8 lg:grid-cols-4">
       <Tile
         label="Revenue FY24"
         value={`€${deal.revenue.toFixed(1)}M`}

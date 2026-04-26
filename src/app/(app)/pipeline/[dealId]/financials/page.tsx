@@ -41,7 +41,7 @@ export default async function FinancialsPage({ params }: { params: Promise<{ dea
       />
       <KpiTiles deal={deal} />
 
-      <div className="grid grid-cols-1 gap-4 px-8 py-6 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-4 px-4 py-6 sm:px-8 lg:grid-cols-3">
         <Card className="lg:col-span-2">
           <CardHeader eyebrow="Revenue & EBITDA · 5-year trend" citation="c1" />
           <TrendChart data={f.trend} />

@@ -8,7 +8,7 @@ export async function QuarterStrip() {
   return (
     <div
       className={cn(
-        "mx-8 mb-6 overflow-hidden rounded-[20px]",
+        "mx-4 mb-6 overflow-hidden rounded-[20px] sm:mx-8",
         "border-foreground/[0.08] bg-foreground/[0.02] border",
       )}
     >

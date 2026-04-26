@@ -51,7 +51,7 @@ export function Navigation() {
           ))}
         </ul>
 
-        <GlassButton size="sm" variant="glass">
+        <GlassButton size="sm" variant="glass" href="/sign-in">
           {navigation.cta}
         </GlassButton>
       </nav>

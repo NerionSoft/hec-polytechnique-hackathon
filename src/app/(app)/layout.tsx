@@ -18,7 +18,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   return (
     <div className="bg-background min-h-screen">
       <Sidebar />
-      <div className="pl-[240px]">
+      <div className="md:pl-[240px]">
         <Topbar
           theses={summaries}
           selectedThesisId={selectedThesisId}

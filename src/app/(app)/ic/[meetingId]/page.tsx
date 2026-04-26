@@ -17,7 +17,7 @@ export default async function MeetingDetailPage({
   const date = new Date(meeting.date);
 
   return (
-    <div className="px-8 pb-12">
+    <div className="px-4 pb-12 sm:px-8">
       <div className="pt-6">
         <Link
           href="/ic"
