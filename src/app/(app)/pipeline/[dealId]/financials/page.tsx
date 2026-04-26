@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import { cn } from "@/src/presentation/lib/cn";
-import { getDeal } from "@/src/lib/mock/deals";
-import { financialsHelios } from "@/src/lib/mock/financials";
+import { financialsHelios, type FinancialsHelios } from "@/src/lib/mock/financials";
+import { findPipelineDeal, findPipelineFinancialSnapshot } from "@/src/lib/data/pipeline";
 import { PageHeader } from "../../../_components/PageHeader";
 import { KpiTiles } from "./_components/KpiTiles";
 import { TrendChart } from "./_components/TrendChart";
@@ -12,9 +12,26 @@ import { CitationLink } from "../_components/CitationLink";
 
 export default async function FinancialsPage({ params }: { params: Promise<{ dealId: string }> }) {
   const { dealId } = await params;
-  const deal = getDeal(dealId);
+  const deal = await findPipelineDeal(dealId);
   if (!deal) notFound();
-  const f = financialsHelios;
+  const snapshot = await findPipelineFinancialSnapshot(dealId);
+  const f: FinancialsHelios = snapshot
+    ? {
+        trend: (snapshot.trendJson as FinancialsHelios["trend"] | null) ?? financialsHelios.trend,
+        ebitdaBridge:
+          (snapshot.bridgeJson as FinancialsHelios["ebitdaBridge"] | null) ??
+          financialsHelios.ebitdaBridge,
+        customerConcentration:
+          (snapshot.concentrationJson as FinancialsHelios["customerConcentration"] | null) ??
+          financialsHelios.customerConcentration,
+        cohortRetention:
+          (snapshot.retentionJson as FinancialsHelios["cohortRetention"] | null) ??
+          financialsHelios.cohortRetention,
+        workingCapital:
+          (snapshot.workingCapitalJson as FinancialsHelios["workingCapital"] | null) ??
+          financialsHelios.workingCapital,
+      }
+    : financialsHelios;
 
   return (
     <>

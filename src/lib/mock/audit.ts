@@ -4,6 +4,10 @@ export type AuditEntry = {
   actor: "ai" | string;
   action: string;
   target: string;
+  /** Optional human-readable detail (error message, status note). */
+  detail?: string | null;
+  /** Wall-clock duration in ms when the entry represents a completed step. */
+  durationMs?: number | null;
   timestamp: string;
 };
 

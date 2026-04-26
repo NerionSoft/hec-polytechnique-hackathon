@@ -1,7 +1,8 @@
 import { Prisma } from "@prisma/client";
 import { prisma } from "../persistence/prisma/client";
 import { AiGatewayAgentRunner } from "../llm/agents/AiGatewayAgentRunner";
-import { UnpdfExtractor } from "../extraction/UnpdfExtractor";
+import { GeminiPdfExtractor } from "../extraction/GeminiPdfExtractor";
+import { VercelBlobStorage } from "../blob/VercelBlobStorage";
 import { inngest, type PipelineStartData } from "./client";
 import { buildAgentContext } from "@/src/application/orchestration/buildAgentContext";
 import { ingestDocuments } from "@/src/application/orchestration/steps/ingestDocuments";
@@ -28,8 +29,9 @@ import { makeRunVerifierAgent } from "@/src/application/agents/verifier/RunVerif
 const MAX_VERIFIER_LOOPS = 3;
 
 const agentRunner = new AiGatewayAgentRunner();
-const pdfExtractor = new UnpdfExtractor();
-const deps = { prisma, agentRunner, pdfExtractor, fetch };
+const pdfExtractor = new GeminiPdfExtractor();
+const blobStorage = new VercelBlobStorage();
+const deps = { prisma, agentRunner, pdfExtractor, blobStorage };
 
 /**
  * Durable Inngest function that drives the Athena pipeline end-to-end.

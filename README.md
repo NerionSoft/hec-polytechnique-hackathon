@@ -263,6 +263,27 @@ The seed creates two ready-to-use investment theses:
 1. **Lower-mid B2B SaaS — France** (€5M–€50M, founder-owned, recurring revenue, profitable, niche).
 2. **Buy-and-build — Industrial services DACH+FR** (€8M–€80M, fragmented market, succession risk).
 
+Sign in via `POST /api/auth/sign-in/email` or the temporary `/admin` UI.
+
+## Common commands
+
+```bash
+pnpm dev               # Next dev server
+pnpm build             # Production build
+pnpm typecheck         # tsc --noEmit
+pnpm lint              # ESLint
+pnpm format            # Prettier write
+pnpm test              # Vitest (unit + integration)
+pnpm test:unit         # tests/unit/**/*.test.ts
+pnpm test:integration  # tests/integration/**/*.integration.test.ts
+
+pnpm db:generate       # Regenerate Prisma client
+pnpm db:migrate        # prisma migrate dev (uses .env.local)
+pnpm db:push           # prisma db push (no migration file, fast for hackathon iterations)
+pnpm db:seed           # Run prisma/seed.ts
+pnpm db:studio         # Prisma Studio
+```
+
 ---
 
 ## API surface

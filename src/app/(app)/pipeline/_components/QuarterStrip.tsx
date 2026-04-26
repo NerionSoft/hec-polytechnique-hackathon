@@ -1,8 +1,10 @@
 import { ArrowUpRight, Sparkles, TrendingUp } from "lucide-react";
 import { cn } from "@/src/presentation/lib/cn";
-import { quarterStats } from "@/src/lib/mock/deals";
+import { getPipelineQuarterStats } from "@/src/lib/data/pipeline";
 
-export function QuarterStrip() {
+export async function QuarterStrip() {
+  const quarterStats = await getPipelineQuarterStats();
+
   return (
     <div
       className={cn(

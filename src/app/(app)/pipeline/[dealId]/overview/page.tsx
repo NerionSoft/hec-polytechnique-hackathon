@@ -2,23 +2,26 @@ import Link from "next/link";
 import { ArrowRight, Pencil, Sparkles } from "lucide-react";
 import { notFound } from "next/navigation";
 import { cn } from "@/src/presentation/lib/cn";
-import { getDeal, stages, stageLabels } from "@/src/lib/mock/deals";
-import { redFlagsForDeal } from "@/src/lib/mock/red-flags";
-import { questionsForDeal } from "@/src/lib/mock/questions";
+import { stages, stageLabels } from "@/src/lib/mock/deals";
 import { team } from "@/src/lib/mock/fund";
+import {
+  findPipelineDeal,
+  listPipelineRedFlags,
+  listPipelineQuestions,
+} from "@/src/lib/data/pipeline";
 import { SeverityDot } from "../_components/SeverityBadge";
 import { CitationLink } from "../_components/CitationLink";
 
 export default async function OverviewPage({ params }: { params: Promise<{ dealId: string }> }) {
   const { dealId } = await params;
-  const deal = getDeal(dealId);
+  const deal = await findPipelineDeal(dealId);
   if (!deal) notFound();
 
-  const flags = redFlagsForDeal(dealId);
+  const flags = await listPipelineRedFlags(dealId);
   const topFlags = [...flags]
     .sort((a, b) => severityWeight(b.severity) - severityWeight(a.severity))
     .slice(0, 5);
-  const qs = questionsForDeal(dealId);
+  const qs = await listPipelineQuestions(dealId);
   const owner = deal.owner ? team.find((t) => t.id === deal.owner) : null;
   const stageIndex = stages.indexOf(deal.stage);
 

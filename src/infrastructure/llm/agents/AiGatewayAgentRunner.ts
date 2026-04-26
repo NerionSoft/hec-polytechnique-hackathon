@@ -79,7 +79,21 @@ export class AiGatewayAgentRunner implements AgentRunner {
           }`,
         );
       }
-      throw err;
+      // Anything else: surface the raw provider error so we don't swallow
+      // 400/401/429 from Gemini behind a generic message.
+      const message = err instanceof Error ? err.message : String(err);
+      const cause = (err as { cause?: unknown }).cause;
+      const data = (err as { data?: unknown; responseBody?: unknown }).data;
+      console.error(`[Agent ${def.agentId}] provider error after ${Date.now() - startedAt}ms`, {
+        message,
+        causeMessage: cause instanceof Error ? cause.message : cause,
+        data,
+        responseBody: (err as { responseBody?: unknown }).responseBody,
+      });
+      throw new Error(
+        `Agent ${def.agentId} provider call failed: ${message}` +
+          (cause instanceof Error && cause.message !== message ? ` · cause: ${cause.message}` : ""),
+      );
     }
   }
 }
