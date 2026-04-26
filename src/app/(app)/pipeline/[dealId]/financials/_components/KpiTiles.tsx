@@ -5,7 +5,7 @@ import { CitationLink } from "../../_components/CitationLink";
 
 export function KpiTiles({ deal }: { deal: Deal }) {
   return (
-    <div className="grid grid-cols-2 gap-3 px-8 lg:grid-cols-4">
+    <div className="grid grid-cols-2 gap-3 px-4 sm:px-8 lg:grid-cols-4">
       <Tile
         label="Revenue FY24"
         value={`€${deal.revenue.toFixed(1)}M`}
@@ -53,31 +53,21 @@ function Tile({
 }) {
   const Arrow = deltaTone === "up" ? ArrowUpRight : ArrowDownRight;
   return (
-    <div
-      className={cn(
-        "rounded-[18px] border border-foreground/[0.08] bg-surface/60 p-4",
-      )}
-    >
+    <div className={cn("border-foreground/[0.08] bg-surface/60 rounded-[18px] border p-4")}>
       <div className="flex items-center justify-between">
-        <p className="text-[10.5px] uppercase tracking-[0.14em] text-foreground/45">
-          {label}
-        </p>
+        <p className="text-foreground/45 text-[10.5px] tracking-[0.14em] uppercase">{label}</p>
         {citation && <CitationLink id={citation} />}
       </div>
-      <p className="mt-3 tabular font-serif text-[28px] leading-none tracking-tight">
-        {value}
-      </p>
+      <p className="tabular mt-3 font-serif text-[28px] leading-none tracking-tight">{value}</p>
       <p
         className={cn(
-          "mt-2 inline-flex items-center gap-0.5 tabular text-[11.5px]",
+          "tabular mt-2 inline-flex items-center gap-0.5 text-[11.5px]",
           deltaTone === "up" && "text-sev-low",
           deltaTone === "down" && "text-sev-high",
           deltaTone === "neutral" && "text-foreground/55",
         )}
       >
-        {deltaTone !== "neutral" && (
-          <Arrow strokeWidth={1.6} className="size-3" />
-        )}
+        {deltaTone !== "neutral" && <Arrow strokeWidth={1.6} className="size-3" />}
         {delta}
       </p>
     </div>

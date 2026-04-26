@@ -1,16 +1,22 @@
-import {
-  forwardRef,
-  type ComponentPropsWithoutRef,
-} from "react";
+import Link from "next/link";
+import { forwardRef, type ComponentPropsWithoutRef } from "react";
 import { cn } from "@/src/presentation/lib/cn";
 
 type GlassButtonVariant = "glass" | "solid" | "ghost";
 type GlassButtonSize = "sm" | "md";
 
-interface GlassButtonProps extends ComponentPropsWithoutRef<"button"> {
+type CommonProps = {
   variant?: GlassButtonVariant;
   size?: GlassButtonSize;
-}
+};
+
+type ButtonOnlyProps = ComponentPropsWithoutRef<"button"> & CommonProps & { href?: undefined };
+type LinkOnlyProps = Omit<ComponentPropsWithoutRef<"a">, "href"> &
+  CommonProps & {
+    href: string;
+  };
+
+type GlassButtonProps = ButtonOnlyProps | LinkOnlyProps;
 
 const base = cn(
   "inline-flex flex-row flex-nowrap items-center justify-center",
@@ -29,14 +35,8 @@ const variants: Record<GlassButtonVariant, string> = {
     "backdrop-blur-[34px]",
     "hover:bg-foreground/15",
   ),
-  solid: cn(
-    "bg-foreground text-background",
-    "hover:bg-foreground/90",
-  ),
-  ghost: cn(
-    "text-foreground/70",
-    "hover:text-foreground",
-  ),
+  solid: cn("bg-foreground text-background", "hover:bg-foreground/90"),
+  ghost: cn("text-foreground/70", "hover:text-foreground"),
 };
 
 const sizes: Record<GlassButtonSize, string> = {
@@ -44,25 +44,22 @@ const sizes: Record<GlassButtonSize, string> = {
   md: "h-11 px-6 text-sm",
 };
 
-const GlassButton = forwardRef<HTMLButtonElement, GlassButtonProps>(
-  (
-    {
-      className,
-      variant = "glass",
-      size = "md",
-      children,
-      type = "button",
-      ...props
-    },
-    ref,
-  ) => {
+const GlassButton = forwardRef<HTMLButtonElement | HTMLAnchorElement, GlassButtonProps>(
+  ({ className, variant = "glass", size = "md", children, ...props }, ref) => {
+    const classes = cn(base, variants[variant], sizes[size], className);
+
+    if ("href" in props && props.href !== undefined) {
+      const { href, ...rest } = props as LinkOnlyProps;
+      return (
+        <Link ref={ref as React.Ref<HTMLAnchorElement>} href={href} className={classes} {...rest}>
+          {children}
+        </Link>
+      );
+    }
+
+    const { type = "button", ...rest } = props as ButtonOnlyProps;
     return (
-      <button
-        ref={ref}
-        type={type}
-        className={cn(base, variants[variant], sizes[size], className)}
-        {...props}
-      >
+      <button ref={ref as React.Ref<HTMLButtonElement>} type={type} className={classes} {...rest}>
         {children}
       </button>
     );

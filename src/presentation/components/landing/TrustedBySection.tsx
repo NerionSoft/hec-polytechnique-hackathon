@@ -49,7 +49,7 @@ export function TrustedBySection() {
           )}
         >
           <p className="text-foreground/70 text-[13px]">{trustedBy.cookies.message}</p>
-          <GlassButton size="sm" variant="glass">
+          <GlassButton size="sm" variant="glass" href="/sign-in">
             {trustedBy.cookies.cta}
           </GlassButton>
         </div>

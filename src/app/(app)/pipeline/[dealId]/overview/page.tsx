@@ -2,32 +2,31 @@ import Link from "next/link";
 import { ArrowRight, Pencil, Sparkles } from "lucide-react";
 import { notFound } from "next/navigation";
 import { cn } from "@/src/presentation/lib/cn";
-import { getDeal, stages, stageLabels } from "@/src/lib/mock/deals";
-import { redFlagsForDeal } from "@/src/lib/mock/red-flags";
-import { questionsForDeal } from "@/src/lib/mock/questions";
+import { stages, stageLabels } from "@/src/lib/mock/deals";
 import { team } from "@/src/lib/mock/fund";
+import {
+  findPipelineDeal,
+  listPipelineRedFlags,
+  listPipelineQuestions,
+} from "@/src/lib/data/pipeline";
 import { SeverityDot } from "../_components/SeverityBadge";
 import { CitationLink } from "../_components/CitationLink";
 
-export default async function OverviewPage({
-  params,
-}: {
-  params: Promise<{ dealId: string }>;
-}) {
+export default async function OverviewPage({ params }: { params: Promise<{ dealId: string }> }) {
   const { dealId } = await params;
-  const deal = getDeal(dealId);
+  const deal = await findPipelineDeal(dealId);
   if (!deal) notFound();
 
-  const flags = redFlagsForDeal(dealId);
+  const flags = await listPipelineRedFlags(dealId);
   const topFlags = [...flags]
     .sort((a, b) => severityWeight(b.severity) - severityWeight(a.severity))
     .slice(0, 5);
-  const qs = questionsForDeal(dealId);
+  const qs = await listPipelineQuestions(dealId);
   const owner = deal.owner ? team.find((t) => t.id === deal.owner) : null;
   const stageIndex = stages.indexOf(deal.stage);
 
   return (
-    <div className="grid grid-cols-1 gap-4 px-8 py-6 lg:grid-cols-3">
+    <div className="grid grid-cols-1 gap-4 px-4 py-6 sm:px-8 lg:grid-cols-3">
       <Card className="lg:col-span-2">
         <CardHeader
           eyebrow="Investment Thesis"
@@ -37,8 +36,8 @@ export default async function OverviewPage({
               type="button"
               className={cn(
                 "flex items-center gap-1 rounded-full",
-                "border border-foreground/[0.10] px-2.5 py-1",
-                "text-[11px] text-foreground/65 transition-colors",
+                "border-foreground/[0.10] border px-2.5 py-1",
+                "text-foreground/65 text-[11px] transition-colors",
                 "hover:bg-foreground/[0.06] hover:text-foreground",
               )}
             >
@@ -47,10 +46,9 @@ export default async function OverviewPage({
             </button>
           }
         />
-        <p className="font-serif text-[18px] leading-[1.5] tracking-tight text-foreground/85">
-          {deal.name.split(" ")[0]} is a {countryAdj(deal.geo)}{" "}
-          {deal.sector.toLowerCase()} player serving European retailers and food
-          brands. The company has demonstrated{" "}
+        <p className="text-foreground/85 font-serif text-[18px] leading-[1.5] tracking-tight">
+          {deal.name.split(" ")[0]} is a {countryAdj(deal.geo)} {deal.sector.toLowerCase()} player
+          serving European retailers and food brands. The company has demonstrated{" "}
           <span className="text-foreground">
             {Math.round(deal.growth * 100)}% YoY revenue growth
           </span>
@@ -60,17 +58,19 @@ export default async function OverviewPage({
           <span className="text-foreground">
             {Math.round(deal.ebitdaMargin * 100)}% EBITDA margin
           </span>
-          <CitationLink id="c2" />. The thesis rests on three pillars: (i)
-          consolidation of the fragmented European mid-market, (ii) cross-sell of
-          the recently launched analytics module (12% attach rate today, target
-          35% by 2027), and (iii) DACH expansion where the company has only 7% of
-          revenue today.
+          <CitationLink id="c2" />. The thesis rests on three pillars: (i) consolidation of the
+          fragmented European mid-market, (ii) cross-sell of the recently launched analytics module
+          (12% attach rate today, target 35% by 2027), and (iii) DACH expansion where the company
+          has only 7% of revenue today.
         </p>
       </Card>
 
       <Card>
-        <CardHeader eyebrow="Key metrics" status={`Sourced ${deal.coverage > 0.5 ? "from data room" : "from enrichment"}`} />
-        <dl className="flex flex-col divide-y divide-foreground/[0.06]">
+        <CardHeader
+          eyebrow="Key metrics"
+          status={`Sourced ${deal.coverage > 0.5 ? "from data room" : "from enrichment"}`}
+        />
+        <dl className="divide-foreground/[0.06] flex flex-col divide-y">
           <Metric
             label="Revenue FY24"
             value={`€${deal.revenue.toFixed(1)}M`}
@@ -90,11 +90,7 @@ export default async function OverviewPage({
             tone={deal.netDebtEbitda > 3 ? "warn" : "default"}
             citation="c4"
           />
-          <Metric
-            label="Headcount"
-            value={`${deal.employees}`}
-            delta="+18 YoY"
-          />
+          <Metric label="Headcount" value={`${deal.employees}`} delta="+18 YoY" />
         </dl>
       </Card>
 
@@ -106,8 +102,8 @@ export default async function OverviewPage({
             <Link
               href={`/pipeline/${dealId}/risks`}
               className={cn(
-                "flex items-center gap-1 text-[12px] text-foreground/65",
-                "transition-colors hover:text-foreground",
+                "text-foreground/65 flex items-center gap-1 text-[12px]",
+                "hover:text-foreground transition-colors",
               )}
             >
               See all
@@ -115,26 +111,19 @@ export default async function OverviewPage({
             </Link>
           }
         />
-        <ul className="flex flex-col divide-y divide-foreground/[0.06]">
+        <ul className="divide-foreground/[0.06] flex flex-col divide-y">
           {topFlags.map((rf) => (
-            <li
-              key={rf.id}
-              className="flex items-start gap-3 py-3 first:pt-0 last:pb-0"
-            >
+            <li key={rf.id} className="flex items-start gap-3 py-3 first:pt-0 last:pb-0">
               <SeverityDot severity={rf.severity} />
               <div className="min-w-0 flex-1">
-                <p className="text-[13px] font-medium text-foreground">
-                  {rf.title}
-                </p>
-                <p className="mt-0.5 truncate text-[11.5px] text-foreground/55">
-                  {rf.summary}
-                </p>
+                <p className="text-foreground text-[13px] font-medium">{rf.title}</p>
+                <p className="text-foreground/55 mt-0.5 truncate text-[11.5px]">{rf.summary}</p>
               </div>
               <Link
                 href={`/pipeline/${dealId}/risks#${rf.id}`}
                 className={cn(
-                  "shrink-0 text-[11px] text-foreground/55",
-                  "transition-colors hover:text-foreground",
+                  "text-foreground/55 shrink-0 text-[11px]",
+                  "hover:text-foreground transition-colors",
                 )}
               >
                 view →
@@ -169,9 +158,7 @@ export default async function OverviewPage({
                   )}
                 />
                 <span className="flex-1">{stageLabels[s]}</span>
-                {current && (
-                  <span className="text-[10.5px] text-warm">in progress</span>
-                )}
+                {current && <span className="text-warm text-[10.5px]">in progress</span>}
               </li>
             );
           })}
@@ -186,8 +173,8 @@ export default async function OverviewPage({
             <Link
               href={`/pipeline/${dealId}/memo`}
               className={cn(
-                "inline-flex items-center gap-1.5 rounded-full bg-foreground px-3.5 py-1.5",
-                "text-[12px] font-medium text-background transition-opacity",
+                "bg-foreground inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5",
+                "text-background text-[12px] font-medium transition-opacity",
                 "hover:opacity-90",
               )}
             >
@@ -201,17 +188,13 @@ export default async function OverviewPage({
             <li
               key={q.id}
               className={cn(
-                "rounded-[12px] border border-foreground/[0.06] bg-foreground/[0.015] p-3",
+                "border-foreground/[0.06] bg-foreground/[0.015] rounded-[12px] border p-3",
               )}
             >
-              <p
-                className={cn(
-                  "text-[10px] uppercase tracking-[0.14em] text-foreground/45",
-                )}
-              >
+              <p className={cn("text-foreground/45 text-[10px] tracking-[0.14em] uppercase")}>
                 {q.topic}
               </p>
-              <p className="mt-1 line-clamp-3 text-[12.5px] leading-snug text-foreground/85">
+              <p className="text-foreground/85 mt-1 line-clamp-3 text-[12.5px] leading-snug">
                 {q.body}
               </p>
             </li>
@@ -222,17 +205,11 @@ export default async function OverviewPage({
   );
 }
 
-function Card({
-  children,
-  className,
-}: {
-  children: React.ReactNode;
-  className?: string;
-}) {
+function Card({ children, className }: { children: React.ReactNode; className?: string }) {
   return (
     <section
       className={cn(
-        "flex flex-col gap-4 rounded-[20px] border border-foreground/[0.08]",
+        "border-foreground/[0.08] flex flex-col gap-4 rounded-[20px] border",
         "bg-surface/60 p-5",
         className,
       )}
@@ -254,14 +231,8 @@ function CardHeader({
   return (
     <div className="flex items-start justify-between gap-3">
       <div className="min-w-0">
-        <p className="text-[10.5px] uppercase tracking-[0.14em] text-foreground/45">
-          {eyebrow}
-        </p>
-        {status && (
-          <p className="mt-1 truncate text-[11.5px] text-foreground/55">
-            {status}
-          </p>
-        )}
+        <p className="text-foreground/45 text-[10.5px] tracking-[0.14em] uppercase">{eyebrow}</p>
+        {status && <p className="text-foreground/55 mt-1 truncate text-[11.5px]">{status}</p>}
       </div>
       {action}
     </div>
@@ -284,7 +255,7 @@ function Metric({
   return (
     <div className="flex items-baseline justify-between gap-3 py-3 first:pt-0 last:pb-0">
       <div className="flex items-center gap-1.5">
-        <p className="text-[12px] text-foreground/55">{label}</p>
+        <p className="text-foreground/55 text-[12px]">{label}</p>
         {citation && <CitationLink id={citation} />}
       </div>
       <div className="text-right">
@@ -296,7 +267,7 @@ function Metric({
         >
           {value}
         </p>
-        <p className="tabular text-[11px] text-foreground/45">{delta}</p>
+        <p className="tabular text-foreground/45 text-[11px]">{delta}</p>
       </div>
     </div>
   );

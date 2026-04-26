@@ -15,7 +15,7 @@ export function ReviewBadge({
         <span
           className={cn(
             "inline-flex items-center gap-1 rounded-full border px-2 py-0.5",
-            "border-state-ai/25 bg-state-ai/10 text-[10.5px] font-medium text-state-ai",
+            "border-state-ai/25 bg-state-ai/10 text-state-ai text-[10.5px] font-medium",
           )}
         >
           <Bot strokeWidth={1.8} className="size-2.5" />
@@ -34,7 +34,7 @@ function Status({ status }: { status: ReviewStatus }) {
         className={cn(
           "inline-flex items-center gap-1 rounded-full border px-2 py-0.5",
           "border-state-approved/25 bg-state-approved/10",
-          "text-[10.5px] font-medium text-state-approved",
+          "text-state-approved text-[10.5px] font-medium",
         )}
       >
         <Check strokeWidth={2} className="size-2.5" />
@@ -48,7 +48,7 @@ function Status({ status }: { status: ReviewStatus }) {
         className={cn(
           "inline-flex items-center gap-1 rounded-full border px-2 py-0.5",
           "border-foreground/15 bg-foreground/[0.04]",
-          "text-[10.5px] font-medium text-foreground/55",
+          "text-foreground/55 text-[10.5px] font-medium",
         )}
       >
         <X strokeWidth={2} className="size-2.5" />
@@ -61,7 +61,7 @@ function Status({ status }: { status: ReviewStatus }) {
       className={cn(
         "inline-flex items-center gap-1 rounded-full border px-2 py-0.5",
         "border-state-pending/25 bg-state-pending/10",
-        "text-[10.5px] font-medium text-state-pending",
+        "text-state-pending text-[10.5px] font-medium",
       )}
     >
       <Clock4 strokeWidth={1.8} className="size-2.5" />

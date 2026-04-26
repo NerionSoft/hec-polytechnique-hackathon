@@ -20,8 +20,8 @@ export function CitationLink({
       onClick={() => open(id)}
       className={cn(
         "inline-flex items-center rounded-full px-1.5 py-px",
-        "bg-accent/10 text-[10.5px] font-medium text-accent",
-        "tabular transition-colors hover:bg-accent/20",
+        "bg-accent/10 text-accent text-[10.5px] font-medium",
+        "tabular hover:bg-accent/20 transition-colors",
         className,
       )}
     >

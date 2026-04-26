@@ -37,7 +37,7 @@ export function SeverityBadge({
       className={cn(
         "inline-flex items-center gap-1.5 rounded-full border",
         size === "sm" ? "px-2 py-0.5 text-[10px]" : "px-2.5 py-0.5 text-[10.5px]",
-        "font-medium uppercase tracking-[0.1em]",
+        "font-medium tracking-[0.1em] uppercase",
         s.pill,
       )}
     >

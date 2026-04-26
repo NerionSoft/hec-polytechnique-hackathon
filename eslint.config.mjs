@@ -43,8 +43,13 @@ const eslintConfig = defineConfig([
                 "next",
                 "next/*",
               ],
+              // Prisma generates type-only artefacts (enums, model shapes,
+              // Json/Decimal type aliases). Allowing `import type` keeps the
+              // application layer free of runtime coupling while letting it
+              // speak the same domain language as the database.
+              allowTypeImports: true,
               message:
-                "application/ is framework-agnostic. Move this dependency behind a port and implement it in infrastructure/.",
+                "application/ is framework-agnostic. Move this dependency behind a port and implement it in infrastructure/. Type-only imports are allowed.",
             },
           ],
         },
@@ -56,7 +61,11 @@ const eslintConfig = defineConfig([
   // Mirrors the application/** SDK list (minus next, which routes legitimately need
   // for NextRequest/NextResponse).
   {
-    files: ["src/app/api/leads/**/route.ts", "src/app/api/theses/**/route.ts"],
+    files: [
+      "src/app/api/leads/**/route.ts",
+      "src/app/api/theses/**/route.ts",
+      "src/app/api/outreach/**/route.ts",
+    ],
     rules: {
       "no-restricted-imports": [
         "error",

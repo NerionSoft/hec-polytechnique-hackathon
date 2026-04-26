@@ -27,15 +27,18 @@ pnpm typecheck        # tsc --noEmit
 
 pnpm test             # Vitest run (unit + integration)
 pnpm test:watch       # Vitest watch mode
-pnpm test:unit        # Only src/application/**/*.test.ts
-pnpm test:integration # Only src/infrastructure/**/*.integration.test.ts
+pnpm test:unit        # Only tests/unit/**/*.test.ts
+pnpm test:integration # Only tests/integration/**/*.integration.test.ts
 pnpm test:coverage    # Both projects + lcov for Sonar
 ```
 
 ### Testing scope
 
-- `src/application/` — unit tests next to the code (`*.test.ts`), in-process, no I/O.
-- `src/infrastructure/` — integration tests next to the code (`*.integration.test.ts`); may hit real services (DB, S3, mocked LLM).
+Tests live **outside** `src/` to keep the production tree pure. Layout mirrors the SUT it targets:
+
+- `tests/unit/application/**/*.test.ts` — pure unit tests for the application layer. In-process, no I/O. Covered by Vitest project `unit`.
+- `tests/integration/infrastructure/**/*.integration.test.ts` — adapter integration tests; may hit real services (DB, SIRENE API, etc.). Covered by Vitest project `integration` (forked pool, 30s timeout).
+- `tests/shared/test-support/fakes/` — in-memory adapters and fakes used across tests. Imported via the `@/tests/shared/test-support/fakes` alias.
 - `src/app/` and `src/presentation/` — **not tested**, only linted/formatted. Excluded from Vitest `include` and from Sonar coverage math.
 
 The two test types are configured as Vitest `projects` in `vitest.config.ts`, selected via `--project unit` / `--project integration`. `passWithNoTests` is on so empty layers don't break CI.

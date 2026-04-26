@@ -1,19 +1,16 @@
-import { Filter, Plus, Users } from "lucide-react";
+import { Filter, Users } from "lucide-react";
 import { cn } from "@/src/presentation/lib/cn";
-import { GlassButton } from "@/src/presentation/components/landing/GlassButton";
 import { ViewToggle } from "./ViewToggle";
+import { NewDealButton } from "./NewDealButton";
 
 export function FilterBar() {
   return (
-    <div className="flex flex-wrap items-center gap-3 px-8 pb-4">
+    <div className="flex flex-wrap items-center gap-2 px-4 pb-4 sm:gap-3 sm:px-8">
       <ViewToggle />
       <FilterPill icon={Filter} label="Sector" value="All" />
       <FilterPill icon={Users} label="Owner" value="Anyone" />
       <div className="ml-auto">
-        <GlassButton size="sm" variant="solid">
-          <Plus strokeWidth={1.8} className="size-3.5" />
-          New deal
-        </GlassButton>
+        <NewDealButton />
       </div>
     </div>
   );
@@ -33,8 +30,8 @@ function FilterPill({
       type="button"
       className={cn(
         "flex items-center gap-1.5 rounded-full",
-        "border border-foreground/[0.08] bg-foreground/[0.02] px-3 py-1.5",
-        "text-[12px] text-foreground/65 transition-colors",
+        "border-foreground/[0.08] bg-foreground/[0.02] border px-3 py-1.5",
+        "text-foreground/65 text-[12px] transition-colors",
         "hover:bg-foreground/[0.05] hover:text-foreground",
       )}
     >

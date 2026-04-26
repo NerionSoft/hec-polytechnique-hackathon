@@ -17,7 +17,7 @@ export function ViewToggle() {
     <div
       className={cn(
         "inline-flex items-center gap-0.5 rounded-full",
-        "border border-foreground/[0.08] bg-foreground/[0.02] p-0.5",
+        "border-foreground/[0.08] bg-foreground/[0.02] border p-0.5",
       )}
     >
       {VIEWS.map((v) => {
