@@ -49,8 +49,8 @@ export interface S1OutputRow {
 }
 
 export async function loadS1Output(deps: LoadStage1OutputsDeps, runId: string): Promise<unknown> {
-  const row = await deps.prisma.agentOutput.findUnique({
-    where: { runId_agentId: { runId, agentId: "S1" } },
+  const row = await deps.prisma.agentOutput.findFirst({
+    where: { runId, agentId: "S1" },
     select: { output: true },
   });
   return row?.output ?? null;

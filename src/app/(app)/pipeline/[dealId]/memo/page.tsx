@@ -1,10 +1,11 @@
 import { notFound } from "next/navigation";
-import { Download, RefreshCw, Sparkles } from "lucide-react";
+import { Sparkles } from "lucide-react";
 import { cn } from "@/src/presentation/lib/cn";
 import { team } from "@/src/lib/mock/fund";
 import { findPipelineDeal, findPipelineMemo } from "@/src/lib/data/pipeline";
 import { PageHeader } from "../../../_components/PageHeader";
 import { CitationLink } from "../_components/CitationLink";
+import { ExportMemoButton } from "./_components/ExportMemoButton";
 import { formatRelativeDate } from "@/src/lib/utils";
 
 const RF_REFS: Record<string, { citation: string; title: string }> = {
@@ -26,7 +27,7 @@ export default async function MemoPage({ params }: { params: Promise<{ dealId: s
           title="IC Memo"
           description="Memo not yet drafted — kick off a pipeline run to generate one."
         />
-        <div className="px-8 pb-12">
+        <div className="px-4 pb-12 sm:px-8">
           <div
             className={cn(
               "border-foreground/[0.10] mx-auto max-w-[760px] rounded-[24px]",
@@ -49,34 +50,10 @@ export default async function MemoPage({ params }: { params: Promise<{ dealId: s
       <PageHeader
         title="IC Memo"
         description={`Status: ${memo.status} · ${Math.round(memo.reviewProgress * 100)}% reviewed · ${memo.pendingItems} items pending · last edit by ${editor?.name} ${formatRelativeDate(memo.lastEditedAt)}`}
-        action={
-          <div className="flex items-center gap-2">
-            <button
-              type="button"
-              className={cn(
-                "inline-flex items-center gap-1.5 rounded-full",
-                "border-foreground/[0.10] border px-3 py-1.5",
-                "text-foreground/70 hover:bg-foreground/[0.06] hover:text-foreground text-[12px]",
-              )}
-            >
-              <RefreshCw strokeWidth={1.6} className="size-3.5" />
-              Regenerate
-            </button>
-            <button
-              type="button"
-              className={cn(
-                "bg-foreground inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5",
-                "text-background text-[12px] font-medium hover:opacity-90",
-              )}
-            >
-              <Download strokeWidth={1.6} className="size-3.5" />
-              Export
-            </button>
-          </div>
-        }
+        action={<ExportMemoButton dealId={dealId} />}
       />
 
-      <div className="px-8 pb-12">
+      <div className="px-4 pb-12 sm:px-8">
         <div
           className={cn(
             "border-foreground/[0.08] mx-auto max-w-[760px] rounded-[24px] border",
@@ -114,10 +91,6 @@ export default async function MemoPage({ params }: { params: Promise<{ dealId: s
             </section>
           ))}
         </div>
-
-        <p className={cn("text-foreground/45 mx-auto mt-6 max-w-[760px] text-center text-[11px]")}>
-          Export blocked until all sections are human-reviewed.
-        </p>
       </div>
     </>
   );

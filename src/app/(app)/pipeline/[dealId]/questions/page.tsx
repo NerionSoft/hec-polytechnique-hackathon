@@ -36,7 +36,7 @@ export default async function QuestionsPage({ params }: { params: Promise<{ deal
           </button>
         }
       />
-      <div className="flex flex-col gap-6 px-8 pb-12">
+      <div className="flex flex-col gap-6 px-4 pb-12 sm:px-8">
         {Object.entries(grouped).map(([topic, items]) => (
           <section key={topic}>
             <h2 className={cn("text-foreground/45 mb-3 text-[10.5px] tracking-[0.14em] uppercase")}>

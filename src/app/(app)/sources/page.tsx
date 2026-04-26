@@ -70,7 +70,7 @@ export default async function SourcesPage() {
         action={<MethodologyDrawer />}
       />
 
-      <div className="divide-foreground/[0.08] border-foreground/[0.08] bg-foreground/[0.02] mx-8 mb-6 grid grid-cols-2 overflow-hidden rounded-[18px] border sm:grid-cols-4 sm:divide-x">
+      <div className="divide-foreground/[0.08] border-foreground/[0.08] bg-foreground/[0.02] mx-4 mb-6 grid grid-cols-2 overflow-hidden rounded-[18px] border sm:mx-8 sm:grid-cols-4 sm:divide-x">
         <Stat label="Leads" value={counts.total} />
         <Stat label="Enriched" value={counts.enriched} />
         <Stat label="Scored" value={counts.scored} />
@@ -78,17 +78,38 @@ export default async function SourcesPage() {
       </div>
 
       {selectedThesis && (
-        <div className="mx-8 mb-6 grid grid-cols-1 gap-4 lg:grid-cols-[2fr_1fr]">
-          <SireneFetchPanel
-            selectedThesisId={selectedThesisId}
-            defaultSectors={selectedThesis.sectors}
-            criteriaOpenByDefault={leads.length === 0}
-          />
-          <CsvImportPanel selectedThesisId={selectedThesisId} />
-        </div>
+        <details
+          className={cn(
+            "border-foreground/[0.08] bg-foreground/[0.02] mx-4 mb-6 rounded-[16px] border sm:mx-8",
+            "[&_summary::-webkit-details-marker]:hidden",
+          )}
+          open={leads.length === 0}
+        >
+          <summary
+            className={cn(
+              "flex cursor-pointer items-center justify-between px-5 py-3",
+              "text-foreground/75 hover:text-foreground text-[12.5px]",
+            )}
+          >
+            <span className="flex items-center gap-2">
+              <span className="text-foreground/45 text-[10.5px] tracking-[0.14em] uppercase">
+                Add leads
+              </span>
+              <span className="text-foreground/65">· Sirene API · CSV import</span>
+            </span>
+            <span className="text-foreground/45 text-[10.5px]">click to expand</span>
+          </summary>
+          <div className="grid grid-cols-1 gap-4 p-4 lg:grid-cols-[2fr_1fr]">
+            <SireneFetchPanel
+              selectedThesisId={selectedThesisId}
+              defaultSectors={selectedThesis.sectors}
+            />
+            <CsvImportPanel selectedThesisId={selectedThesisId} />
+          </div>
+        </details>
       )}
 
-      <div className="border-foreground/[0.08] bg-surface/40 mx-8 mb-12 overflow-hidden rounded-[18px] border">
+      <div className="border-foreground/[0.08] bg-surface/40 mx-4 mb-12 overflow-hidden rounded-[18px] border sm:mx-8">
         {leads.length === 0 ? (
           <div className="flex flex-col items-center gap-2 px-4 py-12 text-center">
             <p className="text-foreground/65 text-[13px]">
@@ -98,83 +119,81 @@ export default async function SourcesPage() {
             </p>
           </div>
         ) : (
-          <table className="w-full text-[12.5px]">
-            <thead>
-              <tr className="border-foreground/[0.08] text-foreground/45 border-b text-left text-[10.5px] tracking-[0.14em] uppercase">
-                <th className="px-4 py-2.5 font-medium">Company</th>
-                <th className="px-4 py-2.5 font-medium">Sector / NAF</th>
-                <th className="px-4 py-2.5 font-medium">Country</th>
-                <th className="px-4 py-2.5 font-medium">Site</th>
-                <th className="px-4 py-2.5 text-right font-medium">Employees</th>
-                <th className="px-4 py-2.5 text-right font-medium">Revenue €</th>
-                <th className="px-4 py-2.5 font-medium">Status</th>
-                <th className="px-4 py-2.5 text-right font-medium">Score</th>
-                <th className="px-4 py-2.5 font-medium">Source</th>
-                <th className="px-4 py-2.5"></th>
-              </tr>
-            </thead>
-            <tbody>
-              {leads.map((lead) => {
-                const j = lead.toJSON();
-                const e = enrichments.get(j.id);
-                const s = scores.get(j.id);
-                const country = getCountry(j.country);
-                return (
-                  <tr
-                    key={j.id}
-                    className="group border-foreground/[0.04] hover:bg-foreground/[0.02] border-b last:border-0"
-                  >
-                    <td className="text-foreground px-4 py-3 font-medium">{j.companyName}</td>
-                    <td className="text-foreground/65 px-4 py-3">
-                      <span className="tabular text-foreground/45">{j.napCode ?? "—"}</span>{" "}
-                      {j.sector ?? ""}
-                    </td>
-                    <td className="text-foreground/65 px-4 py-3">
-                      {country ? `${country.code} · ${country.label}` : j.country}
-                    </td>
-                    <td className="px-4 py-3 text-[11.5px]">
-                      <WebsiteCell url={j.website} autoSource={j.websiteDiscoverySource} />
-                    </td>
-                    <td className="tabular text-foreground/85 px-4 py-3 text-right">
-                      {j.employeeCount ?? "—"}
-                    </td>
-                    <td className="tabular text-foreground/85 px-4 py-3 text-right">
-                      {j.estimatedRevenueEur != null
-                        ? `${(j.estimatedRevenueEur / 1_000_000).toFixed(1)}M`
-                        : "—"}
-                    </td>
-                    <td className="text-foreground/65 px-4 py-3">
-                      <StatusPill status={j.status} />
-                    </td>
-                    <td className="px-4 py-3 text-right">
-                      <ScorePill score={s?.score ?? null} decision={s?.decision ?? null} />
-                      {e && !s && (
-                        <span className="text-foreground/45 ml-1 text-[10px]">
-                          (LLM {e.peFitScore})
-                        </span>
-                      )}
-                    </td>
-                    <td className="text-foreground/55 px-4 py-3 text-[10.5px] tracking-[0.10em] uppercase">
-                      {j.source}
-                    </td>
-                    <td className="px-4 py-3 text-right">
-                      <Link
-                        href={`/sources/${j.id}`}
-                        className={cn(
-                          "inline-flex items-center gap-1 rounded-full px-2 py-1",
-                          "text-foreground/55 text-[11.5px]",
-                          "group-hover:text-foreground transition-colors",
+          <div className="overflow-x-auto">
+            <table className="w-full min-w-[640px] text-[12.5px]">
+              <thead>
+                <tr className="border-foreground/[0.08] text-foreground/45 border-b text-left text-[10.5px] tracking-[0.14em] uppercase">
+                  <th className="px-4 py-2.5 font-medium">Company</th>
+                  <th className="px-4 py-2.5 font-medium">Sector / NAF</th>
+                  <th className="px-4 py-2.5 font-medium">Country</th>
+                  <th className="px-4 py-2.5 text-right font-medium">Employees</th>
+                  <th className="px-4 py-2.5 text-right font-medium">Revenue €</th>
+                  <th className="px-4 py-2.5 font-medium">Status</th>
+                  <th className="px-4 py-2.5 text-right font-medium">Score</th>
+                  <th className="px-4 py-2.5 font-medium">Source</th>
+                  <th className="px-4 py-2.5"></th>
+                </tr>
+              </thead>
+              <tbody>
+                {leads.map((lead) => {
+                  const j = lead.toJSON();
+                  const e = enrichments.get(j.id);
+                  const s = scores.get(j.id);
+                  const country = getCountry(j.country);
+                  return (
+                    <tr
+                      key={j.id}
+                      className="group border-foreground/[0.04] hover:bg-foreground/[0.02] border-b last:border-0"
+                    >
+                      <td className="text-foreground px-4 py-3 font-medium">{j.companyName}</td>
+                      <td className="text-foreground/65 px-4 py-3">
+                        <span className="tabular text-foreground/45">{j.napCode ?? "—"}</span>{" "}
+                        {j.sector ?? ""}
+                      </td>
+                      <td className="text-foreground/65 px-4 py-3">
+                        {country ? `${country.code} · ${country.label}` : j.country}
+                      </td>
+                      <td className="tabular text-foreground/85 px-4 py-3 text-right">
+                        {j.employeeCount ?? "—"}
+                      </td>
+                      <td className="tabular text-foreground/85 px-4 py-3 text-right">
+                        {j.estimatedRevenueEur != null
+                          ? `${(j.estimatedRevenueEur / 1_000_000).toFixed(1)}M`
+                          : "—"}
+                      </td>
+                      <td className="text-foreground/65 px-4 py-3">
+                        <StatusPill status={j.status} />
+                      </td>
+                      <td className="px-4 py-3 text-right">
+                        <ScorePill score={s?.score ?? null} decision={s?.decision ?? null} />
+                        {e && !s && (
+                          <span className="text-foreground/45 ml-1 text-[10px]">
+                            (LLM {e.peFitScore})
+                          </span>
                         )}
-                      >
-                        Detail
-                        <ArrowRight strokeWidth={1.6} className="size-3" />
-                      </Link>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+                      </td>
+                      <td className="text-foreground/55 px-4 py-3 text-[10.5px] tracking-[0.10em] uppercase">
+                        {j.source}
+                      </td>
+                      <td className="px-4 py-3 text-right">
+                        <Link
+                          href={`/sources/${j.id}`}
+                          className={cn(
+                            "inline-flex items-center gap-1 rounded-full px-2 py-1",
+                            "text-foreground/55 text-[11.5px]",
+                            "group-hover:text-foreground transition-colors",
+                          )}
+                        >
+                          Detail
+                          <ArrowRight strokeWidth={1.6} className="size-3" />
+                        </Link>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
     </>

@@ -4,6 +4,7 @@ export type ReviewStatus = "pending_review" | "approved" | "dismissed";
 
 export type RedFlag = {
   id: string;
+  findingId?: string;
   dealId: string;
   severity: Severity;
   category: RedFlagCategory;

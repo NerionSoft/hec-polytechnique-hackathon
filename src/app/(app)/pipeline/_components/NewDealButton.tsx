@@ -95,11 +95,11 @@ export function NewDealButton() {
       </GlassButton>
 
       {open && (
-        <div className="fixed inset-0 z-50 flex items-start justify-center pt-[10vh]">
+        <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto px-4 pt-[6vh] pb-6 sm:pt-[10vh]">
           <div
             aria-hidden="true"
             onClick={close}
-            className="bg-foreground/40 absolute inset-0 backdrop-blur-[2px]"
+            className="bg-foreground/40 fixed inset-0 backdrop-blur-[2px]"
           />
           <div
             role="dialog"

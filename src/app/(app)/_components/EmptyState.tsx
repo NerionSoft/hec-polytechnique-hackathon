@@ -13,9 +13,9 @@ export function EmptyState({ icon: Icon, title, description, badge, className }:
   return (
     <div
       className={cn(
-        "mx-8 my-6 flex flex-col items-center justify-center gap-3",
+        "mx-4 my-6 flex flex-col items-center justify-center gap-3 sm:mx-8",
         "border-foreground/[0.10] rounded-[20px] border border-dashed",
-        "bg-foreground/[0.02] px-8 py-20 text-center",
+        "bg-foreground/[0.02] px-4 py-20 text-center sm:px-8",
         className,
       )}
     >

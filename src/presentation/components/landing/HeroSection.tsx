@@ -36,13 +36,19 @@ export function HeroSection() {
           {hero.subtitle}
         </p>
         <div className="flex flex-wrap items-center justify-center gap-3">
-          <GlassButton variant="solid" size="md" className="bg-white text-black hover:bg-white/90">
+          <GlassButton
+            variant="solid"
+            size="md"
+            href="/sign-in"
+            className="bg-white text-black hover:bg-white/90"
+          >
             {hero.cta}
             <ArrowRight strokeWidth={1.6} className="size-4" />
           </GlassButton>
           <GlassButton
             variant="glass"
             size="md"
+            href="/sign-in"
             className={cn("border-white/20 bg-white/10 text-white", "hover:bg-white/20")}
           >
             <Play strokeWidth={1.6} className="size-4" />

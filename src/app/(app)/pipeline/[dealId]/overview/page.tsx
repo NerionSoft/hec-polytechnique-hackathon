@@ -26,7 +26,7 @@ export default async function OverviewPage({ params }: { params: Promise<{ dealI
   const stageIndex = stages.indexOf(deal.stage);
 
   return (
-    <div className="grid grid-cols-1 gap-4 px-8 py-6 lg:grid-cols-3">
+    <div className="grid grid-cols-1 gap-4 px-4 py-6 sm:px-8 lg:grid-cols-3">
       <Card className="lg:col-span-2">
         <CardHeader
           eyebrow="Investment Thesis"

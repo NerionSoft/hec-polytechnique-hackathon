@@ -6,11 +6,9 @@ import {
   AlertTriangle,
   FileText,
   FolderLock,
-  Gavel,
   History,
   LayoutDashboard,
   MessageSquareQuote,
-  Sparkles,
   TrendingUp,
   Lock,
 } from "lucide-react";
@@ -28,13 +26,11 @@ type TabDef = {
 
 const TABS: TabDef[] = [
   { slug: "overview", label: "Overview", icon: LayoutDashboard },
-  { slug: "enrichment", label: "Enrichment", icon: Sparkles },
   { slug: "data-room", label: "Data Room", icon: FolderLock, unlocksAt: "engaged" },
   { slug: "financials", label: "Financials", icon: TrendingUp, unlocksAt: "in_dd" },
   { slug: "risks", label: "Risks", icon: AlertTriangle, unlocksAt: "in_dd", badge: "warn" },
   { slug: "questions", label: "Questions", icon: MessageSquareQuote, unlocksAt: "in_dd" },
   { slug: "memo", label: "Memo", icon: FileText, unlocksAt: "in_dd" },
-  { slug: "decision", label: "Decision", icon: Gavel, unlocksAt: "decided" },
   { slug: "audit", label: "Audit", icon: History },
 ];
 
@@ -54,7 +50,7 @@ export function DealTabs({
     <div
       className={cn(
         "border-foreground/[0.08] sticky top-16 z-10 border-b",
-        "bg-background/85 px-8 backdrop-blur-[34px]",
+        "bg-background/85 px-4 backdrop-blur-[34px] sm:px-8",
       )}
     >
       <nav className="-mx-1 flex items-center gap-0.5 overflow-x-auto">

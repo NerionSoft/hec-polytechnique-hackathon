@@ -5,7 +5,7 @@ import { NewDealButton } from "./NewDealButton";
 
 export function FilterBar() {
   return (
-    <div className="flex flex-wrap items-center gap-3 px-8 pb-4">
+    <div className="flex flex-wrap items-center gap-2 px-4 pb-4 sm:gap-3 sm:px-8">
       <ViewToggle />
       <FilterPill icon={Filter} label="Sector" value="All" />
       <FilterPill icon={Users} label="Owner" value="Anyone" />

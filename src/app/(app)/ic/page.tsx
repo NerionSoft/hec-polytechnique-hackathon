@@ -16,7 +16,7 @@ export default function IcPage() {
         description={`${upcoming.length} upcoming meetings · ${past.length} held this quarter`}
       />
 
-      <div className="px-8 pb-12">
+      <div className="px-4 pb-12 sm:px-8">
         <SectionTitle>Upcoming</SectionTitle>
         <div className="flex flex-col gap-3">
           {upcoming.map((m) => (

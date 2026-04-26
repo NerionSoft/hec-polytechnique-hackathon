@@ -120,7 +120,7 @@ export default async function DataRoomPage({ params }: { params: Promise<{ dealI
       {!isReal && (
         <div
           className={cn(
-            "mx-8 mb-4 flex items-start gap-3 rounded-[14px]",
+            "mx-4 mb-4 flex items-start gap-3 rounded-[14px] sm:mx-8",
             "border-state-pending/25 bg-state-pending/5 border p-3",
           )}
         >
@@ -136,7 +136,7 @@ export default async function DataRoomPage({ params }: { params: Promise<{ dealI
       )}
 
       {isReal && (
-        <div className="flex flex-col gap-3 px-8">
+        <div className="flex flex-col gap-3 px-4 sm:px-8">
           <UploadDropzone dealId={dealId} />
           <div className="flex justify-end">
             <RunPipelineButton
@@ -148,7 +148,7 @@ export default async function DataRoomPage({ params }: { params: Promise<{ dealI
         </div>
       )}
 
-      <div className="grid grid-cols-1 gap-4 px-8 py-6 lg:grid-cols-[240px_1fr]">
+      <div className="grid grid-cols-1 gap-4 px-4 py-6 sm:px-8 lg:grid-cols-[240px_1fr]">
         <aside
           className={cn("border-foreground/[0.08] bg-surface/40 h-max rounded-[16px] border p-3")}
         >
@@ -192,41 +192,43 @@ export default async function DataRoomPage({ params }: { params: Promise<{ dealI
               </p>
             </div>
           ) : (
-            <table className="w-full text-[12.5px]">
-              <thead>
-                <tr className="border-foreground/[0.08] text-foreground/45 border-b text-left text-[10.5px] tracking-[0.14em] uppercase">
-                  <th className="px-4 py-2.5 font-medium">Name</th>
-                  <th className="px-4 py-2.5 font-medium">Category</th>
-                  <th className="px-4 py-2.5 font-medium">Status</th>
-                  <th className="px-4 py-2.5 text-right font-medium">Citations</th>
-                  <th className="px-4 py-2.5 text-right font-medium">Updated</th>
-                </tr>
-              </thead>
-              <tbody>
-                {docs.map((doc) => (
-                  <tr
-                    key={doc.id}
-                    className="border-foreground/[0.04] hover:bg-foreground/[0.02] border-b last:border-0"
-                  >
-                    <td className="text-foreground/85 px-4 py-2.5">{doc.name}</td>
-                    <td className="text-foreground/55 px-4 py-2.5 capitalize">
-                      {doc.category
-                        ? (CATEGORY_LABEL[doc.category] ?? doc.category).toLowerCase()
-                        : "—"}
-                    </td>
-                    <td className="px-4 py-2.5">
-                      <StatusPill status={doc.status} />
-                    </td>
-                    <td className="tabular text-foreground/75 px-4 py-2.5 text-right">
-                      {doc.citations ?? "—"}
-                    </td>
-                    <td className="tabular text-foreground/45 px-4 py-2.5 text-right">
-                      {formatRelativeDate(doc.updatedAt)}
-                    </td>
+            <div className="overflow-x-auto">
+              <table className="w-full min-w-[640px] text-[12.5px]">
+                <thead>
+                  <tr className="border-foreground/[0.08] text-foreground/45 border-b text-left text-[10.5px] tracking-[0.14em] uppercase">
+                    <th className="px-4 py-2.5 font-medium">Name</th>
+                    <th className="px-4 py-2.5 font-medium">Category</th>
+                    <th className="px-4 py-2.5 font-medium">Status</th>
+                    <th className="px-4 py-2.5 text-right font-medium">Citations</th>
+                    <th className="px-4 py-2.5 text-right font-medium">Updated</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {docs.map((doc) => (
+                    <tr
+                      key={doc.id}
+                      className="border-foreground/[0.04] hover:bg-foreground/[0.02] border-b last:border-0"
+                    >
+                      <td className="text-foreground/85 px-4 py-2.5">{doc.name}</td>
+                      <td className="text-foreground/55 px-4 py-2.5 capitalize">
+                        {doc.category
+                          ? (CATEGORY_LABEL[doc.category] ?? doc.category).toLowerCase()
+                          : "—"}
+                      </td>
+                      <td className="px-4 py-2.5">
+                        <StatusPill status={doc.status} />
+                      </td>
+                      <td className="tabular text-foreground/75 px-4 py-2.5 text-right">
+                        {doc.citations ?? "—"}
+                      </td>
+                      <td className="tabular text-foreground/45 px-4 py-2.5 text-right">
+                        {formatRelativeDate(doc.updatedAt)}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           )}
           <div className="border-foreground/[0.08] flex items-center justify-between border-t px-4 py-3">
             <p className="text-foreground/55 text-[11.5px]">

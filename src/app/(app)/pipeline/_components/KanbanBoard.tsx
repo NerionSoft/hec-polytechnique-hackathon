@@ -10,7 +10,7 @@ export async function KanbanBoard() {
   const deals = await listPipelineDeals();
 
   return (
-    <div className="overflow-x-auto px-8 pb-12">
+    <div className="overflow-x-auto px-4 pb-12 sm:px-8">
       <div className="flex min-w-max gap-3">
         {KANBAN_STAGES.map((stage) => (
           <StageColumn key={stage} stage={stage} deals={deals.filter((d) => d.stage === stage)} />

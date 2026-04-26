@@ -9,7 +9,7 @@ export default function SettingsLayout({ children }: { children: React.ReactNode
         title="Settings"
         description="Configure scoring, team permissions, sources and review the audit trail."
       />
-      <div className="grid grid-cols-1 gap-6 px-8 pb-12 lg:grid-cols-[200px_1fr]">
+      <div className="grid grid-cols-1 gap-6 px-4 pb-12 sm:px-8 lg:grid-cols-[200px_1fr]">
         <aside
           className={cn("border-foreground/[0.08] bg-surface/40 h-max rounded-[16px] border p-2")}
         >

@@ -40,7 +40,7 @@ export default async function AuditPage({ params }: { params: Promise<{ dealId: 
 
       <AuditAutoRefresh entryCount={entries.length} />
 
-      <div className="px-8 pb-12">
+      <div className="px-4 pb-12 sm:px-8">
         <ol
           className={cn(
             "border-foreground/[0.08] relative flex flex-col gap-4 rounded-[18px] border",

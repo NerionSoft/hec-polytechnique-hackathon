@@ -21,7 +21,7 @@ export function DealHeader({
 
   return (
     <div className="border-foreground/[0.08] border-b">
-      <div className="px-8 pt-6">
+      <div className="px-4 pt-6 sm:px-8">
         <Link
           href="/pipeline"
           className={cn(
@@ -33,23 +33,23 @@ export function DealHeader({
           Pipeline
         </Link>
 
-        <div className="mt-3 flex items-start justify-between gap-6">
+        <div className="mt-3 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between sm:gap-6">
           <div className="min-w-0 flex-1">
             <h1
               className={cn(
-                "font-serif text-[34px] leading-[1.05] tracking-tight",
-                "text-foreground",
+                "font-serif leading-[1.05] tracking-tight",
+                "text-foreground text-[26px] sm:text-[34px]",
               )}
             >
               {deal.flag} {deal.name}
             </h1>
-            <p className="text-foreground/55 mt-1 text-[13px]">
+            <p className="text-foreground/55 mt-1 text-[12.5px] sm:text-[13px]">
               {countryName(deal.geo)} · {deal.sector} · Founded {deal.founded} · {deal.employees}{" "}
               employees
             </p>
           </div>
 
-          <div className="flex shrink-0 items-center gap-2">
+          <div className="flex shrink-0 flex-wrap items-center gap-2">
             {showWorkspaceActions ? (
               <WorkspaceActions
                 entityKind={entityKind}
@@ -82,7 +82,7 @@ export function DealHeader({
           </div>
         </div>
 
-        <div className="mt-5 flex flex-wrap items-center gap-x-8 gap-y-3">
+        <div className="mt-5 flex flex-wrap items-center gap-x-6 gap-y-3 pb-2 sm:gap-x-8">
           <StageBar currentIndex={stageIndex} />
           <Stat
             label="Thesis fit"
