@@ -14,16 +14,19 @@ const CATEGORIES: { id: "all" | RedFlagCategory; label: string }[] = [
   { id: "esg", label: "ESG" },
 ];
 
-const STATUSES: { id: "all" | ReviewStatus; label: string }[] = [
-  { id: "all", label: "All status" },
+type StatusFilter = "active" | "all" | ReviewStatus;
+
+const STATUSES: { id: StatusFilter; label: string }[] = [
+  { id: "active", label: "Active (pending + approved)" },
   { id: "pending_review", label: "Pending review" },
   { id: "approved", label: "Approved" },
-  { id: "dismissed", label: "Dismissed" },
+  { id: "dismissed", label: "Dismissed only" },
+  { id: "all", label: "All (incl. dismissed)" },
 ];
 
 export function RisksFilterBar({ flags }: { flags: RedFlag[] }) {
   const [category, setCategory] = useState<(typeof CATEGORIES)[number]["id"]>("all");
-  const [status, setStatus] = useState<(typeof STATUSES)[number]["id"]>("all");
+  const [status, setStatus] = useState<StatusFilter>("active");
 
   const counts = useMemo(() => {
     const out: Record<string, number> = { all: flags.length };
@@ -36,6 +39,7 @@ export function RisksFilterBar({ flags }: { flags: RedFlag[] }) {
 
   const filtered = flags.filter((f) => {
     if (category !== "all" && f.category !== category) return false;
+    if (status === "active") return f.status !== "dismissed";
     if (status !== "all" && f.status !== status) return false;
     return true;
   });
@@ -46,7 +50,7 @@ export function RisksFilterBar({ flags }: { flags: RedFlag[] }) {
 
   return (
     <>
-      <div className="flex flex-wrap items-center gap-2 px-8">
+      <div className="flex flex-wrap items-center gap-2 px-4 sm:px-8">
         {CATEGORIES.map((c) => {
           const active = c.id === category;
           const count = counts[c.id] ?? 0;
@@ -78,7 +82,7 @@ export function RisksFilterBar({ flags }: { flags: RedFlag[] }) {
         <span className="bg-foreground/[0.08] mx-2 hidden h-5 w-px sm:block" />
         <select
           value={status}
-          onChange={(e) => setStatus(e.target.value as (typeof STATUSES)[number]["id"])}
+          onChange={(e) => setStatus(e.target.value as StatusFilter)}
           className={cn(
             "border-foreground/[0.08] bg-foreground/[0.02] rounded-full border",
             "text-foreground/75 px-3 py-1.5 text-[12px] outline-none",
@@ -94,12 +98,12 @@ export function RisksFilterBar({ flags }: { flags: RedFlag[] }) {
         </select>
       </div>
 
-      <div className="flex flex-col gap-3 px-8 py-6">
+      <div className="flex flex-col gap-3 px-4 py-6 sm:px-8">
         {sorted.length === 0 ? (
           <div
             className={cn(
               "border-foreground/[0.10] rounded-[18px] border border-dashed",
-              "bg-foreground/[0.02] px-8 py-16 text-center",
+              "bg-foreground/[0.02] px-4 py-16 text-center sm:px-8",
             )}
           >
             <p className="font-serif text-[18px]">No red flags match these filters</p>

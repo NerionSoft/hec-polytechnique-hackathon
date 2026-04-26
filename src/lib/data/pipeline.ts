@@ -238,6 +238,7 @@ function findingToRedFlag(f: FindingWithCitation): RedFlag {
   const cite = f.primaryCitation;
   return {
     id: f.displayId || f.id,
+    findingId: f.id,
     dealId: f.dealId,
     severity: severityFromDb(f.severity),
     category: findingCategoryFromDb(f.category),
