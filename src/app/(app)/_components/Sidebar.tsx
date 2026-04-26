@@ -5,10 +5,7 @@ import { usePathname } from "next/navigation";
 import {
   LayoutDashboard,
   Radar,
-  Mail,
   Gavel,
-  Briefcase,
-  BarChart3,
   Settings2,
   Hexagon,
 } from "lucide-react";
@@ -18,10 +15,7 @@ import { fund } from "@/src/lib/mock/fund";
 const NAV_ITEMS = [
   { href: "/pipeline", label: "Pipeline", icon: LayoutDashboard },
   { href: "/sources", label: "Sources", icon: Radar },
-  { href: "/outreach", label: "Outreach", icon: Mail },
   { href: "/ic", label: "IC Calendar", icon: Gavel, badge: "2" },
-  { href: "/portfolio", label: "Portfolio", icon: Briefcase },
-  { href: "/reports", label: "Reports", icon: BarChart3 },
 ];
 
 export function Sidebar() {

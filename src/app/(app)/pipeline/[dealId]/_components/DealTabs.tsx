@@ -9,7 +9,6 @@ import {
   Gavel,
   History,
   LayoutDashboard,
-  Mail,
   MessageSquareQuote,
   Sparkles,
   TrendingUp,
@@ -30,7 +29,6 @@ type TabDef = {
 const TABS: TabDef[] = [
   { slug: "overview", label: "Overview", icon: LayoutDashboard },
   { slug: "enrichment", label: "Enrichment", icon: Sparkles },
-  { slug: "outreach", label: "Outreach", icon: Mail, unlocksAt: "contacted" },
   { slug: "data-room", label: "Data Room", icon: FolderLock, unlocksAt: "engaged" },
   { slug: "financials", label: "Financials", icon: TrendingUp, unlocksAt: "in_dd" },
   { slug: "risks", label: "Risks", icon: AlertTriangle, unlocksAt: "in_dd", badge: "warn" },
